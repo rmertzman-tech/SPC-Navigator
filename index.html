@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Capability Lab: Agency, Coordination, and Layered Emergence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --border-color: #bdc3c7;
+        }
+    
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            overflow-x: hidden;
+        }
+    
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+    
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+    
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+    
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+    
+        .subtitle {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+    
+        /* Navigation */
+        nav {
+            background: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 120px;
+            z-index: 999;
+        }
+    
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 0.5rem 0;
+        }
+    
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+    
+        .nav-btn:hover {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+    
+        .nav-btn.active {
+            color: var(--secondary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+    
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 300px);
+        }
+    
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+    
+        .section.active {
+            display: block;
+        }
+    
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+    
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+    
+        .card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+        }
+    
+        .card h3 {
+            color: var(--secondary-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+    
+        .card h4 {
+            color: var(--text-color);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+    
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+    
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            padding-bottom: 2rem;
+            border-left: 3px solid var(--secondary-color);
+        }
+    
+        .timeline-item:last-child {
+            border-left: none;
+        }
+    
+        .timeline-marker {
+            position: absolute;
+            left: -12px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            border: 3px solid var(--card-bg);
+        }
+    
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+    
+        .timeline-date {
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+    
+        /* Framework Diagrams */
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+    
+        .framework-box {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+    
+        .framework-box:hover {
+            transform: scale(1.05);
+        }
+    
+        .framework-box h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+    
+        .framework-box p, .framework-box ul {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    
+        .framework-box ul {
+            text-align: left;
+            padding-left: 1.5rem;
+        }
+    
+        /* Interactive Elements */
+        .interactive-quiz {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+    
+        .quiz-question {
+            margin-bottom: 2rem;
+        }
+    
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+    
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+    
+        .quiz-option:hover {
+            border-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.1);
+        }
+    
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background: rgba(39, 174, 96, 0.1);
+        }
+    
+        .quiz-option.incorrect {
+            border-color: var(--accent-color);
+            background: rgba(231, 76, 60, 0.1);
+        }
+    
+        /* Progress Tracker */
+        .progress-container {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+    
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--bg-color);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+    
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-color), var(--secondary-color));
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+    
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--card-bg);
+        }
+    
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+    
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+    
+        tr:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+    
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin: 0.5rem;
+        }
+    
+        .btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    
+        .btn-secondary {
+            background: var(--success-color);
+        }
+    
+        .btn-secondary:hover {
+            background: #229954;
+        }
+    
+        /* Accordion */
+        .accordion-item {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    
+        .accordion-header {
+            padding: 1.5rem;
+            background: var(--card-bg);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+    
+        .accordion-header:hover {
+            background: rgba(52, 152, 219, 0.05);
+        }
+    
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+            background: white;
+        }
+    
+        .accordion-content.active {
+            max-height: 3000px;
+            padding: 1.5rem;
+        }
+    
+        /* Code Blocks */
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+    
+        /* Highlight Boxes */
+        .highlight-box {
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+    
+        .highlight-box.info {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: var(--secondary-color);
+        }
+    
+        .highlight-box.success {
+            background: rgba(39, 174, 96, 0.1);
+            border-color: var(--success-color);
+        }
+    
+        .highlight-box.warning {
+            background: rgba(243, 156, 18, 0.1);
+            border-color: var(--warning-color);
+        }
+    
+        .highlight-box.danger {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: var(--accent-color);
+        }
+    
+        /* Visual Diagram */
+        .visual-diagram {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+    
+        .diagram-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+    
+        .diagram-box {
+            padding: 1.5rem;
+            border: 3px solid var(--secondary-color);
+            border-radius: 10px;
+            min-width: 150px;
+            margin: 0.5rem;
+            background: rgba(52, 152, 219, 0.05);
+        }
+    
+        .diagram-arrow {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin: 0 1rem;
+        }
+    
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+    
+        .stat-card {
+            background: linear-gradient(135deg, var(--success-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+    
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+    
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+    
+        /* Experiment Visualizations */
+        .experiment-box {
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+    
+        .experiment-box h4 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+    
+        .experiment-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+    
+        .experiment-step {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid white;
+        }
+    
+        .experiment-step strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+    
+        /* Scale Ladder */
+        .scale-ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+    
+        .scale-level {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+    
+        .scale-level:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+    
+        .scale-icon {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+            min-width: 50px;
+            text-align: center;
+        }
+    
+        .scale-content {
+            flex: 1;
+        }
+    
+        .scale-content h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+    
+        /* Evidence Grid */
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+    
+        .evidence-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--secondary-color);
+        }
+    
+        .evidence-card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+    
+        .evidence-metric {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--success-color);
+            margin: 1rem 0;
+        }
+    
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+    
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+    
+            .nav-container {
+                flex-direction: column;
+            }
+    
+            .nav-btn {
+                text-align: center;
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+    
+            .framework-grid {
+                grid-template-columns: 1fr;
+            }
+    
+            nav {
+                top: 100px;
+            }
+    
+            .diagram-row {
+                flex-direction: column;
+            }
+    
+            .scale-level {
+                flex-direction: column;
+                text-align: center;
+            }
+    
+            .scale-icon {
+                margin-bottom: 1rem;
+            }
+        }
+    
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+    
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    
+        /* Comparison Table */
+        .comparison-table {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+    
+        .comparison-column {
+            padding: 1.5rem;
+            border-radius: 10px;
+        }
+    
+        .comparison-column.old {
+            border: 3px solid var(--accent-color);
+            background: rgba(231, 76, 60, 0.05);
+        }
+    
+        .comparison-column.new {
+            border: 3px solid var(--success-color);
+            background: rgba(39, 174, 96, 0.05);
+        }
+    
+        .comparison-column h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    
+        /* Case Study Timeline */
+        .case-timeline {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 3rem;
+        }
+    
+        .case-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent-color), var(--success-color));
+        }
+    
+        .case-point {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+    
+        .case-point.baseline { border-left-color: var(--accent-color); }
+        .case-point.week4 { border-left-color: var(--warning-color); }
+        .case-point.week8 { border-left-color: var(--secondary-color); }
+        .case-point.week12 { border-left-color: var(--success-color); }
+    
+        .case-point::before {
+            content: '';
+            position: absolute;
+            left: -3.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: inherit;
+            border: 3px solid var(--card-bg);
+        }
+
+
+        /* Evidence-calibration badges */
+        .evidence-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0 1rem;
+        }
+
+        .evidence-badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .badge-strong { background: #e8f8f1; color: #196f3d; }
+        .badge-context { background: #fff4df; color: #8a5a00; }
+        .badge-theory { background: #eaf2ff; color: #1f4f8f; }
+        .badge-analogy { background: #f2eafa; color: #6c3483; }
+        .badge-formal { background: #edf7f6; color: #117864; }
+        .badge-pilot { background: #fdecea; color: #922b21; }
+
+        .claim-table td, .claim-table th { vertical-align: top; }
+        .small-note { font-size: 0.92rem; opacity: 0.9; }
+
+
+        /* Step 2 polish additions */
+        .voice-grid, .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .voice-card, .method-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .voice-card h4, .method-card h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .quick-test {
+            counter-reset: claimtest;
+            margin-left: 0;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .quick-test li {
+            counter-increment: claimtest;
+            margin: 0.7rem 0;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            background: rgba(52, 152, 219, 0.07);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .quick-test li::before {
+            content: counter(claimtest);
+            position: absolute;
+            left: 0.85rem;
+            top: 0.8rem;
+            width: 1.45rem;
+            height: 1.45rem;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.45rem;
+            font-size: 0.8rem;
+        }
+
+        .note-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            background: rgba(236, 240, 241, 0.5);
+        }
+
+        .note-box label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.45rem;
+        }
+
+        .student-note {
+            width: 100%;
+            min-height: 110px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.85rem;
+            font-family: inherit;
+            font-size: 0.98rem;
+            resize: vertical;
+            background: white;
+        }
+
+        .note-status {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 0.85rem;
+            opacity: 0.75;
+        }
+
+        .research-template {
+            border-left: 5px solid var(--success-color);
+            background: rgba(39, 174, 96, 0.08);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.25rem 0;
+        }
+
+
+
+        .worksheet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+
+        .worksheet-field {
+            background: rgba(44, 62, 80, 0.045);
+            border: 1px solid rgba(44, 62, 80, 0.12);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .worksheet-field label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.45rem;
+            color: var(--primary-color);
+        }
+
+        .worksheet-field textarea,
+        .worksheet-field select,
+        .worksheet-field input[type="text"] {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: #ffffff;
+        }
+
+        .worksheet-field textarea {
+            min-height: 95px;
+            resize: vertical;
+        }
+
+        .mini-action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .copy-status {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .teacher-note {
+            border-left: 5px solid var(--secondary-color);
+            background: rgba(52, 152, 219, 0.08);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .portfolio-callout {
+            border: 2px dashed rgba(39, 174, 96, 0.45);
+            background: rgba(39, 174, 96, 0.06);
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        @media print {
+            nav, .progress-container, .btn, footer { display: none !important; }
+            .section { display: block !important; }
+            .card { box-shadow: none; page-break-inside: avoid; }
+            body { background: white; }
+        }
+
+    </style>
+
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🧭 The Capability Lab</h1>
+            <p>Agency, Coordination, and Layered Emergence</p>
+            <p class="subtitle">An evidence-calibrated learning environment for ethical reflection, systems thinking, responsible interdisciplinary inquiry, and classroom-ready layered-emergence practice.</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <div class="nav-container">
+                <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+                <button class="nav-btn" onclick="showSection('part1')">Part 1: Deep Foundation</button>
+                <button class="nav-btn" onclick="showSection('part2')">Part 2: Axial Age</button>
+                <button class="nav-btn" onclick="showSection('part3')">Part 3: Biology & Agency</button>
+                <button class="nav-btn" onclick="showSection('part3-5')">Part 3.5: Cellular Evidence</button>
+                <button class="nav-btn" onclick="showSection('part4')">Part 4: Synthesis</button>
+                <button class="nav-btn" onclick="showSection('evidence')">Evidence Base</button>
+                <button class="nav-btn" onclick="showSection('practice')">Practice & Apply</button>
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <!-- Progress Tracker -->
+            <div class="progress-container">
+                <h3>Your Learning Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;">0%</div>
+                </div>
+            </div>
+    
+            <!-- Overview Section -->
+            <section id="overview" class="section active">
+                <div class="card">
+                    <h2>Welcome to The Capability Lab</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">
+                        This Lab explores how living systems, persons, and communities become capable of coordinated action
+                        without reducing everything to command, control, or identical belief.
+                    </p>
+                    <div class="highlight-box info">
+                        <h4>🧭 The Revised Identity of the Lab</h4>
+                        <p><strong>The Capability Lab is an evidence-calibrated, layered-emergence learning environment.</strong></p>
+                        <p>It helps students investigate how capabilities for agency, coordination, reflection, refusal, repair, and redesign emerge across biological, personal, social, and ethical levels.</p>
+                    </div>
+
+                    <h3>How to Read the Evidence</h3>
+                    <p>The Lab does not ask you to accept a finished theory. It invites you into a research program. Some claims are strongly supported by existing research. Some are careful interpretations. Some are analogies. Some are formal models. Some are hypotheses that require future testing.</p>
+                    <div class="framework-grid">
+                        <div class="framework-box"><h3>✅ Strong Evidence</h3><p>Directly supported by empirical or historical research in a specific domain.</p></div>
+                        <div class="framework-box"><h3>⚠️ Context-Dependent</h3><p>Generally supported, but varying by organism, population, setting, method, or timescale.</p></div>
+                        <div class="framework-box"><h3>🧩 Theoretical Integration</h3><p>The Lab connects several bodies of evidence through ATCF, PRF, SAGE, or Functional Equivalence.</p></div>
+                        <div class="framework-box"><h3>🔁 Analogy</h3><p>An example helps us think across levels but does not directly prove the target claim.</p></div>
+                        <div class="framework-box"><h3>📐 Formal Model</h3><p>A mathematical, computational, or conceptual representation that clarifies a testable structure.</p></div>
+                        <div class="framework-box"><h3>🧪 Needs Pilot Data</h3><p>A claim that must be tested in classroom, institutional, simulation, or research settings.</p></div>
+                    </div>
+
+                    <div class="highlight-box success">
+                        <h4>Central Working Thesis</h4>
+                        <p>Across living, cognitive, and social systems, higher-level capabilities can emerge from lower-level interactions under specific constraints. The Lab investigates whether recurring formal patterns — feedback, nesting, threshold dynamics, adaptive memory, pattern maintenance, and downward constraint — help explain how agency and coordination become possible at different scales.</p>
+                        <p style="margin-top: 1rem;"><strong>This does not mean that the same mechanism operates everywhere.</strong> It means that layered systems may display comparable organizational patterns that can guide interpretation, modeling, simulation, and empirical testing.</p>
+                    </div>
+
+                    <h3>The Three Voices of the Lab</h3>
+                    <div class="voice-grid">
+                        <div class="voice-card"><h4>1. Student Voice</h4><p>Readable, reflective, and practical. It asks: <em>What does this mean for my agency and ethical life?</em></p></div>
+                        <div class="voice-card"><h4>2. Evidence Voice</h4><p>Careful and transparent. It asks: <em>What does the evidence actually show, and what does it not show?</em></p></div>
+                        <div class="voice-card"><h4>3. Research-Program Voice</h4><p>Ambitious and testable. It asks: <em>What cross-scale pattern might be modeled, simulated, or studied next?</em></p></div>
+                    </div>
+
+                    <h3>The Quick Claim Test</h3>
+                    <p>Use these six questions whenever the Lab connects biology, stress, history, philosophy, or social coordination.</p>
+                    <ol class="quick-test">
+                        <li>What level of organization is being described?</li>
+                        <li>What are the local units and interactions?</li>
+                        <li>What higher-level pattern or capability emerges?</li>
+                        <li>What evidence directly supports the claim?</li>
+                        <li>Where is the analogy or formal model useful, and where might it break down?</li>
+                        <li>What would need to be measured, simulated, or observed next?</li>
+                    </ol>
+
+                    <h3>The Learning Path</h3>
+                    <div class="timeline">
+                        <div class="timeline-item left"><div class="timeline-content"><h3>Part 1: Ancient Coordination</h3><p>Freedom, social experimentation, and the question of coordination without domination.</p></div></div>
+                        <div class="timeline-item right"><div class="timeline-content"><h3>Part 2: Ethical Training Traditions</h3><p>Buddhist, Confucian, Daoist, and Greek maps of attention, conduct, relation, virtue, and inquiry.</p></div></div>
+                        <div class="timeline-item left"><div class="timeline-content"><h3>Part 3: Biological Conditions of Agency</h3><p>Stress, development, embodiment, and the conditions that support or degrade reflective agency.</p></div></div>
+                        <div class="timeline-item right"><div class="timeline-content"><h3>Part 3.5: Cellular Evidence</h3><p>Bioelectric coordination, plasticity, and simple learning without central control.</p></div></div>
+                        <div class="timeline-item left"><div class="timeline-content"><h3>Part 4: Integrated Synthesis</h3><p>Layered emergence, cross-scale comparison, and ethical coordination.</p></div></div>
+                        <div class="timeline-item right"><div class="timeline-content"><h3>Evidence Base</h3><p>What we know, what we infer, and what we still need to test.</p></div></div>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Revised content sections -->
+            
+            <!-- Part 1: Deep Foundation -->
+            <section id="part1" class="section">
+                <div class="card">
+                    <h2>Part 1: The Deep Foundation — Ancient Coordination, Freedom, and Social Experimentation</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-context">Context-Dependent</span><span class="evidence-badge badge-theory">Theoretical Integration</span></div>
+                    <div class="highlight-box info"><strong>Key Question:</strong> How have human communities coordinated action while preserving enough freedom, flexibility, and social trust to keep agency alive?</div>
+                    <p>Archaeology and anthropology do not show one simple path from “primitive equality” to “civilized hierarchy.” They reveal a more complex picture: human communities experimented with seasonal gathering, ritual centers, large-scale construction, mobility, authority, and resistance to authority in many combinations.</p>
+                    <p>This matters for ethics because it challenges the assumption that complex coordination always requires rigid hierarchy or centralized command. At the same time, the evidence does not prove that ancient coordination was always egalitarian, non-coercive, or biologically ideal.</p>
+
+                    <h3>The Three Freedoms as Social Conditions for Agency</h3>
+                    <p>Graeber and Wengrow’s three freedoms are used here as an anthropological and philosophical framework, not as settled biological laws.</p>
+                    <div class="framework-grid">
+                        <div class="framework-box"><h3>🚶 Movement</h3><p>The ability to leave harmful arrangements or encounter alternative forms of life. Movement supports perspective: the current system is not the only possible system.</p></div>
+                        <div class="framework-box"><h3>✋ Refusal</h3><p>The ability to say no to harmful, arbitrary, or unjust commands. Refusal preserves the difference between coordination and domination.</p></div>
+                        <div class="framework-box"><h3>🛠️ Redesign</h3><p>The ability to participate in reshaping rules, rituals, relationships, and institutions when inherited arrangements no longer work.</p></div>
+                    </div>
+
+                    <h3>Göbekli Tepe and Monumental Coordination</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-context">Context-Dependent</span></div>
+                    <p>Göbekli Tepe is a powerful case for thinking about large-scale coordination before the full development of agricultural state societies. It complicates the assumption that monumental coordination always requires centralized state authority.</p>
+                    <div class="highlight-box warning"><strong>Calibration:</strong> Göbekli Tepe does not prove that ancient people practiced the Capability Lab framework, and it does not definitively prove “coordination without hierarchy.” It helps us ask how labor, ritual, meaning, timing, skill, and trust may have been coordinated in ways that do not fit simple modern assumptions.</div>
+
+                    <h3>Cahokia, Complexity, and Social Fragility</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-context">Context-Dependent</span></div>
+                    <p>Cahokia should be treated as a case study in social complexity: large-scale institutions can mobilize labor, ritual, architecture, food systems, and regional networks. They can also become fragile if authority becomes coercive, ecological pressures rise, inequality deepens, or people lose trust in the system.</p>
+                    <p>The ethical question is not simply “Was there hierarchy?” The better question is: <strong>When does coordination become domination, and what happens when people can no longer move, refuse, or reshape the system?</strong></p>
+
+                    <h3>Activity: Coordination or Domination?</h3>
+                    <div class="interactive-quiz"><p>Choose a classroom, workplace, family, team, online group, or civic organization. Ask: What holds the group together? Can people leave without severe punishment? Can they disagree without humiliation? Can members help reshape the rules? Does the group increase agency or mainly demand compliance?</p><p><strong>Evidence Calibration:</strong> Which parts of your answer are direct observations, interpretations, analogies, or claims needing more evidence?</p><div class="note-box"><label for="part1Note">Your notes for Coordination or Domination</label><textarea class="student-note" id="part1Note" data-note-key="part1Note" oninput="saveStudentNote(this)" placeholder="Type your response here. It will save in this browser."></textarea><span class="note-status" id="part1NoteStatus">Autosaves locally in this browser.</span></div></div>
+                    <button class="btn" onclick="markSectionComplete('part1')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- Part 2: Axial Age (abbreviated for space) -->
+            <section id="part2" class="section">
+                <div class="card">
+                    <h2>Part 2: The Axial Age — Traditions of Ethical Training and Reflective Agency</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-context">Context-Dependent</span><span class="evidence-badge badge-theory">Theoretical Integration</span></div>
+                    <div class="highlight-box info"><strong>Key Question:</strong> How did different traditions develop explicit practices for training attention, conduct, self-understanding, social responsibility, and ethical reflection?</div>
+                    <p>The Axial Age is a useful comparative teaching frame, but it should be handled carefully. Buddhist, Confucian, Daoist, and Greek traditions were not all doing the same thing. The Capability Lab compares them as distinct maps of agency, not as identical versions of one hidden framework.</p>
+
+                    <div class="framework-grid">
+                        <div class="framework-box"><h3>🧘 Buddhist Practice</h3><p><strong>Training emphasis:</strong> attention, conduct, desire, suffering, and liberation.</p><p><strong>Capability question:</strong> How can I transform patterns that produce suffering and unskillful action?</p></div>
+                        <div class="framework-box"><h3>🏮 Confucian Practice</h3><p><strong>Training emphasis:</strong> relationship, ritual, humaneness, role responsibility, and moral education.</p><p><strong>Capability question:</strong> How do repeated practices and relationships shape the person I become?</p></div>
+                        <div class="framework-box"><h3>🌿 Daoist Practice</h3><p><strong>Training emphasis:</strong> attunement, humility, non-forcing, responsiveness, and natural order.</p><p><strong>Capability question:</strong> When does control become counterproductive?</p></div>
+                        <div class="framework-box"><h3>🏛️ Greek Philosophy</h3><p><strong>Training emphasis:</strong> questioning, argument, virtue, conceptual clarity, and practical wisdom.</p><p><strong>Capability question:</strong> Are my beliefs, actions, and goals coherent enough to withstand examination?</p></div>
+                    </div>
+
+                    <h3>Buddhist Practice as a Training Map</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-context">Context-Dependent</span><span class="evidence-badge badge-theory">Theoretical Integration</span></div>
+                    <p>The Noble Eightfold Path can be read as a disciplined practice for transforming how a person sees, intends, speaks, acts, works, attends, and concentrates. In Buddhist terms, the goal is liberation from suffering and ignorance. In Capability Lab terms, the path helps students notice how ethical agency involves perception, motivation, speech, conduct, livelihood, effort, attention, and mental discipline working together.</p>
+                    <div class="highlight-box warning"><strong>Calibration:</strong> Modern mindfulness research may support limited claims about attention, emotion regulation, and stress. It does not validate Buddhism as a whole, prove ATCF, or show that ancient traditions discovered modern neuroscience.</div>
+
+                    <h3>Cross-Tradition Synthesis</h3>
+                    <p>The lesson is not that all traditions are secretly the same. The lesson is that human beings have repeatedly built training systems for agency. Some train attention. Some train ritual conduct. Some train questioning. Some train humility. Some train compassion, character, liberation, or harmony.</p>
+
+                    <h3>Activity: Traditions as Ethical Training Maps</h3>
+                    <div class="interactive-quiz"><p>Choose one tradition discussed here. What human problem does it address? What kind of practice does it recommend? What kind of person is it trying to form? What might it help your PRF see, and what might it miss?</p><p><strong>Evidence Calibration:</strong> Which parts of your answer are historical information, interpretation, personal reflection, or claims needing more research?</p></div>
+                    <button class="btn" onclick="markSectionComplete('part2')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- Part 3: Biology (abbreviated) -->
+            <section id="part3" class="section">
+                <div class="card">
+                    <h2>Part 3: The Biological Conditions of Agency — Stress, Development, and Coordination</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-context">Context-Dependent</span><span class="evidence-badge badge-theory">Theoretical Integration</span></div>
+                    <div class="highlight-box warning"><strong>Key Insight:</strong> Ethical agency is embodied. Memory, attention, flexible judgment, impulse regulation, social perception, and future-oriented planning depend on living systems that can be strengthened or weakened by stress, development, social conditions, and environmental support.</div>
+                    <p>Chronic stress can alter the functioning of brain and body systems involved in memory, attention, emotion regulation, and decision-making. This does not mean that every stressful experience causes permanent damage, and it does not mean that every hierarchy is biologically harmful. It means that sustained threat, low control, instability, humiliation, and inescapable pressure can make it harder for people to exercise the capacities ethical life requires.</p>
+
+                    <h3>Stress Is Not Always Bad</h3>
+                    <p>Acute stress can help organisms respond to danger, focus attention, and mobilize energy. The problem is chronic, repeated, poorly regulated, or inescapable stress that does not allow recovery.</p>
+                    <div class="framework-grid">
+                        <div class="framework-box"><h3>Constructive Challenge</h3><p>“This is difficult, but I have support, tools, recovery, and a path forward.”</p></div>
+                        <div class="framework-box"><h3>Destructive Stress</h3><p>“I am trapped, unsafe, powerless, humiliated, and cannot recover.”</p></div>
+                    </div>
+
+                    <h3>Sapolsky’s Contribution</h3>
+                    <p>Sapolsky helps us avoid two mistakes: reducing behavior to individual willpower alone, and reducing behavior to biology alone. A better view is multi-level: ethical agency emerges from biological systems, lived experience, social conditions, and reflective practice interacting over time.</p>
+                    <div class="highlight-box info"><strong>ATCF Calibration:</strong> ATCF is a teaching construct in this Lab. It can help students think about coherence across past, present, and future. It should not be presented as something directly measured in Sapolsky’s baboon studies.</div>
+
+                    <h3>Stress and Agency Model</h3>
+                    <table>
+                        <tr><th>Layer</th><th>Question</th><th>Possible Agency Effect</th></tr>
+                        <tr><td>Social Conditions</td><td>Safety or threat? Dignity or humiliation? Voice or silence?</td><td>Shapes whether action feels possible.</td></tr>
+                        <tr><td>Stress Regulation</td><td>Acute mobilization, recovery, chronic activation, or dysregulation?</td><td>Shapes attention, arousal, and flexibility.</td></tr>
+                        <tr><td>Cognitive and Emotional Capacities</td><td>Memory, flexibility, impulse regulation, trust, planning?</td><td>Shapes reflective response or reactivity.</td></tr>
+                        <tr><td>Agency Outcomes</td><td>Cooperation, withdrawal, resistance, compliance, repair?</td><td>Shapes ethical possibility.</td></tr>
+                    </table>
+
+                    <h3>Activity: Stress, Agency, and Ethical Capacity</h3>
+                    <div class="interactive-quiz"><p>Choose a safe example where stress affected your ability to think, communicate, cooperate, or decide. Was the stress acute, chronic, or repeated? What happened to your attention, memory, planning, and ability to act according to your values? What supports would have helped?</p><p><strong>Evidence Calibration:</strong> Which parts are direct observations, interpretations, biological hypotheses, or generalizations?</p></div>
+                    <button class="btn" onclick="markSectionComplete('part3')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- NEW SECTION: Part 3.5 - Levin's Cellular Validation -->
+            <section id="part3-5" class="section">
+                <div class="card">
+                    <h2>Part 3.5: Cellular Evidence and Cross-Scale Analogy</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-analogy">Analogy</span><span class="evidence-badge badge-formal">Formal Model</span></div>
+                    <div class="highlight-box success"><strong>Key Calibration:</strong> Cellular and non-neural biological research provides powerful evidence for distributed coordination and plasticity. It does not directly prove human ethics, ATCF, PRF, or social coordination.</div>
+                    <p>Michael Levin’s research provides strong biological evidence that cellular collectives can coordinate complex anatomical outcomes through bioelectric patterning. This supports one part of the Lab’s broader intuition: coordination can be distributed, pattern-based, and adaptive. The movement from cellular coordination to human ethical coordination is a theoretical and pedagogical bridge, not a direct experimental proof.</p>
+
+                    <h3>Planaria and Bioelectric Pattern Memory</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-analogy">Analogy</span></div>
+                    <p>Planaria help students understand that living form is not simply a matter of static genetic instruction. Organisms also depend on dynamic pattern regulation. This provides a powerful analogy for identity-through-change.</p>
+                    <div class="highlight-box warning"><strong>Does not prove:</strong> human identity is the same as planarian morphology, PRFs are cellular voltage patterns, or ATCF has been validated by planaria experiments.</div>
+
+                    <h3>Ectopic Eyes and Adaptive Plasticity</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-analogy">Analogy</span></div>
+                    <p>Ectopic-eye studies show that developmental and nervous systems can be more flexible than simple fixed-location models predict. For the Lab, this is an analogy for functional integration: a system’s function may depend on how parts are integrated into a larger pattern, not only where they started.</p>
+
+                    <h3>Slime Mold Habituation and Non-Neural Adaptation</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-analogy">Analogy</span></div>
+                    <p>Slime mold research supports limited claims about simple non-neural learning or habituation. It should be separated from Levin’s bioelectricity work. It helps students ask how adaptive behavior can occur without a human-like brain, while recognizing that habituation is not reflective ethical judgment.</p>
+
+                    <div class="highlight-box info"><h4>Cross-Scale Translation Rule</h4><p><strong>Do not say:</strong> “This proves.”</p><p><strong>Say:</strong> “This helps us ask.”</p><p>Biology gives us powerful examples of distributed coordination, and those examples can help us ask better questions about agency, identity, and cooperation.</p></div>
+
+                    <h3>Activity: Evidence or Analogy?</h3>
+                    <div class="interactive-quiz"><p>Choose planaria, ectopic eyes, or slime mold habituation. What does the experiment directly show? What does it suggest but not prove? How does it help you think about human agency or coordination? Where would the analogy become misleading?</p></div>
+                    <button class="btn" onclick="markSectionComplete('part3-5')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- Part 4: Synthesis (enhanced with Levin) -->
+            <section id="part4" class="section">
+                <div class="card">
+                    <h2>Part 4: The Integrated Synthesis — Comparing Coordination Across Scales Without Collapsing Them</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-theory">Theoretical Integration</span><span class="evidence-badge badge-formal">Formal Model</span><span class="evidence-badge badge-pilot">Needs Pilot Data</span></div>
+                    <div class="highlight-box success"><strong>Revised Synthesis:</strong> The Capability Lab is a layered-emergence research program. It does not claim that cells, brains, persons, and societies operate by one simple mechanism. It claims that identifiable layers of organization can be causally connected to higher-level emergent capabilities, and that recurring formal patterns may be visible across levels even when mechanisms differ.</div>
+
+                    <h3>Four Ideas to Keep Distinct</h3>
+                    <table>
+                        <tr><th>Idea</th><th>Meaning</th><th>Evidence Posture</th></tr>
+                        <tr><td>Same Mechanism</td><td>The same causal process operates unchanged at every level.</td><td>Usually too strong.</td></tr>
+                        <tr><td>Shared Formal Pattern</td><td>Different systems display similar structures such as feedback, nesting, thresholds, or emergent macro-states.</td><td>Promising and modelable.</td></tr>
+                        <tr><td>Causal Layering</td><td>Lower-level processes constrain and enable higher-level capabilities; higher levels can feed back downward.</td><td>Strong research-program claim.</td></tr>
+                        <tr><td>Empirical Test Program</td><td>Proposed links are modeled, measured, simulated, or tested in concrete domains.</td><td>Required for validation.</td></tr>
+                    </table>
+
+                    <div class="research-template">
+                        <h3>Micro-to-Macro Research Template</h3>
+                        <p>This template keeps the layered-emergence claim strong without overstating proof. Use it for Schelling-style simulations, cellular coordination examples, classroom norms, PRF development, or institutional design.</p>
+                        <table>
+                            <tr><th>Layered-Emergence Question</th><th>What Students Should Identify</th></tr>
+                            <tr><td>Local units</td><td>Cells, agents, students, habits, rules, values, or institutional roles.</td></tr>
+                            <tr><td>Local interactions</td><td>Signals, choices, routines, incentives, feedback, communication, or constraints.</td></tr>
+                            <tr><td>Emergent pattern</td><td>Organ formation, segregation, trust, classroom culture, personal identity, cooperation, or domination.</td></tr>
+                            <tr><td>Downward constraint</td><td>How the larger pattern reshapes the local units that produced it.</td></tr>
+                            <tr><td>Future test</td><td>What would need to be measured, simulated, compared, or observed.</td></tr>
+                        </table>
+                    </div>
+
+                    <h3>The Stress-Freedom-Agency Triangle</h3>
+                    <div class="evidence-badges"><span class="evidence-badge badge-theory">Theoretical Integration</span><span class="evidence-badge badge-context">Context-Dependent</span></div>
+                    <p>The triangle is best understood as a pedagogical model:</p>
+                    <div class="highlight-box info"><strong>Recoverable Stress Conditions → Meaningful Freedom and Voice → Reflective Agency → More Capable Coordination</strong></div>
+                    <p>It draws on stress research, anthropological interpretation, ethical theory, and the Lab’s ATCF framework. It should guide reflection and generate testable questions, not function as a fully validated scientific model.</p>
+
+                    <h3>Capability Synthesis Map</h3>
+                    <div class="framework-grid">
+                        <div class="framework-box"><h3>1. Biological Conditions</h3><p>Stress regulation, sleep, recovery, development, embodiment.</p></div>
+                        <div class="framework-box"><h3>2. Personal Coherence</h3><p>Memory, attention, identity, motivation, emotion, future imagination.</p></div>
+                        <div class="framework-box"><h3>3. Social Conditions</h3><p>Voice, dissent, dignity, trust, exit, role flexibility, institutional design.</p></div>
+                        <div class="framework-box"><h3>4. Ethical Reflection</h3><p>SAGE, PRF mapping, ABCD attention, traditions, evidence calibration.</p></div>
+                        <div class="framework-box"><h3>5. Coordinated Action</h3><p>Responsible choice, cooperation, repair, refusal, redesign.</p></div>
+                    </div>
+
+                    <h3>Activity: Build a Multi-Level Agency Map</h3>
+                    <div class="interactive-quiz"><p>Choose a real ethical situation. Map it across biological conditions, personal coherence, social conditions, ethical reflection, and coordinated action. For each layer, mark your claim as directly observed, supported by research, interpretation, analogy, or hypothesis needing more evidence.</p><div class="note-box"><label for="part4Note">Your notes for Multi-Level Agency Mapping</label><textarea class="student-note" id="part4Note" data-note-key="part4Note" oninput="saveStudentNote(this)" placeholder="Type your response here. It will save in this browser."></textarea><span class="note-status" id="part4NoteStatus">Autosaves locally in this browser.</span></div></div>
+                    <button class="btn" onclick="markSectionComplete('part4')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- NEW SECTION: Evidence Base -->
+            <section id="evidence" class="section">
+                <div class="card">
+                    <h2>Evidence Base: What We Know, What We Infer, and What We Still Need to Test</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-strong">Strong Evidence</span><span class="evidence-badge badge-context">Context-Dependent</span><span class="evidence-badge badge-theory">Theoretical Integration</span><span class="evidence-badge badge-analogy">Analogy</span><span class="evidence-badge badge-formal">Formal Model</span><span class="evidence-badge badge-pilot">Needs Pilot Data</span></div>
+                    <div class="highlight-box info"><strong>Purpose:</strong> This section is the trust center of the Lab. It shows how a serious interdisciplinary framework is built by distinguishing evidence, interpretation, analogy, formal modeling, and future testing.</div>
+
+                    <h3>Claim Status Legend</h3>
+                    <div class="tool-grid">
+                        <div class="method-card"><h4>Strong Evidence</h4><p>Use when a claim is directly supported in the domain being discussed.</p></div>
+                        <div class="method-card"><h4>Context-Dependent</h4><p>Use when a claim is broadly supported but varies by setting, population, or mechanism.</p></div>
+                        <div class="method-card"><h4>Theoretical Integration</h4><p>Use when the Lab responsibly connects multiple bodies of evidence through its own framework.</p></div>
+                        <div class="method-card"><h4>Analogy</h4><p>Use when one domain helps illuminate another without directly proving it.</p></div>
+                        <div class="method-card"><h4>Formal Model</h4><p>Use when a simulation, mathematical representation, or conceptual structure clarifies a testable pattern.</p></div>
+                        <div class="method-card"><h4>Needs Pilot Data</h4><p>Use when the claim should be tested in classrooms, teams, institutions, or simulations.</p></div>
+                    </div>
+
+                    <h3>Three Evidence Anchors and One Research Program</h3>
+                    <div class="evidence-grid">
+                        <div class="evidence-card"><h4>1. Developmental Bioelectricity</h4><p><strong>Supports:</strong> distributed biological coordination, pattern regulation, developmental and regenerative plasticity.</p><p><strong>Does not show:</strong> that human societies coordinate by the same mechanism.</p></div>
+                        <div class="evidence-card"><h4>2. Stress Neurobiology</h4><p><strong>Supports:</strong> agency is embodied; chronic stress can impair capacities relevant to reflection and coordination.</p><p><strong>Does not show:</strong> that all hierarchy is biologically harmful or that ATCF is a measured biological variable.</p></div>
+                        <div class="evidence-card"><h4>3. Archaeology & Anthropology</h4><p><strong>Supports:</strong> diverse human coordination, social experimentation, and alternatives to simple state-centered stories.</p><p><strong>Does not show:</strong> that all early societies were egalitarian or non-coercive.</p></div>
+                        <div class="evidence-card"><h4>4. ATCF, PRF & Functional Equivalence</h4><p><strong>Supports:</strong> structured reflection and classroom inquiry.</p><p><strong>Needs:</strong> direct pilot data for specific empirical claims.</p></div>
+                    </div>
+
+                    <h3>Claim Calibration Table</h3>
+                    <table class="claim-table">
+                        <tr><th>Claim</th><th>Status</th><th>Better Wording</th><th>Future Test</th></tr>
+                        <tr><td>Bioelectric signaling can influence regeneration and development.</td><td>Strong evidence in specific organisms.</td><td>Levin’s work supports distributed biological coordination.</td><td>Replicate and extend organism-specific findings.</td></tr>
+                        <tr><td>Chronic stress affects memory, emotion, cognition, and health.</td><td>Strong but context-dependent.</td><td>Chronic stress can impair agency-relevant capacities.</td><td>Study when stress becomes damaging or adaptive.</td></tr>
+                        <tr><td>Hierarchy is biologically maladaptive.</td><td>Overclaim.</td><td>Coercive, unstable, humiliating, or inescapable hierarchy can create stress burdens.</td><td>Compare institutional forms by stress, control, dignity, and health outcomes.</td></tr>
+                        <tr><td>Göbekli Tepe proves coordination without hierarchy.</td><td>Overclaim.</td><td>Göbekli Tepe challenges simple assumptions about monumental coordination.</td><td>Compare competing interpretations of site organization.</td></tr>
+                        <tr><td>ATCF predicts coordination with a specific correlation.</td><td>Needs documentation.</td><td>ATCF may predict coordination and should be tested.</td><td>Define ATCF measure and run classroom or group-coordination study.</td></tr>
+                        <tr><td>P-adic or fractal models can represent PRF structure.</td><td>Promising formal model.</td><td>Hierarchical or ultrametric models may represent nested value and identity structures.</td><td>Compare model predictions with actual PRF data.</td></tr>
+                    </table>
+
+                    <h3>Future Pilot Metrics</h3>
+                    <div class="highlight-box warning"><p>Specific numerical claims such as correlations, effect sizes, or percentage improvements should remain here unless actual study documentation is available.</p></div>
+                    <ul style="margin-left: 2rem;">
+                        <li>Does PRF mapping improve student ethical self-understanding?</li>
+                        <li>Does ATCF-guided reflection improve temporal coherence in student writing?</li>
+                        <li>Does SAGE analysis improve stakeholder, value, constraint, and action-option identification?</li>
+                        <li>Do evidence-calibration activities improve critical-thinking accuracy?</li>
+                        <li>Does the Navigator improve revision quality or responsible AI use?</li>
+                    </ul>
+
+                    <h3>Evidence Audit Worksheet</h3>
+                    <div class="teacher-note">
+                        <strong>Step 3 Workshop Tool:</strong> Use this worksheet when a student, instructor, reviewer, or AI assistant makes a strong cross-scale claim. The goal is not to reject ambitious claims. The goal is to locate the claim, calibrate its evidence status, and name the next responsible test.
+                    </div>
+                    <div class="worksheet-grid">
+                        <div class="worksheet-field"><label for="auditClaim">1. Exact claim</label><textarea class="student-note" id="auditClaim" data-note-key="auditClaim" oninput="saveStudentNote(this)" placeholder="Example: Bioelectric patterning shows that coordination can be distributed."></textarea><span class="note-status" id="auditClaimStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditLevel">2. Level of organization</label><textarea class="student-note" id="auditLevel" data-note-key="auditLevel" oninput="saveStudentNote(this)" placeholder="Cellular, neural, personal, social, institutional, cultural, formal model, etc."></textarea><span class="note-status" id="auditLevelStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditStatus">3. Evidence status</label><textarea class="student-note" id="auditStatus" data-note-key="auditStatus" oninput="saveStudentNote(this)" placeholder="Strong evidence, context-dependent, theoretical integration, analogy, formal model, needs pilot data."></textarea><span class="note-status" id="auditStatusStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditSupport">4. What supports it?</label><textarea class="student-note" id="auditSupport" data-note-key="auditSupport" oninput="saveStudentNote(this)" placeholder="What evidence, example, study, model, or classroom observation supports the claim?"></textarea><span class="note-status" id="auditSupportStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditLimits">5. What does it not show?</label><textarea class="student-note" id="auditLimits" data-note-key="auditLimits" oninput="saveStudentNote(this)" placeholder="Where does the claim overreach? Where does the analogy break down?"></textarea><span class="note-status" id="auditLimitsStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditRevision">6. Calibrated revision</label><textarea class="student-note" id="auditRevision" data-note-key="auditRevision" oninput="saveStudentNote(this)" placeholder="Rewrite the claim in careful, student-safe, evidence-calibrated language."></textarea><span class="note-status" id="auditRevisionStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="auditNextTest">7. Next test or observation</label><textarea class="student-note" id="auditNextTest" data-note-key="auditNextTest" oninput="saveStudentNote(this)" placeholder="What would strengthen, weaken, simulate, measure, or falsify the claim?"></textarea><span class="note-status" id="auditNextTestStatus">Autosaves locally in this browser.</span></div>
+                    </div>
+                    <div class="mini-action-row"><button class="btn btn-secondary" onclick="copyAuditPrompt()">Copy Evidence-Audit Prompt</button><span class="copy-status" id="auditCopyStatus">Copies a structured prompt using your worksheet entries.</span></div>
+
+                    <h3>Activity: Calibrate a Claim</h3>
+                    <div class="interactive-quiz"><p>Choose one claim from the Lab. What exactly is the claim? What level of organization does it describe? What evidence supports it? Is that evidence direct, context-dependent, theoretical, analogical, formal, or still missing? Rewrite the claim in a more careful form.</p><div class="note-box"><label for="evidenceNote">Your calibrated claim draft</label><textarea class="student-note" id="evidenceNote" data-note-key="evidenceNote" oninput="saveStudentNote(this)" placeholder="Type your response here. It will save in this browser."></textarea><span class="note-status" id="evidenceNoteStatus">Autosaves locally in this browser.</span></div></div>
+                    <button class="btn" onclick="markSectionComplete('evidence')">Mark Section Complete</button>
+                </div>
+            </section>
+    
+            <!-- Practice & Apply -->
+            <section id="practice" class="section">
+                <div class="card">
+                    <h2>Practice & Apply: From Evidence Calibration to Ethical Action</h2>
+                    <div class="evidence-badges"><span class="evidence-badge badge-theory">Theoretical Integration</span><span class="evidence-badge badge-pilot">Needs Pilot Data</span></div>
+                    <div class="highlight-box success"><strong>The Goal:</strong> Use the Capability Lab as a disciplined practice for mapping ethical situations, not as a claim that everything has already been proven.</div>
+
+                    <h3>Practice Sequence</h3>
+                    <ol style="margin-left: 2rem;">
+                        <li>Identify an ethical problem or coordination challenge.</li>
+                        <li>Map its biological, personal, social, ethical, and action layers.</li>
+                        <li>Distinguish evidence from interpretation, analogy, formal model, and hypothesis.</li>
+                        <li>Identify where agency is supported or blocked.</li>
+                        <li>Generate options for repair, refusal, redesign, or coordinated action.</li>
+                        <li>State what would need to be tested before making a broader claim.</li>
+                    </ol>
+
+                    <div class="highlight-box info">
+                        <h4>One-Sentence Practice Rule</h4>
+                        <p>Before making a broad claim, identify the level, the evidence type, the analogy or model being used, and the next test that would strengthen or weaken the claim.</p>
+                    </div>
+
+                    <h3>Layered Emergence Mapper</h3>
+                    <div class="research-template">
+                        <h4>From Micro-Rules to Macro-Capabilities</h4>
+                        <p>Use this mapper to translate the Lab’s research-program voice into a concrete classroom or design question. It works for Schelling-style simulations, cellular coordination examples, personal identity patterns, classroom norms, and institutional repair problems.</p>
+                    </div>
+                    <div class="worksheet-grid">
+                        <div class="worksheet-field"><label for="emergenceCase">1. Case or system</label><textarea class="student-note" id="emergenceCase" data-note-key="emergenceCase" oninput="saveStudentNote(this)" placeholder="Example: classroom discussion norms, workplace stress, Schelling-style segregation, PRF development, etc."></textarea><span class="note-status" id="emergenceCaseStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergenceUnits">2. Local units</label><textarea class="student-note" id="emergenceUnits" data-note-key="emergenceUnits" oninput="saveStudentNote(this)" placeholder="Who or what are the interacting units? Cells, students, agents, values, habits, roles?"></textarea><span class="note-status" id="emergenceUnitsStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergenceRules">3. Local rules or interactions</label><textarea class="student-note" id="emergenceRules" data-note-key="emergenceRules" oninput="saveStudentNote(this)" placeholder="What local behaviors, signals, incentives, habits, or constraints drive the system?"></textarea><span class="note-status" id="emergenceRulesStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergencePattern">4. Higher-level pattern</label><textarea class="student-note" id="emergencePattern" data-note-key="emergencePattern" oninput="saveStudentNote(this)" placeholder="What larger pattern or capability emerges from the local interactions?"></textarea><span class="note-status" id="emergencePatternStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergenceDownward">5. Downward constraint or feedback</label><textarea class="student-note" id="emergenceDownward" data-note-key="emergenceDownward" oninput="saveStudentNote(this)" placeholder="How does the emergent pattern shape the units that produced it?"></textarea><span class="note-status" id="emergenceDownwardStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergenceTest">6. Measurement or test</label><textarea class="student-note" id="emergenceTest" data-note-key="emergenceTest" oninput="saveStudentNote(this)" placeholder="What evidence, simulation, observation, or pilot would test this model?"></textarea><span class="note-status" id="emergenceTestStatus">Autosaves locally in this browser.</span></div>
+                        <div class="worksheet-field"><label for="emergenceEthicalMove">7. Ethical move</label><textarea class="student-note" id="emergenceEthicalMove" data-note-key="emergenceEthicalMove" oninput="saveStudentNote(this)" placeholder="What repair, refusal, redesign, or coordination move does the map suggest?"></textarea><span class="note-status" id="emergenceEthicalMoveStatus">Autosaves locally in this browser.</span></div>
+                    </div>
+                    <div class="mini-action-row"><button class="btn btn-secondary" onclick="copyEmergencePrompt()">Copy Layered-Emergence Prompt</button><span class="copy-status" id="emergenceCopyStatus">Copies a structured prompt using your mapper entries.</span></div>
+
+                    <div class="portfolio-callout">
+                        <h4>Portfolio Tip</h4>
+                        <p>The Step 3 export now includes your section notes, evidence audit, layered-emergence map, and ATCF reflection values. This can become a Canvas submission, a discussion-board starter, or a private study portfolio.</p>
+                    </div>
+
+                    <h3>ATCF Reflection Tool</h3>
+                    <div class="highlight-box warning"><strong>Important:</strong> This is a reflective classroom tool, not a clinical instrument or validated psychological scale.</div>
+                    <div class="interactive-quiz">
+                        <p>Rate each component from 1–10 as a prompt for reflection on temporal coherence.</p>
+                        <div style="margin: 1rem 0;"><label><strong>Historical Continuity</strong> (sense of self across time):</label><br><input type="range" min="1" max="10" value="7" id="hc" style="width: 100%;" oninput="updateATCFSliders()"><span id="hcValue">7</span></div>
+                        <div style="margin: 1rem 0;"><label><strong>Present Integration</strong> (attention, presence, situational awareness):</label><br><input type="range" min="1" max="10" value="7" id="pi" style="width: 100%;" oninput="updateATCFSliders()"><span id="piValue">7</span></div>
+                        <div style="margin: 1rem 0;"><label><strong>Prospective Coherence</strong> (future imagination, goals, hope):</label><br><input type="range" min="1" max="10" value="7" id="pc" style="width: 100%;" oninput="updateATCFSliders()"><span id="pcValue">7</span></div>
+                        <div style="margin: 1rem 0;"><label><strong>Meta-Constructor Capacity</strong> (ability to learn, adapt, and revise):</label><br><input type="range" min="1" max="10" value="7" id="mcc" style="width: 100%;" oninput="updateATCFSliders()"><span id="mccValue">7</span></div>
+                        <button class="btn-secondary btn" onclick="calculateATCF()">Generate Reflection Prompts</button>
+                        <div id="atcfResult" style="margin-top: 2rem; display: none;"><h4>Your Reflection Index:</h4><div style="font-size: 3rem; color: var(--secondary-color); margin: 1rem 0;" id="totalATCF"></div><div id="atcfRecommendations"></div></div>
+                    </div>
+
+                    <h3>Final Reflection</h3>
+                    <div class="highlight-box success">
+                        <p style="font-size: 1.15rem;">The Capability Lab does not ask you to believe a finished system. It asks you to become more capable of examining, coordinating, repairing, and redesigning the systems in which ethical life takes place.</p>
+                        <p style="font-size: 1.15rem; margin-top: 1rem;">The strongest ethical thinkers are not those who claim certainty too quickly. They are those who know how to build, test, revise, and responsibly use powerful maps.</p>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 3rem;"><button class="btn" onclick="exportStudentNotes()">Export My Lab Portfolio</button><button class="btn" onclick="downloadCertificate()">Download Completion Certificate</button><button class="btn btn-secondary" onclick="resetProgress()">Start Over</button></div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 The Capability Lab: Agency, Coordination, and Layered Emergence</p>
+            <p style="margin-top: 0.5rem;">A learning environment for evidence calibration, layered emergence, ethical reflection, and responsible interdisciplinary inquiry.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">Step 3 classroom-workshop build: evidence audit workflow, layered-emergence mapper, copyable research prompts, expanded portfolio export, and calibrated pilot-readiness tools.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Progress tracking
+        let completedSections = new Set();
+        const totalSections = 6; // part1, part2, part3, part3-5, part4, evidence
+    
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (!targetSection) return;
+            targetSection.classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + sectionId + "'")) {
+                    btn.classList.add('active');
+                }
+            });
+    
+            window.scrollTo(0, 0);
+        }
+    
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('span:last-child');
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                arrow.textContent = '▼';
+            } else {
+                content.classList.add('active');
+                arrow.textContent = '▲';
+            }
+        }
+    
+        function checkAnswer(option, isCorrect) {
+            const options = option.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                const feedback = opt.querySelector('strong');
+                if (feedback) feedback.remove();
+            });
+    
+            if (isCorrect) {
+                option.classList.add('correct');
+                option.innerHTML += ' <strong>✓ Correct!</strong>';
+            } else {
+                option.classList.add('incorrect');
+                option.innerHTML += ' <strong>✗ Try again</strong>';
+            }
+        }
+    
+        function markSectionComplete(sectionId) {
+            completedSections.add(sectionId);
+            updateProgress();
+            alert('Section marked complete! Great work!');
+        }
+    
+        function updateProgress() {
+            const progress = (completedSections.size / totalSections) * 100;
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = progress + '%';
+            progressFill.textContent = Math.round(progress) + '%';
+    
+            localStorage.setItem('completedSections', JSON.stringify([...completedSections]));
+        }
+    
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('completedSections');
+            if (saved) {
+                completedSections = new Set(JSON.parse(saved));
+                updateProgress();
+            }
+            loadStudentNotes();
+            updateATCFSliders();
+        });
+    
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset your progress?')) {
+                completedSections.clear();
+                localStorage.removeItem('completedSections');
+                updateProgress();
+                showSection('overview');
+            }
+        }
+    
+        function updateATCFSliders() {
+            document.getElementById('hcValue').textContent = document.getElementById('hc').value;
+            document.getElementById('piValue').textContent = document.getElementById('pi').value;
+            document.getElementById('pcValue').textContent = document.getElementById('pc').value;
+            document.getElementById('mccValue').textContent = document.getElementById('mcc').value;
+        }
+    
+        function calculateATCF() {
+            const hc = parseInt(document.getElementById('hc').value);
+            const pi = parseInt(document.getElementById('pi').value);
+            const pc = parseInt(document.getElementById('pc').value);
+            const mcc = parseInt(document.getElementById('mcc').value);
+    
+            const total = (hc + pi + pc + mcc) / 40;
+    
+            const resultDiv = document.getElementById('atcfResult');
+            resultDiv.style.display = 'block';
+            document.getElementById('totalATCF').textContent = total.toFixed(2);
+    
+            let recommendations = '<h4>Reflection Prompts:</h4><ul style="text-align: left;">';
+            const components = [
+                { name: 'Historical Continuity', value: hc, focus: 'What parts of your story still feel connected, and what parts feel unresolved or hard to integrate?' },
+                { name: 'Present Integration', value: pi, focus: 'What helps you notice the present situation clearly before reacting?' },
+                { name: 'Prospective Coherence', value: pc, focus: 'What future possibilities feel visible, realistic, or worth moving toward?' },
+                { name: 'Meta-Constructor Capacity', value: mcc, focus: 'What habits, supports, or relationships help you revise yourself without losing your identity?' }
+            ];
+    
+            components.sort((a, b) => a.value - b.value);
+            recommendations += `<li><strong>First reflection focus:</strong> ${components[0].name}. ${components[0].focus}</li>`;
+            recommendations += `<li><strong>Second reflection focus:</strong> ${components[1].name}. ${components[1].focus}</li>`;
+            recommendations += '</ul>';
+            recommendations += '<div class="highlight-box info" style="margin-top: 1rem;">';
+            recommendations += '<h4>Evidence Calibration Note</h4>';
+            recommendations += '<p>This index is a classroom reflection prompt, not a diagnosis, prediction, or validated psychological measurement. Use it to identify questions for journaling, SAGE analysis, or conversation with appropriate support people.</p>';
+            recommendations += '</div>';
+    
+            document.getElementById('atcfRecommendations').innerHTML = recommendations;
+            resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    
+
+        function saveStudentNote(textarea) {
+            const key = textarea.getAttribute('data-note-key');
+            if (!key) return;
+            localStorage.setItem('capabilityLabNote_' + key, textarea.value);
+            const status = document.getElementById(key + 'Status');
+            if (status) status.textContent = 'Saved locally at ' + new Date().toLocaleTimeString();
+        }
+
+        function loadStudentNotes() {
+            document.querySelectorAll('.student-note').forEach(textarea => {
+                const key = textarea.getAttribute('data-note-key');
+                if (!key) return;
+                const saved = localStorage.getItem('capabilityLabNote_' + key);
+                if (saved !== null) textarea.value = saved;
+            });
+        }
+
+        function exportStudentNotes() {
+            const labels = {
+                part1Note: 'Part 1 — Coordination or Domination',
+                part2Note: 'Part 2 — Traditions as Ethical Training Maps',
+                part3Note: 'Part 3 — Stress, Agency, and Ethical Capacity',
+                part35Note: 'Part 3.5 — Evidence or Analogy',
+                part4Note: 'Part 4 — Multi-Level Agency Map',
+                evidenceNote: 'Evidence Base — Calibrated Claim Draft',
+                auditClaim: 'Evidence Audit — Exact Claim',
+                auditLevel: 'Evidence Audit — Level of Organization',
+                auditStatus: 'Evidence Audit — Evidence Status',
+                auditSupport: 'Evidence Audit — What Supports It',
+                auditLimits: 'Evidence Audit — What It Does Not Show',
+                auditRevision: 'Evidence Audit — Calibrated Revision',
+                auditNextTest: 'Evidence Audit — Next Test or Observation',
+                emergenceCase: 'Layered Emergence Map — Case or System',
+                emergenceUnits: 'Layered Emergence Map — Local Units',
+                emergenceRules: 'Layered Emergence Map — Local Rules or Interactions',
+                emergencePattern: 'Layered Emergence Map — Higher-Level Pattern',
+                emergenceDownward: 'Layered Emergence Map — Downward Constraint or Feedback',
+                emergenceTest: 'Layered Emergence Map — Measurement or Test',
+                emergenceEthicalMove: 'Layered Emergence Map — Ethical Move'
+            };
+            let content = 'THE CAPABILITY LAB — STUDENT PORTFOLIO\n';
+            content += 'Agency, Coordination, and Layered Emergence\n';
+            content += 'Exported: ' + new Date().toLocaleString() + '\n\n';
+            Object.keys(labels).forEach(key => {
+                const value = localStorage.getItem('capabilityLabNote_' + key) || '';
+                content += '------------------------------------------------------------\n';
+                content += labels[key] + '\n';
+                content += '------------------------------------------------------------\n';
+                content += (value.trim() || '[No notes entered]') + '\n\n';
+            });
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'capability-lab-student-portfolio.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function getSavedValue(key) {
+            return (localStorage.getItem('capabilityLabNote_' + key) || '').trim();
+        }
+
+        function copyTextWithFallback(text, statusId) {
+            const updateStatus = (message) => {
+                const status = document.getElementById(statusId);
+                if (status) status.textContent = message;
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => updateStatus('Copied to clipboard.')).catch(() => fallbackCopy(text, statusId));
+            } else {
+                fallbackCopy(text, statusId);
+            }
+        }
+
+        function fallbackCopy(text, statusId) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'absolute';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                const status = document.getElementById(statusId);
+                if (status) status.textContent = 'Copied to clipboard.';
+            } catch (err) {
+                const status = document.getElementById(statusId);
+                if (status) status.textContent = 'Copy failed. You can still select and copy your worksheet text manually.';
+            }
+            document.body.removeChild(temp);
+        }
+
+        function copyAuditPrompt() {
+            const text = `Please help me calibrate the following Capability Lab claim.
+
+Exact claim:
+${getSavedValue('auditClaim') || '[not entered]'}
+
+Level of organization:
+${getSavedValue('auditLevel') || '[not entered]'}
+
+Current evidence status:
+${getSavedValue('auditStatus') || '[not entered]'}
+
+What supports it:
+${getSavedValue('auditSupport') || '[not entered]'}
+
+What it does not show / limits:
+${getSavedValue('auditLimits') || '[not entered]'}
+
+My calibrated revision:
+${getSavedValue('auditRevision') || '[not entered]'}
+
+Next test or observation:
+${getSavedValue('auditNextTest') || '[not entered]'}
+
+Please respond by identifying overclaims, missing evidence, stronger wording, and possible future tests. Keep the evidence categories separate: strong evidence, context-dependent evidence, theoretical integration, analogy, formal model, and needs pilot data.`;
+            copyTextWithFallback(text, 'auditCopyStatus');
+        }
+
+        function copyEmergencePrompt() {
+            const text = `Please help me analyze this as a layered-emergence model in the Capability Lab.
+
+Case or system:
+${getSavedValue('emergenceCase') || '[not entered]'}
+
+Local units:
+${getSavedValue('emergenceUnits') || '[not entered]'}
+
+Local rules or interactions:
+${getSavedValue('emergenceRules') || '[not entered]'}
+
+Higher-level pattern or capability:
+${getSavedValue('emergencePattern') || '[not entered]'}
+
+Downward constraint or feedback:
+${getSavedValue('emergenceDownward') || '[not entered]'}
+
+Measurement, simulation, or test:
+${getSavedValue('emergenceTest') || '[not entered]'}
+
+Ethical move:
+${getSavedValue('emergenceEthicalMove') || '[not entered]'}
+
+Please help me clarify the model, identify where the causal layering is plausible or weak, distinguish evidence from analogy, and suggest a practical repair, refusal, redesign, or coordination step.`;
+            copyTextWithFallback(text, 'emergenceCopyStatus');
+        }
+
+        function downloadCertificate() {
+            if (completedSections.size < totalSections) {
+                alert('Please complete Parts 1-4 and the Evidence Base before downloading your certificate.');
+                return;
+            }
+    
+            const date = new Date().toLocaleDateString();
+            const certificateContent = `
+
+═══════════════════════════════════════════════════════════
+    CERTIFICATE OF COMPLETION
+═══════════════════════════════════════════════════════════
+
+This certifies that the bearer has completed
+THE CAPABILITY LAB
+Agency, Coordination, and Layered Emergence
+
+A Learning Program in Agency, Coordination, Evidence Calibration,
+and Layered Emergence.
+
+Completed sections:
+✓ Ancient Coordination, Freedom, and Social Experimentation
+✓ Traditions of Ethical Training and Reflective Agency
+✓ Biological Conditions of Agency
+✓ Cellular Evidence and Cross-Scale Analogy
+✓ Integrated Synthesis: Layered Emergence and Ethical Coordination
+✓ Evidence Base: What We Know, What We Infer, and What We Still Need to Test
+
+Completed on: ${date}
+
+Core skills practiced:
+• distinguishing evidence, interpretation, analogy, formal model, and hypothesis;
+• mapping agency across biological, personal, social, and ethical layers;
+• identifying how lower-level interactions can generate higher-level patterns;
+• evaluating when coordination supports agency and when it becomes domination;
+• using ethical reflection to imagine repair, refusal, and redesign;
+• completing an evidence audit and layered-emergence map for future inquiry.
+
+The goal is not simply to believe a framework.
+The goal is to become more capable of examining, coordinating,
+repairing, and redesigning the systems in which ethical life takes place.
+
+═══════════════════════════════════════════════════════════
+Evidence-Calibrated Learning Program
+═══════════════════════════════════════════════════════════
+            `;
+
+            const blob = new Blob([certificateContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'capability-lab-certificate.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+
+</body>
+</html>
