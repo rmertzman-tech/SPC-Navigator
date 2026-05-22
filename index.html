@@ -7632,13 +7632,7 @@ Return only valid JSON with this shape:
     const activeId = getActiveCoachId();
     const active = getCoachDef(activeId);
     if(catalog){
-      catalog.innerHTML = COACH_DEFS.map(c => '<div class="coach-card ' + (c.id === active.id ? 'active' : '') + '" onclick="openCoach(\'' + c.id + '\')">'
-        + '<div class="coach-title">' + escapeHtml(c.title) + '</div>'
-        + '<div class="coach-purpose">' + escapeHtml(c.purpose) + '</div>'
-        + '<div class="coach-tag-row"><span class="coach-tag">' + escapeHtml(c.category) + '</span>' + (c.tags || []).map(t => '<span class="coach-tag">' + escapeHtml(t) + '</span>').join('') + '</div>'
-        + '<div class="coach-card-actions"><button class="btn small primary" type="button" onclick="event.stopPropagation(); openCoach(\'' + c.id + '\')">Open</button><button class="btn small ghost" type="button" onclick="event.stopPropagation(); showCoachPrimer(\'' + c.id + '\')">Learn</button><button class="btn small ghost" type="button" onclick="event.stopPropagation(); useCoachExample(\'' + c.id + '\')">Example</button></div>'
-        + '<div class="coach-mini-help">Open selects the coach. Learn explains the ideas. Example fills the prompt box with a starter case.</div>'
-        + '</div>').join('');
+      renderEbbCatalog(); // EBB Coach Workspace v2 — handles full catalog rendering
     }
     if(detail){
       detail.innerHTML = '<div class="guided-card"><div class="guided-card-title">' + escapeHtml(active.title) + '</div>'
@@ -8835,29 +8829,7 @@ STUDENT RESPONSE:
   }
   window.routeToTwinFromCoach = routeToTwinFromCoach;
 
-  // ── Hook EBB catalog into page initialization ────────────────────────────
-  // Use DOMContentLoaded so we capture the real original renderCoaches
-  // without hoisting interference, then call EBB catalog whenever coaches tab opens.
-  document.addEventListener('DOMContentLoaded', function() {
-    // Render EBB catalog on load
-    renderEbbCatalog();
-    // Patch renderCoaches safely — after all declarations have run
-    const _orig = window.renderCoaches;
-    window.renderCoaches = function() {
-      if(typeof _orig === 'function') _orig.call(this);
-      renderEbbCatalog();
-    };
-    // Also hook into tab click for coach tab
-    document.querySelectorAll('[data-tab="coaches"], [onclick*="coaches"], [onclick*="coach"]').forEach(el => {
-      el.addEventListener('click', function() { setTimeout(renderEbbCatalog, 80); });
-    });
-    // Recovery check
-    const saved = ebbLoadSession();
-    if(saved && saved.coachId && saved.state !== 'saved') {
-      const def = COACH_DEFS.find(c => c.id === saved.coachId);
-      if(def) setTimeout(() => showEbbRecoveryBanner(saved, def), 200);
-    }
-  });
+  // EBB catalog rendering is handled inside renderCoaches() directly.
 
 
 </script>
