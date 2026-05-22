@@ -8792,7 +8792,9 @@ Return only valid JSON with this shape:
       savedAt: new Date().toISOString()
     };
 
-    saveCoachNote(note);
+    const existingNotes = getCoachNotes();
+    existingNotes.push(note);
+    setCoachNotes(existingNotes);
     ebbSession.state = 'saved';
     ebbSaveSession();
 
