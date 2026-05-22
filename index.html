@@ -8166,21 +8166,21 @@ Return only valid JSON with this shape:
   }
 
   // ── Catalog rendering ────────────────────────────────────────────────────
-  const EBB_CAT_ORDER = [
-    { key:'EBB Chapter Coach', label:'EBB Chapter Coaches', cls:'ebb' },
-    { key:'Core Coach',        label:'Core Coaches',        cls:'' },
-    { key:'Applications Coach',label:'Applications Coaches',cls:'' },
-    { key:'Template Coach',    label:'Templates',           cls:'' },
-  ];
-  const WEEK_MAP = {
-    'ebb-prf-interpretation':'Week 2',
-    'ebb-field-scan-analysis':'Week 3+',
-    'ebb-boisjoly-witness':'Week 4',
-    'ebb-maathai-liberation':'Week 5',
-    'ebb-hanna-care':'Week 6',
-  };
 
   function renderEbbCatalog() {
+    const EBB_CAT_ORDER = [
+      { key:'EBB Chapter Coach', label:'EBB Chapter Coaches', cls:'ebb' },
+      { key:'Core Coach',        label:'Core Coaches',        cls:'' },
+      { key:'Applications Coach',label:'Applications Coaches',cls:'' },
+      { key:'Template Coach',    label:'Templates',           cls:'' },
+    ];
+    const WEEK_MAP = {
+      'ebb-prf-interpretation':'Week 2',
+      'ebb-field-scan-analysis':'Week 3+',
+      'ebb-boisjoly-witness':'Week 4',
+      'ebb-maathai-liberation':'Week 5',
+      'ebb-hanna-care':'Week 6',
+    };
     const catalog = document.getElementById('coach-catalog');
     if(!catalog) return;
     let html = '';
