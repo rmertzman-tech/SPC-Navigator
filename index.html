@@ -7276,7 +7276,6 @@ Return only valid JSON with this shape:
       ]
     },
     {
-    {
       id:'ebb-hanna-care', title:'Hanna Care Ethics Coach', category:'EBB Chapter Coach',
       purpose:'Apply care ethics to the Hanna/Iraq case. Practice the caring-for vs. caring-about distinction, name what coercion was targeting structurally, analyze what relational obligation survives under pressure, and bridge to your own specific caring obligations.',
       tags:['Hanna','care ethics','relational obligation','Chapter 5','Week 6'],
@@ -7291,7 +7290,8 @@ Return only valid JSON with this shape:
         'Your own caring-for obligations: Name one specific caring-for obligation you currently carry — a specific person, in a specific relationship, with a specific dependence on your presence or attention. What does that obligation require of you specifically? Where does your current institutional field make fulfilling it more difficult than it should be, and what specifically creates that difficulty? Private — name it here, in your Coach Note, for yourself. You do not need to share this in your Reflection Export.'
       ]
     },
-    id:'ebb-chapter-template', title:'EBB Chapter Coach Template', category:'Template Coach',
+    {
+      id:'ebb-chapter-template', title:'EBB Chapter Coach Template', category:'Template Coach',
       purpose:'A placeholder template for future EBB chapter-specific coaches.',
       tags:['template','chapter','future'],
       outputs:'Chapter concept map, key terms, self-reflection, case application, Field Scan suggestion, Move Card suggestion.',
@@ -8125,7 +8125,7 @@ Return only valid JSON with this shape:
   registerNavigatorPwa();
   renderAll();
   applyHashWorkspace();
-})();
+
 
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -8199,8 +8199,8 @@ Return only valid JSON with this shape:
           + '<div class="coach-title">' + escapeHtml(c.title) + '</div>'
           + '<div class="coach-purpose">' + escapeHtml((c.purpose||'').substring(0,120)) + (c.purpose && c.purpose.length > 120 ? '…' : '') + '</div>'
           + '<div class="coach-card-actions">'
-          + '<button class="btn small primary" type="button" onclick="openEbbSession('' + c.id + '')">Open Session</button>'
-          + '<button class="btn small ghost" type="button" onclick="togglePreviewSteps('' + c.id + '')">Preview Steps</button>'
+          + '<button class="btn small primary" type="button" onclick="openEbbSession(\'' + c.id + '\')">Open Session</button>'
+          + '<button class="btn small ghost" type="button" onclick="togglePreviewSteps(\'' + c.id + '\')">Preview Steps</button>'
           + '</div>'
           + '<div id="preview-' + c.id + '" class="coach-preview-steps" style="display:none;"></div>'
           + '</div>';
@@ -8245,7 +8245,7 @@ Return only valid JSON with this shape:
       + '<div style="color:var(--muted);font-size:.9rem;margin-bottom:10px;">' + escapeHtml(def.title) + ' — Step ' + (saved.currentStepIndex + 1) + ' of ' + def.steps.length + '</div>'
       + '<div style="display:flex;gap:8px;">'
       + '<button class="btn small primary" type="button" onclick="resumeEbbSession()">Resume Session</button>'
-      + '<button class="btn small ghost" type="button" onclick="ebbClearSession();document.getElementById('ebb-recovery-banner').remove();">Start Fresh</button>'
+      + '<button class="btn small ghost" type="button" onclick="ebbClearSession();document.getElementById("ebb-recovery-banner").remove();">Start Fresh</button>'
       + '</div>';
     catalog.insertBefore(banner, catalog.firstChild);
   }
@@ -8472,9 +8472,9 @@ Return only valid JSON with this shape:
       ],
       'ebb-boisjoly-witness': [
         'Situational seeing gathers morally relevant facts before any analysis begins.',
-        'Structural seeing asks what the architecture made probable — the SAGE framework's distinctive move.',
+        'Structural seeing asks what the architecture made probable — the SAGE framework\'s distinctive move.',
         'Virtue ethics applied to character and conditions reveals what the situation demanded.',
-        'The moralism/moral world design distinction is the chapter's central contribution.',
+        'The moralism/moral world design distinction is the chapter\'s central contribution.',
         'The simulation made the systemic failure visible experimentally — this step names what it showed.',
         'Meta-awareness: noticing whether you are analyzing or performing is itself an ethical act.',
         'The private bridge connects the historical case to your own institutional life.'
@@ -8487,7 +8487,7 @@ Return only valid JSON with this shape:
         'A secondary framework reveals what social contract analysis alone underweights.',
         'Your Field Scan read as opportunity as well as constraint — the constructive turn.',
         'Inspiration vs. analysis: the Maathai trap is admiring rather than identifying structure.',
-        'The liberation/construction question asks what you could build — the course's forward-facing move.'
+        'The liberation/construction question asks what you could build — the course\'s forward-facing move.'
       ],
       'ebb-hanna-care': [
         'Caring-for is specific, relational, obligating. Caring-about is general. This step names the difference.',
@@ -8596,11 +8596,7 @@ Return only valid JSON with this shape:
 
     const systemPrompt = 'You are a thoughtful coach assistant in an ethics course. A student has completed one step of a structured coaching session. Respond in 2-4 sentences doing ONE of these: (1) If the response is specific and honest — acknowledge what was demonstrated and briefly note what the next step builds on. (2) If vague or generic — ask ONE concrete question naming what is missing. (3) If performed rather than genuine — gently note the gap and invite honesty. Never moralize. Never summarize what they wrote. Be warm and precise. Under 80 words.';
 
-    const userMsg = 'STEP PROMPT:
-' + step + '
-
-STUDENT RESPONSE:
-' + response;
+    const userMsg = 'STEP PROMPT:\n' + step + '\n\nSTUDENT RESPONSE:\n' + response;
 
     try {
       const res = await fetch(EBB_BACKEND, {
@@ -8832,6 +8828,9 @@ STUDENT RESPONSE:
   // EBB catalog rendering is handled inside renderCoaches() directly.
 
 
+
+
+})();
 </script>
 </body>
 </html>
