@@ -692,88 +692,232 @@
     .experience-strip strong { color: var(--text); }
     @media (max-width: 760px) { .language-card-grid { grid-template-columns: 1fr; } }
 
-    .coach-catalog { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .coach-card {
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.045);
-      border-radius: 16px;
-      padding: 13px;
-      cursor: pointer;
-      transition: .15s ease;
+    
+    /* ── EBB Coach Workspace v2 ─────────────────────────────────────────── */
+    /* Catalog */
+    .coach-catalog { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .coach-category-header {
+      grid-column:1/-1; font:700 .68rem/1 var(--mono); text-transform:uppercase;
+      letter-spacing:.1em; color:var(--dim); border-bottom:1px solid var(--line);
+      padding-bottom:6px; margin-top:6px;
     }
-    .coach-card:hover { transform: translateY(-1px); border-color: rgba(201,168,76,.38); background: rgba(201,168,76,.07); }
-    .coach-card.active { border-color: rgba(201,168,76,.65); background: rgba(201,168,76,.12); }
-    .coach-title { font-weight: 900; color: var(--text); margin-bottom: 4px; }
-    .coach-purpose { color: var(--muted); font-size: .9rem; }
-    .coach-tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-    .coach-tag { border:1px solid rgba(255,255,255,.08); border-radius:999px; padding:4px 7px; color:var(--dim); font:700 .66rem/1 var(--mono); text-transform:uppercase; letter-spacing:.06em; }
-    .coach-card-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
-    .coach-mini-help { margin-top:10px; color:var(--dim); font-size:.82rem; line-height:1.35; }
+    .coach-category-header.ebb { color:var(--teal); border-color:rgba(13,94,87,.4); }
+    .coach-card {
+      border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.045);
+      border-radius:16px; padding:13px; cursor:pointer; transition:.15s ease;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .coach-card:hover { border-color:rgba(13,94,87,.5); background:rgba(13,94,87,.08); transform:translateY(-1px); }
+    .coach-card.ebb-coach { border-color:rgba(13,94,87,.25); }
+    .coach-card.ebb-coach:hover { border-color:rgba(13,94,87,.6); }
+    .coach-card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+    .coach-title { font-weight:900; color:var(--text); font-size:.95rem; }
+    .coach-week-badge {
+      flex-shrink:0; font:700 .6rem/1 var(--mono); text-transform:uppercase;
+      letter-spacing:.07em; background:rgba(13,94,87,.25); color:#5fc9bf;
+      border:1px solid rgba(13,94,87,.4); border-radius:999px; padding:3px 7px; white-space:nowrap;
+    }
+    .coach-cat-badge {
+      display:inline-block; font:700 .6rem/1 var(--mono); text-transform:uppercase;
+      letter-spacing:.07em; border-radius:999px; padding:3px 7px;
+      background:rgba(255,255,255,.07); color:var(--dim); border:1px solid rgba(255,255,255,.08);
+    }
+    .coach-cat-badge.ebb { background:rgba(13,94,87,.2); color:#5fc9bf; border-color:rgba(13,94,87,.35); }
+    .coach-purpose { color:var(--muted); font-size:.87rem; line-height:1.45; flex:1; }
+    .coach-card-actions { display:flex; gap:7px; margin-top:6px; }
+    .coach-preview-steps {
+      grid-column:1/-1; border:1px solid rgba(13,94,87,.25); background:rgba(13,94,87,.06);
+      border-radius:14px; padding:12px 14px; margin-top:4px; animation:fadeIn .15s ease;
+    }
+    .coach-preview-step { color:var(--muted); font-size:.87rem; padding:5px 0;
+      border-bottom:1px solid rgba(255,255,255,.06); }
+    .coach-preview-step:last-child { border-bottom:none; }
+    .coach-preview-step strong { color:var(--dim); margin-right:6px; }
+
+    /* ── Session Workspace ────────────────────────────────────────────────── */
+    .ebb-session-workspace {
+      display:none; flex-direction:column; border-radius:18px; overflow:hidden;
+      border:1px solid rgba(13,94,87,.35); background:var(--surface);
+      min-height:520px;
+    }
+    .ebb-session-workspace.active { display:flex; }
+
+    /* Header */
+    .ebb-session-header {
+      display:flex; align-items:center; gap:12px; padding:12px 16px;
+      background:var(--panel); border-bottom:2px solid rgba(13,94,87,.5);
+      flex-shrink:0;
+    }
+    .ebb-session-title { font-weight:900; color:var(--teal); font-size:.95rem; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .ebb-step-counter { font:700 .72rem/1 var(--mono); color:var(--dim); white-space:nowrap; }
+    .ebb-session-exit { background:none; border:1px solid var(--line); border-radius:999px;
+      color:var(--dim); cursor:pointer; padding:4px 10px; font-size:.8rem;
+      transition:.15s; flex-shrink:0; }
+    .ebb-session-exit:hover { border-color:rgba(204,107,95,.5); color:#ff9b8a; }
+
+    /* Progress bar */
+    .ebb-progress-rail { height:3px; background:var(--line); position:relative; overflow:hidden; }
+    .ebb-progress-fill { height:100%; background:var(--teal); transition:width .4s ease; }
+
+    /* Step dots */
+    .ebb-step-dots { display:flex; justify-content:center; gap:6px; padding:8px 16px 4px; background:var(--panel); flex-wrap:wrap; }
+    .ebb-dot {
+      width:22px; height:22px; border-radius:50%; border:2px solid var(--line);
+      background:transparent; display:flex; align-items:center; justify-content:center;
+      font:700 .6rem/1 var(--mono); color:var(--dim); cursor:pointer; transition:.15s;
+    }
+    .ebb-dot.done { background:var(--teal); border-color:var(--teal); color:#fff; }
+    .ebb-dot.current { border-color:var(--teal); color:var(--teal); animation:dotPulse 1.4s ease-in-out infinite; }
+    @keyframes dotPulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+
+    /* Main area */
+    .ebb-session-main { flex:1; padding:18px 18px 0; overflow-y:auto; display:flex; flex-direction:column; gap:14px; }
+
+    /* Previous responses accordion */
+    .ebb-prev-accordion { border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .ebb-prev-toggle {
+      width:100%; background:rgba(255,255,255,.04); border:none; padding:10px 14px;
+      color:var(--muted); font-size:.85rem; cursor:pointer; text-align:left;
+      display:flex; justify-content:space-between; align-items:center;
+    }
+    .ebb-prev-toggle:hover { background:rgba(255,255,255,.07); }
+    .ebb-prev-list { display:none; }
+    .ebb-prev-list.open { display:block; }
+    .ebb-prev-item { padding:10px 14px; border-top:1px solid var(--line); }
+    .ebb-prev-item-label { font:700 .68rem/1 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+    .ebb-prev-item-text { color:var(--muted); font-size:.88rem; line-height:1.5; }
+
+    /* Step card */
+    .ebb-step-card {
+      border:1px solid rgba(13,94,87,.4); border-left:4px solid var(--teal);
+      background:var(--panel); border-radius:14px; padding:16px 18px; position:relative;
+    }
+    .ebb-step-badge {
+      display:inline-flex; align-items:center; gap:5px; background:rgba(13,94,87,.25);
+      border:1px solid rgba(13,94,87,.45); border-radius:999px; padding:3px 9px;
+      font:700 .65rem/1 var(--mono); color:#5fc9bf; text-transform:uppercase;
+      letter-spacing:.07em; margin-bottom:10px;
+    }
+    .ebb-step-context {
+      font-size:.84rem; color:var(--dim); font-style:italic; margin-bottom:8px;
+      padding-bottom:8px; border-bottom:1px solid var(--line);
+    }
+    .ebb-step-prompt { color:var(--text); font-size:1rem; line-height:1.75; }
+    .ebb-why-toggle {
+      position:absolute; top:12px; right:14px; background:none; border:1px solid var(--line);
+      border-radius:999px; width:22px; height:22px; color:var(--dim); cursor:pointer;
+      font-size:.8rem; display:flex; align-items:center; justify-content:center;
+      transition:.15s; flex-shrink:0;
+    }
+    .ebb-why-toggle:hover { border-color:rgba(13,94,87,.5); color:var(--teal); }
+    .ebb-why-box {
+      display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);
+      color:var(--muted); font-size:.88rem; line-height:1.6; font-style:italic;
+    }
+    .ebb-why-box.open { display:block; }
+
+    /* Response area */
+    .ebb-response-wrap { display:flex; flex-direction:column; gap:6px; }
+    .ebb-response-label { font:700 .68rem/1 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.08em; }
+    .ebb-response-area {
+      width:100%; min-height:200px; max-height:none; resize:vertical;
+      background:var(--deep); border:2px solid var(--line); border-radius:14px;
+      padding:14px 16px; color:var(--text); font-family:var(--serif); font-size:.975rem;
+      line-height:1.85; transition:border-color .15s;
+      box-shadow:inset 0 2px 6px rgba(0,0,0,.25);
+    }
+    .ebb-response-area:focus { outline:none; border-color:var(--teal);
+      box-shadow:inset 0 2px 6px rgba(0,0,0,.25), 0 0 0 3px rgba(13,94,87,.15); }
+    .ebb-response-area::placeholder { color:var(--dim); font-style:italic; }
+    .ebb-response-area.locked { opacity:.55; pointer-events:none; cursor:not-allowed; }
+    .ebb-char-count { font:500 .75rem/1 var(--mono); color:var(--dim); text-align:right; }
+    .ebb-char-count.warn { color:var(--gold); }
+
+    /* Reflection panel */
+    .ebb-reflection-panel {
+      display:none; border:1px solid rgba(201,168,76,.35); border-left:3px solid var(--gold);
+      background:rgba(201,168,76,.07); border-radius:14px; padding:14px 16px;
+      animation:fadeIn .2s ease;
+    }
+    .ebb-reflection-panel.visible { display:block; }
+    .ebb-reflection-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .ebb-reflection-icon { color:var(--gold); font-size:1rem; }
+    .ebb-reflection-label { font:700 .7rem/1 var(--mono); color:var(--gold); text-transform:uppercase; letter-spacing:.08em; }
+    .ebb-reflection-text { color:var(--text); font-size:.93rem; line-height:1.7; margin-bottom:12px; }
+    .ebb-reflection-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .ebb-reflect-thinking {
+      display:none; align-items:center; gap:10px; color:var(--muted); font-size:.88rem;
+      padding:10px 0;
+    }
+    .ebb-reflect-thinking.visible { display:flex; }
+    .ebb-spinner { width:16px; height:16px; border:2px solid var(--line); border-top-color:var(--gold); border-radius:50%; animation:spin .8s linear infinite; flex-shrink:0; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* Footer */
+    .ebb-session-footer {
+      display:flex; align-items:center; justify-content:space-between; padding:12px 16px;
+      background:var(--panel); border-top:2px solid rgba(13,94,87,.35); flex-shrink:0;
+      gap:10px; flex-wrap:wrap;
+    }
+    .ebb-footer-left { display:flex; gap:8px; }
+    .ebb-footer-right { display:flex; gap:8px; flex-wrap:wrap; }
+
+    /* Completing overlay */
+    .ebb-completing-overlay {
+      display:none; position:absolute; inset:0; background:rgba(6,11,24,.92);
+      border-radius:18px; flex-direction:column; align-items:center; justify-content:center;
+      gap:14px; padding:24px; z-index:10;
+    }
+    .ebb-completing-overlay.visible { display:flex; }
+    .ebb-completing-title { font-weight:900; color:var(--text); font-size:1.05rem; }
+    .ebb-step-checklist { display:grid; gap:8px; width:100%; max-width:360px; }
+    .ebb-check-item { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:.88rem; }
+    .ebb-check-mark { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.65rem; }
+    .ebb-check-mark.done { background:var(--teal); border-color:var(--teal); color:#fff; }
+
+    /* Coach Note review */
+    .ebb-note-review { display:none; flex-direction:column; gap:16px; padding:18px; animation:fadeIn .2s ease; }
+    .ebb-note-review.visible { display:flex; }
+    .ebb-note-title { font-weight:900; color:var(--text); font-size:1.05rem; }
+    .ebb-note-date { font:500 .72rem/1 var(--mono); color:var(--dim); margin-top:2px; }
+    .ebb-note-section { border-left:3px solid rgba(13,94,87,.5); padding:10px 14px; background:rgba(13,94,87,.06); border-radius:0 12px 12px 0; }
+    .ebb-note-section-label { font:700 .65rem/1 var(--mono); color:#5fc9bf; text-transform:uppercase; letter-spacing:.09em; margin-bottom:6px; }
+    .ebb-note-section-content { color:var(--text); font-size:.92rem; line-height:1.7; outline:none; cursor:text; }
+    .ebb-note-section-content:focus { background:rgba(255,255,255,.04); border-radius:8px; padding:4px; }
+    .ebb-note-edit-hint { font-size:.78rem; color:var(--dim); font-style:italic; }
+    .ebb-note-actions { display:flex; gap:10px; flex-wrap:wrap; padding:0 18px 18px; }
+
+    /* Post-save */
+    .ebb-post-save { display:none; flex-direction:column; align-items:center; gap:16px; padding:32px 18px; text-align:center; }
+    .ebb-post-save.visible { display:flex; }
+    .ebb-post-save-icon { font-size:2rem; }
+    .ebb-post-save-title { font-weight:900; color:var(--text); font-size:1.05rem; }
+    .ebb-post-save-subtitle { color:var(--muted); font-size:.9rem; line-height:1.55; max-width:360px; }
+    .ebb-post-save-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+    @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width:900px) {
+      .coach-catalog { grid-template-columns:1fr; }
+      .ebb-session-main { padding:14px 14px 0; }
+      .ebb-response-area { min-height:160px; }
+      .ebb-footer-right { width:100%; }
+      .ebb-footer-right .btn { flex:1; }
+    }
+    /* Legacy coach CSS kept for core coaches that use old renderCoaches() */
+    .coach-step-list { display:grid; gap:8px; margin:10px 0; }
+    .coach-step { border-left:3px solid rgba(201,168,76,.45); padding:8px 10px; background:rgba(255,255,255,.035); border-radius:10px; color:var(--muted); font-size:.9rem; }
     .coach-primer-box { border:1px solid rgba(108,92,231,.24); background:rgba(108,92,231,.075); border-radius:14px; padding:12px 13px; color:var(--muted); margin:10px 0; }
     .coach-primer-box strong { color: var(--text); }
-    .coach-start-here { border:1px solid rgba(201,168,76,.26); background:rgba(201,168,76,.07); border-radius:16px; padding:14px; margin-bottom:14px; }
-    .coach-start-here ol { margin:8px 0 0 20px; padding:0; color:var(--muted); }
-    .coach-start-here li { margin:5px 0; }
+    .coach-note { border:1px solid rgba(255,255,255,.10); border-radius:15px; padding:12px; background:rgba(255,255,255,.04); margin-top:10px; }
+    .coach-note-meta { color:var(--dim); font:700 .68rem/1.3 var(--mono); letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
+    .coach-output { border:1px solid rgba(201,168,76,.22); background:rgba(6,11,24,.36); border-radius:16px; padding:13px; min-height:160px; white-space:pre-wrap; color:var(--text); }
+    .coach-warning { border:1px solid rgba(201,168,76,.20); background:rgba(201,168,76,.07); border-radius:14px; padding:10px 12px; color:var(--muted); font-size:.9rem; margin:10px 0; }
     .coach-layout { display:grid; grid-template-columns: minmax(0,.85fr) minmax(0,1.15fr); gap:14px; align-items:start; }
     .coach-context-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px; margin:10px 0; }
     .coach-context-grid label { display:flex; gap:8px; align-items:flex-start; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035); border-radius:12px; padding:9px; color:var(--muted); font-size:.86rem; }
-    .coach-step-list { display:grid; gap:8px; margin:10px 0; }
-    .coach-step { border-left:3px solid rgba(201,168,76,.45); padding:8px 10px; background:rgba(255,255,255,.035); border-radius:10px; color:var(--muted); font-size:.9rem; }
-    .coach-output { border:1px solid rgba(201,168,76,.22); background:rgba(6,11,24,.36); border-radius:16px; padding:13px; min-height:160px; white-space:pre-wrap; color:var(--text); }
-    .coach-note { border:1px solid rgba(255,255,255,.10); border-radius:15px; padding:12px; background:rgba(255,255,255,.04); margin-top:10px; }
-    .coach-note-meta { color:var(--dim); font:700 .68rem/1.3 var(--mono); letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
-    .coach-warning { border:1px solid rgba(201,168,76,.20); background:rgba(201,168,76,.07); border-radius:14px; padding:10px 12px; color:var(--muted); font-size:.9rem; margin:10px 0; }
+    .privacy-note { color: var(--muted); font-size: .84rem; border-left: 3px solid rgba(201,168,76,.45); padding-left: 11px; margin-top: 12px; }
+    @media (max-width:900px) { .coach-layout, .coach-context-grid { grid-template-columns:1fr; } }
 
-    .pulse-hero {
-      border: 1px solid rgba(201,168,76,.24);
-      background: linear-gradient(135deg, rgba(201,168,76,.09), rgba(13,94,87,.07));
-      border-radius: 18px;
-      padding: 15px;
-      margin-bottom: 14px;
-    }
-    .pulse-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-    .pulse-domain {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 13px;
-      background: rgba(255,255,255,.035);
-    }
-    .pulse-domain-header { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 6px; }
-    .pulse-domain-name { font-weight: 900; color: var(--text); }
-    .pulse-domain-score { font: 900 1.05rem/1 var(--mono); color: var(--gold); }
-    .pulse-domain-desc { color: var(--muted); font-size: .86rem; margin-bottom: 8px; }
-    .pulse-domain input[type="range"] { width: 100%; }
-    .pulse-note-box { margin-top: 14px; }
-    .pulse-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; margin: 12px 0; }
-    .pulse-summary-card { border:1px solid var(--line); background:rgba(255,255,255,.04); border-radius:14px; padding:11px; }
-    .pulse-summary-label { font:700 .67rem/1 var(--mono); color:var(--dim); text-transform:uppercase; letter-spacing:.1em; }
-    .pulse-summary-value { font-weight:900; margin-top:5px; }
-    .pulse-thought { border-left: 3px solid var(--gold); padding: 10px 12px; background: rgba(201,168,76,.07); border-radius: 12px; color: var(--text); }
-    .pulse-chart { display:flex; align-items:flex-end; gap:8px; min-height:116px; padding: 10px 4px; border-bottom:1px solid var(--line); overflow-x:auto; }
-    .pulse-bar-wrap { min-width:44px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; }
-    .pulse-bar { width:24px; border-radius:8px 8px 0 0; background: linear-gradient(180deg, rgba(201,168,76,.95), rgba(13,94,87,.95)); }
-    .pulse-label { font-size:.68rem; color:var(--muted); white-space:nowrap; }
-    .pulse-list { display:grid; gap:10px; margin-top:12px; }
-    .pulse-entry { border:1px solid var(--line); background:rgba(255,255,255,.035); border-radius:14px; padding:12px; }
-    .pulse-entry-head { display:flex; justify-content:space-between; gap:10px; align-items:start; margin-bottom:6px; }
-    .pulse-entry-title { font-weight:900; color:var(--text); }
-    .pulse-entry-meta { color:var(--muted); font-size:.84rem; }
-    .pulse-mini-scores { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-    .pulse-chip { border:1px solid var(--line); border-radius:999px; padding:4px 7px; color:var(--muted); font-size:.74rem; }
-    .home-pulse-card { border:1px solid rgba(201,168,76,.28); background:linear-gradient(135deg, rgba(201,168,76,.10), rgba(13,94,87,.10)); border-radius:18px; padding:16px; margin:14px 0; }
-    .home-pulse-head { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; flex-wrap:wrap; }
-    .home-pulse-title { font-weight:950; color:var(--text); font-size:1.05rem; }
-    .home-pulse-status { font:800 .78rem/1 var(--mono); color:var(--gold); text-transform:uppercase; letter-spacing:.08em; }
-    .home-pulse-text { color:var(--muted); margin:8px 0 0; line-height:1.55; }
-    .home-pulse-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:12px 0; }
-    .home-pulse-metric { border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.035); border-radius:14px; padding:10px; color:var(--muted); }
-    .home-pulse-metric strong { display:block; color:var(--text); margin-bottom:4px; }
-    .pulse-after-save { margin-top:12px; border:1px solid rgba(96,163,111,.35); background:rgba(96,163,111,.08); border-radius:16px; padding:12px; color:var(--muted); line-height:1.5; }
-    .pulse-after-save strong { color:var(--text); }
-    .pulse-actions .btn { min-height:40px; }
-    .pulse-history-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:flex-end; }
-
-    @media (max-width: 900px) { .coach-layout, .coach-catalog, .coach-context-grid { grid-template-columns: 1fr; } }
 
     .debug { display: none; margin-top: 16px; border: 1px solid rgba(204,107,95,.45); background: rgba(204,107,95,.08); color: #ffd3cd; border-radius: 14px; padding: 12px; white-space: pre-wrap; font-family: var(--mono); font-size: .78rem; }
     .privacy-note { color: var(--muted); font-size: .84rem; border-left: 3px solid rgba(201,168,76,.45); padding-left: 11px; margin-top: 12px; }
@@ -1910,67 +2054,101 @@
             <div class="card-body">
               <div class="experience-strip"><strong>Lived version:</strong> A Coach is like a focused workroom. It helps you use Navigator for one kind of task: reasoning, ethics, research, or capability analysis. It does not replace your judgment.</div>
               <div class="workspace-note"><strong>Coaches are arenas, not authorities.</strong> They help structure attention, reasoning, comparison, and next-move preparation. They do not grade, diagnose, decide, or replace the user’s authorship.</div>
-              <div class="coach-start-here">
-                <div class="guided-card-title">How to use Coaches</div>
-                <ol>
-                  <li>Choose a Coach card. Use the <strong>Open</strong>, <strong>Learn</strong>, or <strong>Example</strong> buttons.</li>
-                  <li>Describe the situation, dilemma, draft, or project in the Coach Session Arena.</li>
-                  <li>Select only the memory you want the Coach to use.</li>
-                  <li>Click <strong>Build Local Coach Note</strong> for a private browser-only structure, or <strong>Ask AI-Assisted Coach</strong> to send selected context to the backend.</li>
-                  <li>Save the note only if it is useful.</li>
-                </ol>
-              </div>
-              <div id="coach-catalog" class="coach-catalog"></div>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:18px;">
-            <div class="card-header">
-              <div class="card-title">Coach Session Arena</div>
-              <div class="card-desc">Choose a coach, select what local memory it may use, then build a local note or ask the AI-assisted coach for a structured response.</div>
-            </div>
-            <div class="card-body">
-              <div id="coach-active-detail"></div>
-              <div class="coach-layout">
-                <div>
-                  <div class="field">
-                    <label for="coach-input">What situation, question, draft, dilemma, or project should this coach help with?</label>
-                    <textarea id="coach-input" placeholder="Describe the issue or task. For Ethical Reasoning, name the situation, who is affected, what feels ethically difficult, and what you are trying to understand."></textarea>
+              <!-- EBB Coach Workspace v2 -->
+              <div id="ebb-coach-workspace" style="position:relative;">
+                <div id="ebb-catalog-view">
+                  <div id="coach-catalog" class="coach-catalog"></div>
+                </div>
+                <div id="ebb-session-workspace" class="ebb-session-workspace" role="region" aria-label="Coach session workspace">
+                  <div class="ebb-session-header">
+                    <div class="ebb-session-title" id="ebb-sess-title">Coach</div>
+                    <div class="ebb-step-counter" id="ebb-sess-counter">Step 1</div>
+                    <button class="ebb-session-exit" onclick="exitCoachSession()" type="button">✕ Exit</button>
                   </div>
-                  <div class="field">
-                    <label for="coach-depth">Coach mode</label>
-                    <select id="coach-depth">
-                      <option value="quick">Quick mode — short structured map</option>
-                      <option value="full">Full mode — deeper coaching pass</option>
-                    </select>
+                  <div class="ebb-progress-rail" id="ebb-progress-rail" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="ebb-progress-fill" id="ebb-progress-fill" style="width:0%"></div>
                   </div>
-                  <div class="coach-warning"><strong>Context control:</strong> check only what you want included. Local note generation stays in your browser. AI-assisted coaching sends the selected context to the configured backend.</div>
-                  <div class="coach-context-grid">
-                    <label><input id="coach-ctx-journal" type="checkbox" checked /> Twin Journal summary</label>
-                    <label><input id="coach-ctx-prf" type="checkbox" checked /> PRF-22 profile summary</label>
-                    <label><input id="coach-ctx-capsules" type="checkbox" /> Document Capsules</label>
-                    <label><input id="coach-ctx-fields" type="checkbox" checked /> Field Scans / Field Map</label>
-                    <label><input id="coach-ctx-context" type="checkbox" checked /> Context Assembly</label>
-                    <label><input id="coach-ctx-moves" type="checkbox" /> Current Move / Move Cards</label>
+                  <div class="ebb-step-dots" id="ebb-step-dots" aria-hidden="true"></div>
+                  <div class="ebb-session-main" id="ebb-session-main">
+                    <div id="ebb-prev-accordion" class="ebb-prev-accordion" style="display:none;">
+                      <button class="ebb-prev-toggle" onclick="togglePrevAccordion()" type="button">
+                        <span id="ebb-prev-label">Your previous responses</span>
+                        <span id="ebb-prev-chevron">▾</span>
+                      </button>
+                      <div id="ebb-prev-list" class="ebb-prev-list"></div>
+                    </div>
+                    <div class="ebb-step-card" id="ebb-step-card">
+                      <button class="ebb-why-toggle" onclick="toggleWhyBox()" type="button" title="Why this step?">?</button>
+                      <div class="ebb-step-badge" id="ebb-step-badge">Step 1</div>
+                      <div class="ebb-step-context" id="ebb-step-context" style="display:none;"></div>
+                      <div class="ebb-step-prompt" id="ebb-step-prompt"></div>
+                      <div class="ebb-why-box" id="ebb-why-box"></div>
+                    </div>
+                    <div class="ebb-response-wrap">
+                      <label class="ebb-response-label" for="ebb-response-area">Your response</label>
+                      <textarea id="ebb-response-area" class="ebb-response-area"
+                        placeholder="Write specifically — not what seems like the right answer, but what is actually true for you in this situation. Specificity is honesty."
+                        oninput="onResponseInput()" aria-describedby="ebb-char-count"></textarea>
+                      <div class="ebb-char-count" id="ebb-char-count" aria-live="polite">0 characters</div>
+                    </div>
+                    <div class="ebb-reflect-thinking" id="ebb-reflect-thinking">
+                      <div class="ebb-spinner"></div>
+                      <span>Reading your response...</span>
+                    </div>
+                    <div class="ebb-reflection-panel" id="ebb-reflection-panel" role="region" aria-live="polite">
+                      <div class="ebb-reflection-header">
+                        <span class="ebb-reflection-icon">🧭</span>
+                        <span class="ebb-reflection-label">Coach Reflection</span>
+                        <span id="ebb-reflect-count-badge" style="margin-left:auto;font:700 .65rem/1 var(--mono);color:var(--dim);"></span>
+                      </div>
+                      <div class="ebb-reflection-text" id="ebb-reflection-text"></div>
+                      <div class="ebb-reflection-actions">
+                        <button class="btn small ghost" type="button" onclick="reviseResponse()">✎ Revise my response</button>
+                        <button class="btn small primary" type="button" onclick="advanceStep()">Continue to next step →</button>
+                      </div>
+                    </div>
+                    <div style="height:80px;flex-shrink:0;"></div>
                   </div>
-                  <div class="toolbar">
-                    <button class="btn small primary" type="button" onclick="buildLocalCoachNote()">Build Local Coach Note</button>
-                    <button class="btn small purple" type="button" onclick="askCoachWithAI()">Ask AI-Assisted Coach</button>
-                    <button class="btn small ghost" type="button" onclick="clearCoachDraft()">Clear Draft</button>
+                  <div class="ebb-completing-overlay" id="ebb-completing-overlay">
+                    <div class="ebb-completing-title">Compiling your session...</div>
+                    <div class="ebb-step-checklist" id="ebb-checklist"></div>
+                    <div class="ebb-reflect-thinking visible" id="ebb-note-spinner">
+                      <div class="ebb-spinner" style="border-top-color:var(--teal);"></div>
+                      <span>Generating your Coach Note...</span>
+                    </div>
+                  </div>
+                  <div class="ebb-note-review" id="ebb-note-review">
+                    <div>
+                      <div class="ebb-note-title" id="ebb-note-review-title">Coach Note</div>
+                      <div class="ebb-note-date" id="ebb-note-review-date"></div>
+                    </div>
+                    <div id="ebb-note-sections"></div>
+                    <div class="ebb-note-edit-hint">Click any section to edit before saving.</div>
+                  </div>
+                  <div class="ebb-note-actions" id="ebb-note-actions" style="display:none;">
+                    <button class="btn primary" type="button" onclick="saveCoachNoteFromReview()">Save Coach Note</button>
+                    <button class="btn ghost small" type="button" onclick="regenerateCoachNote()">Regenerate</button>
+                  </div>
+                  <div class="ebb-post-save" id="ebb-post-save">
+                    <div class="ebb-post-save-icon">✓</div>
+                    <div class="ebb-post-save-title">Coach Note saved.</div>
+                    <div class="ebb-post-save-subtitle">Your Coach Note is now available below and in your Twin conversations.</div>
+                    <div class="ebb-post-save-actions">
+                      <button class="btn primary" type="button" onclick="routeToTwinFromCoach()">Ask Twin about this</button>
+                      <button class="btn ghost" type="button" onclick="exitCoachSession()">Return to Coaches</button>
+                    </div>
+                  </div>
+                  <div class="ebb-session-footer" id="ebb-session-footer">
+                    <div class="ebb-footer-left">
+                      <button class="btn ghost small" type="button" id="ebb-back-btn" onclick="goBackStep()" style="display:none;"><span>←</span> Back</button>
+                    </div>
+                    <div class="ebb-footer-right">
+                      <button class="btn ghost small" type="button" id="ebb-reflect-btn" onclick="reflectWithCoach()">🧭 Reflect with Coach</button>
+                      <button class="btn primary small" type="button" id="ebb-continue-btn" onclick="advanceStep()" disabled>Continue →</button>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <div class="status-line" style="color:var(--gold);font-weight:900;">COACH OUTPUT DRAFT</div>
-                  <div id="coach-output" class="coach-output">Choose a coach and enter a situation. The output will appear here before you choose whether to save it.</div>
-                  <div class="toolbar" style="margin-top:10px;">
-                    <button class="btn small primary" type="button" onclick="saveCurrentCoachNote()">Save Coach Note</button>
-                    <button class="btn small ghost" type="button" onclick="sendCurrentCoachDraftToTwin()">Ask Twin About Draft</button>
-                  </div>
-                </div>
               </div>
-            </div>
-          </div>
-
           <div class="card" style="margin-top:18px;">
             <div class="card-header">
               <div class="card-title-row">
@@ -7098,7 +7276,22 @@ Return only valid JSON with this shape:
       ]
     },
     {
-      id:'ebb-chapter-template', title:'EBB Chapter Coach Template', category:'Template Coach',
+    {
+      id:'ebb-hanna-care', title:'Hanna Care Ethics Coach', category:'EBB Chapter Coach',
+      purpose:'Apply care ethics to the Hanna/Iraq case. Practice the caring-for vs. caring-about distinction, name what coercion was targeting structurally, analyze what relational obligation survives under pressure, and bridge to your own specific caring obligations.',
+      tags:['Hanna','care ethics','relational obligation','Chapter 5','Week 6'],
+      outputs:'Caring-for analysis, coercion targets, obligation under pressure, secondary framework, BioBond under care, meta-awareness, personal caring-for obligation.',
+      steps:[
+        'CHAPTER 5 — Complete after reading the chapter. Before beginning: slow down. Care ethics rewards attention to particulars. This coach has a different register from the Boisjoly and Maathai coaches — it asks for specific persons and specific relationships, not primarily structural analysis.\n\nCaring-for vs. caring-about: Identify the caring-for obligations in Father Hanna situation — the specific obligations generated by specific relationships with specific persons who had entrusted specific dimensions of their lives to his ministry. Then name what it would have meant to reduce those obligations to caring-about — a general concern for Christians in Iraq. What specifically would have been lost in that reduction?',
+        'What the coercion was targeting: Name three specific things the kidnapping and broader persecution of Christian clergy were designed to destroy — not just physical safety, but the specific relational and institutional conditions that made pastoral caring possible. What was being attacked beyond Father Hanna personal wellbeing?',
+        'What obligation survives: Apply the question — what relational obligations survive conditions designed to make them impossible? Not whether they can be fully fulfilled, but whether they remain morally real. What does care ethics say about the status of an obligation that coercive conditions prevent from being fulfilled? What is the difference between an obligation that is temporarily interrupted and one that is dissolved?',
+        'The other frameworks: Choose one framework other than care ethics and apply it briefly to the Hanna case. What does it make visible that care ethics analysis might underweight? Where does it converge with the care analysis and where does it pull in a different direction? Which framework combination produces the most complete analysis of this situation?',
+        'BioBond and the conditions of care: Father Hanna capacity to sustain his ministry depended on specific BioBond sources — the congregation, the Church institution, his spiritual tradition, international attention. Identify the three most important structural supports that made continued caring possible, and the three conditions that were being deliberately dismantled. What does this suggest about the relationship between caring capacity and institutional conditions?',
+        'Meta-awareness: Care ethics is the tradition most likely to connect to lived experience, and also the most susceptible to sentimentalization — being reduced to an affirmation that caring is good rather than an analytical framework revealing specific moral obligations. Notice which mode your engagement has primarily been in. If affirmational, return to Step 1 and push for greater specificity about what was at stake in the specific relationships.',
+        'Your own caring-for obligations: Name one specific caring-for obligation you currently carry — a specific person, in a specific relationship, with a specific dependence on your presence or attention. What does that obligation require of you specifically? Where does your current institutional field make fulfilling it more difficult than it should be, and what specifically creates that difficulty? Private — name it here, in your Coach Note, for yourself. You do not need to share this in your Reflection Export.'
+      ]
+    },
+    id:'ebb-chapter-template', title:'EBB Chapter Coach Template', category:'Template Coach',
       purpose:'A placeholder template for future EBB chapter-specific coaches.',
       tags:['template','chapter','future'],
       outputs:'Chapter concept map, key terms, self-reflection, case application, Field Scan suggestion, Move Card suggestion.',
@@ -7493,6 +7686,9 @@ Return only valid JSON with this shape:
     if(id === 'ebb-boisjoly-witness'){
       return 'The Boisjoly Witness Coach applies the full SAGE framework to the Challenger case. It runs after you have watched the footage, read Chapter 3, and completed the Capability Lab three-stage simulation. The coach moves from situational seeing (specific facts) to structural seeing (what the institutional architecture made probable), through virtue ethics and the moralism vs. moral world design distinction, to the simulation findings, and finally to your own Field Scan. Step 6 is the meta-awareness step — notice whether the case has stayed external and abstract. Step 7 is the personal bridge — private, not required for the Reflection Export.';
     }
+    if(id === 'ebb-hanna-care'){
+      return 'The Hanna Care Ethics Coach applies care ethics to Father Hanna situation in Iraq. It runs after you have read Chapter 5. The coach asks for specificity about particular persons and relationships — not structural analysis primarily, but the caring-for obligations that care ethics insists on. The register is different from the Boisjoly and Maathai coaches: slower, more attentive to particulars. The meta-awareness step (Step 6) asks you to notice whether engagement has been analytical or primarily affirmational — admiring that caring is good rather than analyzing what specific obligations require. Step 7 is the private personal connection.';
+    }
     if(id === 'ebb-maathai-liberation'){
       return 'The Maathai Liberation Coach applies social contract theory and the Liberation/Construction Step to the Green Belt Movement case. It runs after you have read Chapter 4. The coach moves from suppression analysis through the veil of ignorance test, to the structural features of the Green Belt Movement that made it work, to the OS2 design analysis of how one task served multiple values simultaneously, to your own Field Scan read as opportunity rather than only as constraint. Step 7 is the meta-awareness step — notice whether your engagement has been inspirational (admiring something you cannot reproduce) or analytical (identifying what made it work structurally). Step 8 is the private liberation question.';
     }
@@ -7514,6 +7710,9 @@ Return only valid JSON with this shape:
     }
     if(id === 'ebb-boisjoly-witness'){
       return 'I have watched the Boisjoly footage, read Chapter 3, and completed the Capability Lab Challenger simulation. The simulation showed Breakdown at 31% compatibility, and no single slider change was sufficient. Help me apply situational and structural seeing to the Challenger case, work through the virtue ethics and moralism vs. moral world design analysis, connect the simulation findings to the Rogers Commission systemic failure report, and identify the structural pattern in my own institutional situation.';
+    }
+    if(id === 'ebb-hanna-care'){
+      return 'I have read the Hanna chapter. Help me work through the caring-for vs. caring-about distinction in Father Hanna situation, name what the kidnapping and persecution were structurally targeting beyond physical safety, analyze what care ethics says about relational obligations that coercive conditions make temporarily impossible to fulfill, connect the BioBond analysis to the structural conditions of caring, and bridge to one specific caring-for obligation I currently carry in my own life.';
     }
     if(id === 'ebb-maathai-liberation'){
       return 'I have read the Maathai chapter. Help me analyze the colonial land system through the veil of ignorance, identify the three structural features of the Green Belt Movement that made it work, practice the OS2 design analysis by describing the shared task from the perspective of participants with different values, and apply the Liberation/Construction Step to my own Field Scan to see whether there is something I could build alongside my current institutional constraints.';
@@ -7933,6 +8132,734 @@ Return only valid JSON with this shape:
   renderAll();
   applyHashWorkspace();
 })();
+
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // EBB COACH WORKSPACE v2 — Session Management
+  // ═══════════════════════════════════════════════════════════════════════
+
+  const EBB_SESSION_KEY = 'ebb_coach_session_v2';
+  const EBB_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
+  const MIN_CHARS = 60;
+  const MAX_REFLECTIONS = 2;
+
+  let ebbSession = null; // active session state
+  let ebbAutoSaveTimer = null;
+  let ebbGeneratedNote = null;
+  let ebbPrevAccOpen = false;
+
+  // ── Session state helpers ────────────────────────────────────────────────
+  function ebbLoadSession() {
+    try { return JSON.parse(localStorage.getItem(EBB_SESSION_KEY) || 'null'); }
+    catch(e) { return null; }
+  }
+
+  function ebbSaveSession() {
+    if(!ebbSession) return;
+    try { localStorage.setItem(EBB_SESSION_KEY, JSON.stringify(ebbSession)); }
+    catch(e) {}
+  }
+
+  function ebbClearSession() {
+    try { localStorage.removeItem(EBB_SESSION_KEY); }
+    catch(e) {}
+    ebbSession = null;
+  }
+
+  function ebbScheduleAutoSave() {
+    clearTimeout(ebbAutoSaveTimer);
+    ebbAutoSaveTimer = setTimeout(ebbSaveSession, 8000);
+  }
+
+  // ── Catalog rendering ────────────────────────────────────────────────────
+  const EBB_CAT_ORDER = [
+    { key:'EBB Chapter Coach', label:'EBB Chapter Coaches', cls:'ebb' },
+    { key:'Core Coach',        label:'Core Coaches',        cls:'' },
+    { key:'Applications Coach',label:'Applications Coaches',cls:'' },
+    { key:'Template Coach',    label:'Templates',           cls:'' },
+  ];
+  const WEEK_MAP = {
+    'ebb-prf-interpretation':'Week 2',
+    'ebb-field-scan-analysis':'Week 3+',
+    'ebb-boisjoly-witness':'Week 4',
+    'ebb-maathai-liberation':'Week 5',
+    'ebb-hanna-care':'Week 6',
+  };
+
+  function renderEbbCatalog() {
+    const catalog = document.getElementById('coach-catalog');
+    if(!catalog) return;
+    let html = '';
+    EBB_CAT_ORDER.forEach(cat => {
+      const coaches = COACH_DEFS.filter(c => c.category === cat.key);
+      if(!coaches.length) return;
+      html += '<div class="coach-category-header ' + cat.cls + '">' + escapeHtml(cat.label) + '</div>';
+      coaches.forEach(c => {
+        const isEbb = cat.key === 'EBB Chapter Coach';
+        const week = WEEK_MAP[c.id] || '';
+        html += '<div class="coach-card' + (isEbb ? ' ebb-coach' : '') + '" id="coach-card-' + c.id + '">'
+          + '<div class="coach-card-top">'
+          + '<span class="coach-cat-badge' + (isEbb ? ' ebb' : '') + '">' + escapeHtml(c.category.replace(' Coach','')) + '</span>'
+          + (week ? '<span class="coach-week-badge">' + escapeHtml(week) + '</span>' : '')
+          + '</div>'
+          + '<div class="coach-title">' + escapeHtml(c.title) + '</div>'
+          + '<div class="coach-purpose">' + escapeHtml((c.purpose||'').substring(0,120)) + (c.purpose && c.purpose.length > 120 ? '…' : '') + '</div>'
+          + '<div class="coach-card-actions">'
+          + '<button class="btn small primary" type="button" onclick="openEbbSession('' + c.id + '')">Open Session</button>'
+          + '<button class="btn small ghost" type="button" onclick="togglePreviewSteps('' + c.id + '')">Preview Steps</button>'
+          + '</div>'
+          + '<div id="preview-' + c.id + '" class="coach-preview-steps" style="display:none;"></div>'
+          + '</div>';
+      });
+    });
+    catalog.innerHTML = html;
+
+    // Show recovery banner if session in progress
+    const saved = ebbLoadSession();
+    if(saved && saved.coachId && saved.state !== 'saved') {
+      const def = COACH_DEFS.find(c => c.id === saved.coachId);
+      if(def) {
+        showEbbRecoveryBanner(saved, def);
+      }
+    }
+  }
+  window.renderEbbCatalog = renderEbbCatalog;
+
+  function togglePreviewSteps(id) {
+    const box = document.getElementById('preview-' + id);
+    if(!box) return;
+    if(box.style.display !== 'none') { box.style.display = 'none'; return; }
+    const def = COACH_DEFS.find(c => c.id === id);
+    if(!def) return;
+    box.innerHTML = def.steps.map((s,i) => {
+      const label = s.split('\n')[0].substring(0,80);
+      return '<div class="coach-preview-step"><strong>' + (i+1) + '.</strong> ' + escapeHtml(label) + (label.length >= 80 ? '…' : '') + '</div>';
+    }).join('');
+    box.style.display = 'block';
+  }
+  window.togglePreviewSteps = togglePreviewSteps;
+
+  function showEbbRecoveryBanner(saved, def) {
+    const catalog = document.getElementById('ebb-catalog-view');
+    if(!catalog) return;
+    const existing = document.getElementById('ebb-recovery-banner');
+    if(existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.id = 'ebb-recovery-banner';
+    banner.style.cssText = 'border:1px solid rgba(13,94,87,.45);background:rgba(13,94,87,.12);border-radius:14px;padding:14px 16px;margin-bottom:14px;';
+    banner.innerHTML = '<div style="font-weight:900;color:var(--teal);margin-bottom:6px;">In-progress session found</div>'
+      + '<div style="color:var(--muted);font-size:.9rem;margin-bottom:10px;">' + escapeHtml(def.title) + ' — Step ' + (saved.currentStepIndex + 1) + ' of ' + def.steps.length + '</div>'
+      + '<div style="display:flex;gap:8px;">'
+      + '<button class="btn small primary" type="button" onclick="resumeEbbSession()">Resume Session</button>'
+      + '<button class="btn small ghost" type="button" onclick="ebbClearSession();document.getElementById('ebb-recovery-banner').remove();">Start Fresh</button>'
+      + '</div>';
+    catalog.insertBefore(banner, catalog.firstChild);
+  }
+
+  function resumeEbbSession() {
+    const saved = ebbLoadSession();
+    if(!saved) return;
+    ebbSession = saved;
+    enterSessionMode(saved.coachId);
+  }
+  window.resumeEbbSession = resumeEbbSession;
+
+  // ── Session open / close ─────────────────────────────────────────────────
+  function openEbbSession(id) {
+    const def = COACH_DEFS.find(c => c.id === id);
+    if(!def) return;
+    ebbSession = {
+      coachId: id,
+      coachTitle: def.title,
+      startedAt: new Date().toISOString(),
+      currentStepIndex: 0,
+      responses: new Array(def.steps.length).fill(''),
+      reflections: new Array(def.steps.length).fill(''),
+      reflectCounts: new Array(def.steps.length).fill(0),
+      state: 'active',
+      draftResponse: '',
+      generatedNote: null
+    };
+    ebbSaveSession();
+    enterSessionMode(id);
+  }
+  window.openEbbSession = openEbbSession;
+
+  function enterSessionMode(coachId) {
+    const def = COACH_DEFS.find(c => c.id === coachId);
+    if(!def) return;
+    const catalog = document.getElementById('ebb-catalog-view');
+    const workspace = document.getElementById('ebb-session-workspace');
+    if(catalog) catalog.style.display = 'none';
+    if(workspace) workspace.classList.add('active');
+    g('ebb-sess-title').textContent = def.title;
+    renderCurrentStep();
+    renderDots();
+  }
+
+  function exitCoachSession() {
+    if(ebbSession && ebbSession.state === 'active') {
+      const resp = ebbSession.responses[ebbSession.currentStepIndex];
+      const draft = (g('ebb-response-area') || {}).value || '';
+      if(draft.trim()) {
+        ebbSession.draftResponse = draft;
+        ebbSaveSession();
+      }
+      if(!confirm('Exit session? Your responses are saved and you can resume here next time.')) return;
+    }
+    const catalog = document.getElementById('ebb-catalog-view');
+    const workspace = document.getElementById('ebb-session-workspace');
+    if(catalog) catalog.style.display = '';
+    if(workspace) workspace.classList.remove('active');
+    // Reset panels
+    ['ebb-note-review','ebb-post-save','ebb-completing-overlay'].forEach(id => {
+      const el = g(id);
+      if(el) { el.classList.remove('visible'); el.style.display=''; }
+    });
+    const noteActions = g('ebb-note-actions');
+    if(noteActions) noteActions.style.display = 'none';
+    // Re-render catalog
+    renderEbbCatalog();
+  }
+  window.exitCoachSession = exitCoachSession;
+
+  // ── Step rendering ───────────────────────────────────────────────────────
+  function renderCurrentStep() {
+    if(!ebbSession) return;
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+    if(!def) return;
+    const idx = ebbSession.currentStepIndex;
+    const step = def.steps[idx];
+    const total = def.steps.length;
+
+    // Header
+    g('ebb-sess-counter').textContent = 'Step ' + (idx+1) + ' of ' + total;
+    g('ebb-step-badge').textContent = 'Step ' + (idx+1) + ' of ' + total;
+
+    // Progress bar
+    const pct = Math.round((idx / total) * 100);
+    const fill = g('ebb-progress-fill');
+    if(fill) { fill.style.width = pct + '%'; fill.parentElement.setAttribute('aria-valuenow', pct); }
+
+    // Step text — split context line if present
+    let context = '';
+    let prompt = step;
+    if(step.startsWith('CHAPTER')) {
+      const nl = step.indexOf('\n\n');
+      if(nl > -1) { context = step.substring(0, nl); prompt = step.substring(nl+2); }
+    }
+    const ctxEl = g('ebb-step-context');
+    if(ctxEl) { ctxEl.textContent = context; ctxEl.style.display = context ? 'block' : 'none'; }
+    const promptEl = g('ebb-step-prompt');
+    if(promptEl) promptEl.textContent = prompt;
+
+    // Why box — use primer excerpt keyed to step
+    const whyBox = g('ebb-why-box');
+    if(whyBox) { whyBox.textContent = getStepWhyText(ebbSession.coachId, idx); whyBox.classList.remove('open'); }
+
+    // Response area
+    const ta = g('ebb-response-area');
+    if(ta) {
+      ta.value = ebbSession.draftResponse && idx === ebbSession.currentStepIndex
+        ? ebbSession.draftResponse
+        : (ebbSession.responses[idx] || '');
+      ta.classList.remove('locked');
+      ta.focus();
+      updateCharCount();
+    }
+
+    // Reset reflection panel
+    const rp = g('ebb-reflection-panel');
+    if(rp) rp.classList.remove('visible');
+    const rt = g('ebb-reflect-thinking');
+    if(rt) rt.classList.remove('visible');
+
+    // Previous responses accordion
+    const acc = g('ebb-prev-accordion');
+    if(acc) acc.style.display = idx > 0 ? 'block' : 'none';
+    if(idx > 0) renderPrevResponses(def);
+
+    // Buttons
+    const backBtn = g('ebb-back-btn');
+    if(backBtn) backBtn.style.display = idx > 0 ? 'inline-flex' : 'none';
+
+    const continueBtn = g('ebb-continue-btn');
+    if(continueBtn) {
+      continueBtn.disabled = (ta ? ta.value.length : 0) < MIN_CHARS;
+      continueBtn.textContent = idx < total - 1 ? 'Continue →' : 'Complete Session →';
+    }
+
+    // Reflect button — hide if max reflections reached
+    const reflectBtn = g('ebb-reflect-btn');
+    if(reflectBtn) reflectBtn.style.display = 'inline-flex';
+
+    renderDots();
+    updateCharCount();
+
+    // Session footer visibility
+    const footer = g('ebb-session-footer');
+    if(footer) footer.style.display = 'flex';
+  }
+
+  function renderDots() {
+    const dotsEl = g('ebb-step-dots');
+    if(!dotsEl || !ebbSession) return;
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+    if(!def || def.steps.length > 10) { dotsEl.innerHTML = ''; return; } // hide for long coaches
+    dotsEl.innerHTML = def.steps.map((s,i) => {
+      const cls = i < ebbSession.currentStepIndex ? 'done' : i === ebbSession.currentStepIndex ? 'current' : '';
+      return '<div class="ebb-dot ' + cls + '" title="Step ' + (i+1) + '" onclick="jumpToStep(' + i + ')">' + (i+1) + '</div>';
+    }).join('');
+  }
+
+  function jumpToStep(idx) {
+    if(!ebbSession || idx >= ebbSession.currentStepIndex) return;
+    saveDraft();
+    ebbSession.currentStepIndex = idx;
+    ebbSession.draftResponse = ebbSession.responses[idx] || '';
+    ebbSaveSession();
+    renderCurrentStep();
+  }
+  window.jumpToStep = jumpToStep;
+
+  function renderPrevResponses(def) {
+    const list = g('ebb-prev-list');
+    const label = g('ebb-prev-label');
+    if(!list || !ebbSession) return;
+    const completed = ebbSession.currentStepIndex;
+    if(label) label.textContent = 'Your previous responses (' + completed + ' completed)';
+    list.innerHTML = '';
+    for(let i = 0; i < completed; i++) {
+      const r = ebbSession.responses[i] || '';
+      const div = document.createElement('div');
+      div.className = 'ebb-prev-item';
+      div.innerHTML = '<div class="ebb-prev-item-label">Step ' + (i+1) + '</div>'
+        + '<div class="ebb-prev-item-text">' + escapeHtml(r.substring(0,120)) + (r.length > 120 ? '…' : '') + '</div>';
+      list.appendChild(div);
+    }
+    if(!ebbPrevAccOpen) list.classList.remove('open');
+  }
+
+  function togglePrevAccordion() {
+    ebbPrevAccOpen = !ebbPrevAccOpen;
+    const list = g('ebb-prev-list');
+    const chev = g('ebb-prev-chevron');
+    if(list) list.classList.toggle('open', ebbPrevAccOpen);
+    if(chev) chev.textContent = ebbPrevAccOpen ? '▴' : '▾';
+  }
+  window.togglePrevAccordion = togglePrevAccordion;
+
+  function toggleWhyBox() {
+    const box = g('ebb-why-box');
+    if(box) box.classList.toggle('open');
+  }
+  window.toggleWhyBox = toggleWhyBox;
+
+  function getStepWhyText(coachId, stepIdx) {
+    const whyMap = {
+      'ebb-prf-interpretation': [
+        'Translation makes abstract scores into lived vocabulary — the essential first move.',
+        'Naming a decision the foundation got right prevents the blind spot step from feeling like a verdict.',
+        'Every foundation has a predictable underweighting. This step names it for yours.',
+        'Your honest reaction to the growth target reveals your relationship to accurate feedback.',
+        'The assembly history makes your PRF an object of study rather than a background assumption.',
+        'Connecting your foundations to a framework you will study prepares you for the course ahead.',
+        'This final step turns the inward analysis outward — preparation for OS2 engagement.'
+      ],
+      'ebb-field-scan-analysis': [
+        'The mission-reward gap is often the most revealing structural feature of any institution.',
+        'Naming what is penalized — and the specific mechanism — makes the suppression gap concrete.',
+        'Where effort disappears is usually structural, not personal. This step helps you see that.',
+        'BioBond sources are structural resources, not emotional comforts. Naming them protects them.',
+        'The structural-vs-personal distinction is the most important analytical move in the Field Scan.',
+        'A structural lever is a design feature that would need to change — not better behavior.',
+        'Your PRF shapes what you notice first. This step makes that visible.',
+        'Living Threads connect the scan to your ongoing life — the insight that persists after the session.'
+      ],
+      'ebb-boisjoly-witness': [
+        'Situational seeing gathers morally relevant facts before any analysis begins.',
+        'Structural seeing asks what the architecture made probable — the SAGE framework's distinctive move.',
+        'Virtue ethics applied to character and conditions reveals what the situation demanded.',
+        'The moralism/moral world design distinction is the chapter's central contribution.',
+        'The simulation made the systemic failure visible experimentally — this step names what it showed.',
+        'Meta-awareness: noticing whether you are analyzing or performing is itself an ethical act.',
+        'The private bridge connects the historical case to your own institutional life.'
+      ],
+      'ebb-maathai-liberation': [
+        'Suppression seeing identifies what the institution is failing to provide — the gap that opens space.',
+        'The veil of ignorance applied concretely: what would you choose not knowing your position?',
+        'The Liberation/Construction Step names what Maathai built and what made it work structurally.',
+        'OS2 design analysis: one task, three different PRF orientations. This is functional equivalence.',
+        'A secondary framework reveals what social contract analysis alone underweights.',
+        'Your Field Scan read as opportunity as well as constraint — the constructive turn.',
+        'Inspiration vs. analysis: the Maathai trap is admiring rather than identifying structure.',
+        'The liberation/construction question asks what you could build — the course's forward-facing move.'
+      ],
+      'ebb-hanna-care': [
+        'Caring-for is specific, relational, obligating. Caring-about is general. This step names the difference.',
+        'Coercion targets the conditions of care — not just safety but the relational infrastructure of ministry.',
+        'Obligation surviving coercion: the most philosophically demanding question care ethics poses.',
+        'A secondary framework reveals what care ethics alone underweights in this situation.',
+        'BioBond under care pressure: your caring capacity depends on structural supports, not only will.',
+        'The care ethics trap: sentimentalization feels like engagement but avoids analytical precision.',
+        'The personal caring-for question: care ethics applied to your own moral life, not just cases.'
+      ]
+    };
+    const map = whyMap[coachId];
+    return map && map[stepIdx] ? map[stepIdx] : 'This step contributes to the analytical sequence of the full coaching session.';
+  }
+
+  // ── Response input handling ──────────────────────────────────────────────
+  function onResponseInput() {
+    updateCharCount();
+    const ta = g('ebb-response-area');
+    const btn = g('ebb-continue-btn');
+    if(btn && ta) btn.disabled = ta.value.length < MIN_CHARS;
+    if(ebbSession) { ebbSession.draftResponse = ta ? ta.value : ''; ebbScheduleAutoSave(); }
+  }
+  window.onResponseInput = onResponseInput;
+
+  function updateCharCount() {
+    const ta = g('ebb-response-area');
+    const cc = g('ebb-char-count');
+    if(!ta || !cc) return;
+    const n = ta.value.length;
+    cc.textContent = n + ' characters' + (n < MIN_CHARS ? ' (need at least ' + MIN_CHARS + ' to continue)' : '');
+    cc.classList.toggle('warn', n > 0 && n < MIN_CHARS);
+  }
+
+  function saveDraft() {
+    const ta = g('ebb-response-area');
+    if(ta && ebbSession) ebbSession.draftResponse = ta.value;
+  }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+  function advanceStep() {
+    if(!ebbSession) return;
+    const ta = g('ebb-response-area');
+    const response = (ta ? ta.value : '').trim();
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+    if(!def) return;
+    const idx = ebbSession.currentStepIndex;
+    ebbSession.responses[idx] = response;
+    ebbSession.draftResponse = '';
+    ebbPrevAccOpen = false;
+
+    if(idx < def.steps.length - 1) {
+      ebbSession.currentStepIndex = idx + 1;
+      ebbSession.state = 'active';
+      ebbSaveSession();
+      renderCurrentStep();
+      const main = g('ebb-session-main');
+      if(main) main.scrollTop = 0;
+    } else {
+      ebbSaveSession();
+      startSessionCompletion();
+    }
+  }
+  window.advanceStep = advanceStep;
+
+  function goBackStep() {
+    if(!ebbSession || ebbSession.currentStepIndex === 0) return;
+    saveDraft();
+    const ta = g('ebb-response-area');
+    const curResponse = (ta ? ta.value : '').trim();
+    if(curResponse) ebbSession.responses[ebbSession.currentStepIndex] = curResponse;
+    ebbSession.currentStepIndex--;
+    ebbSession.draftResponse = ebbSession.responses[ebbSession.currentStepIndex] || '';
+    ebbSaveSession();
+    renderCurrentStep();
+    const main = g('ebb-session-main');
+    if(main) main.scrollTop = 0;
+  }
+  window.goBackStep = goBackStep;
+
+  // ── Reflect with Coach (Haiku) ────────────────────────────────────────────
+  async function reflectWithCoach() {
+    if(!ebbSession) return;
+    const idx = ebbSession.currentStepIndex;
+    if((ebbSession.reflectCounts[idx] || 0) >= MAX_REFLECTIONS) {
+      const ct = g('ebb-reflect-count-badge');
+      if(ct) ct.textContent = 'Max reflections reached for this step';
+      return;
+    }
+    const ta = g('ebb-response-area');
+    const response = (ta ? ta.value : '').trim();
+    if(response.length < MIN_CHARS) {
+      alert('Please write a more complete response before reflecting — at least ' + MIN_CHARS + ' characters.');
+      return;
+    }
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+    if(!def) return;
+    const step = def.steps[idx];
+
+    // UI: lock response, show thinking
+    if(ta) ta.classList.add('locked');
+    const rp = g('ebb-reflection-panel'); if(rp) rp.classList.remove('visible');
+    const rt = g('ebb-reflect-thinking'); if(rt) rt.classList.add('visible');
+    const reflBtn = g('ebb-reflect-btn'); if(reflBtn) { reflBtn.disabled = true; reflBtn.textContent = 'Reading…'; }
+    const contBtn = g('ebb-continue-btn'); if(contBtn) { contBtn.disabled = true; contBtn.textContent = 'Wait…'; }
+
+    const systemPrompt = 'You are a thoughtful coach assistant in an ethics course. A student has completed one step of a structured coaching session. Respond in 2-4 sentences doing ONE of these: (1) If the response is specific and honest — acknowledge what was demonstrated and briefly note what the next step builds on. (2) If vague or generic — ask ONE concrete question naming what is missing. (3) If performed rather than genuine — gently note the gap and invite honesty. Never moralize. Never summarize what they wrote. Be warm and precise. Under 80 words.';
+
+    const userMsg = 'STEP PROMPT:
+' + step + '
+
+STUDENT RESPONSE:
+' + response;
+
+    try {
+      const res = await fetch(EBB_BACKEND, {
+        method:'POST', signal: AbortSignal.timeout(20000),
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:120, mode:'sage', system:systemPrompt, messages:[{role:'user',content:userMsg}] })
+      });
+      const data = await res.json();
+      const reply = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('') || data.response || 'Could not get a reflection — please continue.';
+
+      ebbSession.reflections[idx] = reply;
+      ebbSession.reflectCounts[idx] = (ebbSession.reflectCounts[idx] || 0) + 1;
+      ebbSaveSession();
+
+      const rt2 = g('ebb-reflect-thinking'); if(rt2) rt2.classList.remove('visible');
+      const rt3 = g('ebb-reflection-text'); if(rt3) rt3.textContent = reply;
+      const rp2 = g('ebb-reflection-panel'); if(rp2) rp2.classList.add('visible');
+      const cnt = ebbSession.reflectCounts[idx];
+      const badge = g('ebb-reflect-count-badge');
+      if(badge) badge.textContent = cnt >= MAX_REFLECTIONS ? 'Max reflections used' : cnt + '/' + MAX_REFLECTIONS + ' reflections';
+
+      if(reflBtn) {
+        reflBtn.disabled = cnt >= MAX_REFLECTIONS;
+        reflBtn.textContent = cnt >= MAX_REFLECTIONS ? '🧭 Reflected' : '🧭 Reflect again';
+      }
+      if(contBtn) { contBtn.disabled = false; contBtn.textContent = 'Continue →'; }
+      if(ta) ta.classList.remove('locked');
+
+    } catch(err) {
+      const rt2 = g('ebb-reflect-thinking'); if(rt2) rt2.classList.remove('visible');
+      if(ta) ta.classList.remove('locked');
+      if(reflBtn) { reflBtn.disabled = false; reflBtn.textContent = '🧭 Reflect with Coach'; }
+      if(contBtn) { contBtn.disabled = ta && ta.value.length >= MIN_CHARS ? false : true; contBtn.textContent = 'Continue →'; }
+      alert('Could not reach the coach backend. Please check your connection and try again.');
+    }
+  }
+  window.reflectWithCoach = reflectWithCoach;
+
+  function reviseResponse() {
+    const rp = g('ebb-reflection-panel'); if(rp) rp.classList.remove('visible');
+    const ta = g('ebb-response-area');
+    if(ta) { ta.classList.remove('locked'); ta.focus(); }
+    const reflBtn = g('ebb-reflect-btn');
+    const idx = ebbSession ? ebbSession.currentStepIndex : 0;
+    const cnt = ebbSession ? (ebbSession.reflectCounts[idx] || 0) : 0;
+    if(reflBtn) { reflBtn.disabled = cnt >= MAX_REFLECTIONS; reflBtn.textContent = cnt >= MAX_REFLECTIONS ? '🧭 Reflected' : '🧭 Reflect again'; }
+  }
+  window.reviseResponse = reviseResponse;
+
+  // ── Session completion & Coach Note generation (Sonnet) ──────────────────
+  async function startSessionCompletion() {
+    if(!ebbSession) return;
+    ebbSession.state = 'completing';
+    ebbSaveSession();
+
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+    if(!def) return;
+
+    // Show completing overlay
+    const overlay = g('ebb-completing-overlay');
+    if(overlay) overlay.classList.add('visible');
+
+    // Main area hidden
+    const main = g('ebb-session-main');
+    const footer = g('ebb-session-footer');
+    if(main) main.style.visibility = 'hidden';
+    if(footer) footer.style.display = 'none';
+
+    // Build checklist
+    const checklist = g('ebb-checklist');
+    if(checklist) {
+      checklist.innerHTML = def.steps.map((s,i) => {
+        const label = s.split('\n')[0].substring(0,60);
+        return '<div class="ebb-check-item"><div class="ebb-check-mark done">✓</div><span>' + escapeHtml(label) + (label.length>=60?'…':'') + '</span></div>';
+      }).join('');
+    }
+
+    // Build payload for Coach Note generation
+    const stepPairs = def.steps.map((s,i) => 'Step ' + (i+1) + ':\n' + s.split('\n')[0].substring(0,200) + '\n\nStudent response:\n' + (ebbSession.responses[i] || '[not answered]')).join('\n\n---\n\n');
+
+    const systemPrompt = 'You are generating a Coach Note for a student who completed a structured EBB ethics coaching session. Synthesize their responses into a Coach Note with these sections:\n\nKEY FINDING: One sentence capturing the most significant analytical discovery from this session.\n\nFRAMEWORKS APPLIED: Which ethical frameworks or concepts were engaged and how — specific, not generic.\n\nPERSONAL CONNECTION: What institutional or personal situation was connected to course material — only if the student provided one; omit if not.\n\nSUPPRESSION GAP / FIELD SCAN: Any gap or field scan findings — only if applicable; omit if not.\n\nLIVING THREAD: Any ongoing concern, commitment, or question surfaced — omit if none apparent.\n\nNEXT MOVE: One specific next action or Twin conversation suggested by this session.\n\nWrite in second person (you), past tense. Specific and analytical, not generic. Each section 1-3 sentences. Under 400 words total. Omit sections with no content.';
+
+    const userMsg = 'Coach: ' + def.title + '\n\nDate: ' + new Date().toLocaleDateString() + '\n\n' + stepPairs;
+
+    try {
+      const spinner = g('ebb-note-spinner');
+      if(spinner) spinner.classList.add('visible');
+
+      const res = await fetch(EBB_BACKEND, {
+        method:'POST', signal:AbortSignal.timeout(40000),
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:650, mode:'coach', system:systemPrompt, messages:[{role:'user',content:userMsg}] })
+      });
+      const data = await res.json();
+      const note = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('') || data.response || '';
+
+      ebbGeneratedNote = note;
+      ebbSession.generatedNote = note;
+      ebbSession.state = 'reviewing';
+      ebbSaveSession();
+
+      if(overlay) overlay.classList.remove('visible');
+      if(main) main.style.visibility = '';
+      showCoachNoteReview(note, def);
+
+    } catch(err) {
+      if(overlay) overlay.classList.remove('visible');
+      if(main) main.style.visibility = '';
+      if(footer) footer.style.display = 'flex';
+      alert('Could not generate Coach Note — your responses are saved. Try completing again.');
+    }
+  }
+
+  function showCoachNoteReview(noteText, def) {
+    const review = g('ebb-note-review');
+    const noteActions = g('ebb-note-actions');
+    const main = g('ebb-session-main');
+    const footer = g('ebb-session-footer');
+    if(main) main.style.display = 'none';
+    if(footer) footer.style.display = 'none';
+    if(review) review.classList.add('visible');
+    if(noteActions) noteActions.style.display = 'flex';
+
+    const title = g('ebb-note-review-title');
+    const date = g('ebb-note-review-date');
+    if(title && def) title.textContent = def.title + ' — Coach Note';
+    if(date) date.textContent = new Date().toLocaleString();
+
+    // Parse sections from note text
+    const sections = g('ebb-note-sections');
+    if(sections) {
+      const sectionNames = ['KEY FINDING','FRAMEWORKS APPLIED','PERSONAL CONNECTION','SUPPRESSION GAP / FIELD SCAN','LIVING THREAD','NEXT MOVE'];
+      let html = '';
+      sectionNames.forEach(name => {
+        const regex = new RegExp(name + ':?\\s*([\\s\\S]*?)(?=' + sectionNames.filter(n=>n!==name).map(n=>n.replace(/[/]/g,'\\/')).join('|') + '|$)', 'i');
+        const match = noteText.match(regex);
+        if(match && match[1] && match[1].trim()) {
+          html += '<div class="ebb-note-section">'
+            + '<div class="ebb-note-section-label">' + escapeHtml(name) + '</div>'
+            + '<div class="ebb-note-section-content" contenteditable="true" data-section="' + escapeHtml(name) + '">' + escapeHtml(match[1].trim()) + '</div>'
+            + '</div>';
+        }
+      });
+      if(!html) {
+        html = '<div class="ebb-note-section"><div class="ebb-note-section-content" contenteditable="true">' + escapeHtml(noteText) + '</div></div>';
+      }
+      sections.innerHTML = html;
+    }
+  }
+
+  async function regenerateCoachNote() {
+    const def = COACH_DEFS.find(c => c.id === (ebbSession||{}).coachId);
+    if(!def) return;
+    const review = g('ebb-note-review');
+    const noteActions = g('ebb-note-actions');
+    if(review) review.classList.remove('visible');
+    if(noteActions) noteActions.style.display = 'none';
+    await startSessionCompletion();
+  }
+  window.regenerateCoachNote = regenerateCoachNote;
+
+  function saveCoachNoteFromReview() {
+    if(!ebbSession) return;
+    const def = COACH_DEFS.find(c => c.id === ebbSession.coachId);
+
+    // Collect edited content from contenteditable divs
+    const contentDivs = document.querySelectorAll('.ebb-note-section-content');
+    let finalText = '';
+    contentDivs.forEach(div => {
+      const sectionName = div.getAttribute('data-section');
+      if(sectionName) finalText += sectionName + ':\n' + (div.textContent || '').trim() + '\n\n';
+      else finalText += (div.textContent || '').trim() + '\n\n';
+    });
+    finalText = finalText.trim() || ebbGeneratedNote || '';
+
+    // Build Coach Note object
+    const note = {
+      id: uid('coachnote'),
+      coachId: ebbSession.coachId,
+      coachTitle: def ? def.title : ebbSession.coachTitle,
+      title: (def ? def.title : 'Coach Session') + ' — ' + new Date().toLocaleDateString(),
+      input: ebbSession.responses.join('\n\n---\n\n'),
+      mode: 'ebb-session',
+      contextUsed: { ebbSession: true, steps: def ? def.steps.length : 0 },
+      summary: finalText.substring(0, 280),
+      structuredText: finalText,
+      source: 'ebb-coach-v2',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      savedAt: new Date().toISOString()
+    };
+
+    saveCoachNote(note);
+    ebbSession.state = 'saved';
+    ebbSaveSession();
+
+    // Show post-save
+    const review = g('ebb-note-review');
+    const noteActions = g('ebb-note-actions');
+    const postSave = g('ebb-post-save');
+    if(review) review.classList.remove('visible');
+    if(noteActions) noteActions.style.display = 'none';
+    if(postSave) postSave.classList.add('visible');
+
+    // Refresh coach notes list
+    renderCoaches();
+  }
+  window.saveCoachNoteFromReview = saveCoachNoteFromReview;
+
+  function routeToTwinFromCoach() {
+    if(!ebbSession) { exitCoachSession(); return; }
+    const note = ebbGeneratedNote || '';
+    const coachTitle = ebbSession.coachTitle || 'Coach session';
+    const preload = 'I just completed the ' + coachTitle + '. Here is what I found:\n\n' + note.substring(0, 300) + '\n\nHelp me think about how this connects to my Field Scan.';
+
+    exitCoachSession();
+    ebbClearSession();
+
+    // Switch to Twin tab and pre-load
+    const twinTab = document.querySelector('[onclick*="twin"]') || document.querySelector('[data-tab="twin"]');
+    if(twinTab) twinTab.click();
+    setTimeout(() => {
+      const twinInput = document.getElementById('twin-input') || document.getElementById('chat-input');
+      if(twinInput) { twinInput.value = preload; twinInput.focus(); }
+    }, 400);
+  }
+  window.routeToTwinFromCoach = routeToTwinFromCoach;
+
+  // ── Hook EBB catalog into page initialization ────────────────────────────
+  // Use DOMContentLoaded so we capture the real original renderCoaches
+  // without hoisting interference, then call EBB catalog whenever coaches tab opens.
+  document.addEventListener('DOMContentLoaded', function() {
+    // Render EBB catalog on load
+    renderEbbCatalog();
+    // Patch renderCoaches safely — after all declarations have run
+    const _orig = window.renderCoaches;
+    window.renderCoaches = function() {
+      if(typeof _orig === 'function') _orig.call(this);
+      renderEbbCatalog();
+    };
+    // Also hook into tab click for coach tab
+    document.querySelectorAll('[data-tab="coaches"], [onclick*="coaches"], [onclick*="coach"]').forEach(el => {
+      el.addEventListener('click', function() { setTimeout(renderEbbCatalog, 80); });
+    });
+    // Recovery check
+    const saved = ebbLoadSession();
+    if(saved && saved.coachId && saved.state !== 'saved') {
+      const def = COACH_DEFS.find(c => c.id === saved.coachId);
+      if(def) setTimeout(() => showEbbRecoveryBanner(saved, def), 200);
+    }
+  });
+
+
 </script>
 </body>
 </html>
