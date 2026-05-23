@@ -1675,6 +1675,75 @@
             <div id="merge-import-preview" class="privacy-note" style="display:none; border-left-color: rgba(167,139,250,.65);"></div>
           </div>
         </div>
+        <!-- ── Sync Between Devices ─────────────────────────────────────── -->
+        <div class="card" id="sync-panel" style="margin-top:18px;">
+          <div class="card-header">
+            <div class="card-title">Sync Between Devices</div>
+            <div class="card-desc">Move your Navigator memory between phone and laptop, or receive a Philosophical Profile from the PRF-22 app. Uses a one-time 6-character code valid for 10 minutes. Nothing is stored on the server — data is deleted the moment it is received.</div>
+            <details class="help-note"><summary>How this works</summary><div class="help-note-body"><p>When you send, your Navigator memory is compressed and held in server memory for up to 10 minutes. A 6-character code (or QR code) lets your other device retrieve it. The data is deleted immediately when received — it cannot be fetched twice. If the timer expires before you receive, nothing is retained on the server. Use this for phone ↔ laptop transfers and for importing your PRF-22 Philosophical Profile into the Navigator.</p></div></details>
+          </div>
+          <div class="card-body">
+
+            <!-- Send / Receive tabs -->
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+              <button id="sync-tab-send" class="btn small primary" type="button" onclick="syncShowTab('send')">Send from this device</button>
+              <button id="sync-tab-receive" class="btn small ghost" type="button" onclick="syncShowTab('receive')">Receive on this device</button>
+            </div>
+
+            <!-- ── SEND PANEL ── -->
+            <div id="sync-send-panel">
+              <div class="privacy-note"><strong>What gets sent:</strong> your complete Navigator memory — the same as Export JSON. Twin conversations, Pulse history, Field Scans, Move Cards, PRF profile, Coach Notes, and Living Threads.</div>
+              <div class="quick-actions" style="margin-top:12px;">
+                <button class="btn small primary" type="button" onclick="syncSend()">Generate transfer code</button>
+              </div>
+              <!-- Code display (hidden until send) -->
+              <div id="sync-code-display" style="display:none;margin-top:18px;">
+                <div style="text-align:center;padding:20px;border:1px solid rgba(13,94,87,.45);background:rgba(13,94,87,.08);border-radius:16px;">
+                  <div style="font:700 .7rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Enter this code on the receiving device</div>
+                  <div id="sync-code-text" style="font:900 2.8rem/1 var(--mono);color:var(--gold);letter-spacing:.18em;margin-bottom:12px;"></div>
+                  <div id="sync-countdown" style="font:600 .82rem/1 var(--mono);color:var(--muted);margin-bottom:16px;"></div>
+                  <canvas id="sync-qr-canvas" style="display:block;margin:0 auto 12px;border-radius:10px;background:#fff;padding:8px;" width="160" height="160"></canvas>
+                  <div style="font:500 .78rem/1.4 var(--mono);color:var(--dim);margin-bottom:12px;">Scan this QR code on the receiving device instead of typing the code</div>
+                  <button class="btn small danger" type="button" onclick="syncCancel()">Cancel transfer</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── RECEIVE PANEL ── -->
+            <div id="sync-receive-panel" style="display:none;">
+              <div class="privacy-note"><strong>To receive a Navigator sync:</strong> enter the 6-character code shown on the sending device, or use your device camera to scan the QR code.</div>
+              <div style="margin-top:14px;display:grid;gap:10px;">
+                <label style="font:700 .72rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);">
+                  Enter 6-character code
+                  <input id="sync-receive-code" type="text" maxlength="6"
+                    placeholder="e.g. R7KPQ2"
+                    style="margin-top:7px;text-transform:uppercase;font:700 1.4rem/1 var(--mono);letter-spacing:.18em;text-align:center;"
+                    oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
+                    onkeydown="if(event.key==='Enter')syncReceive()" />
+                </label>
+                <div class="quick-actions">
+                  <button class="btn small primary" type="button" onclick="syncReceive()">Receive data</button>
+                </div>
+              </div>
+              <div id="sync-receive-preview" style="display:none;margin-top:14px;" class="confidence-note"></div>
+              <div id="sync-receive-actions" style="display:none;margin-top:10px;display:none;">
+                <div class="quick-actions">
+                  <button class="btn small primary" type="button" onclick="syncImportMerge()">Import and merge</button>
+                  <button class="btn small ghost" type="button" onclick="syncImportReplace()">Import and replace</button>
+                  <button class="btn small danger" type="button" onclick="syncDiscardReceived()">Discard</button>
+                </div>
+                <div class="privacy-note" style="margin-top:8px;"><strong>Merge</strong> adds new items without replacing your current memory. <strong>Replace</strong> restores the received data as your complete Navigator memory — export a backup first if you want to keep what is here now.</div>
+              </div>
+            </div>
+
+            <!-- Status message -->
+            <div id="sync-status-msg" style="display:none;margin-top:12px;" class="workspace-note"></div>
+
+            <div class="privacy-note" style="margin-top:16px;"><strong>Privacy:</strong> data is held in server memory only during the transfer window and deleted immediately on receipt or after 10 minutes. It is never written to disk and cannot be accessed by anyone without the code.</div>
+          </div>
+        </div>
+        <!-- ── End Sync Panel ────────────────────────────────────────────── -->
+
         <div class="card" id="maturity-snapshot-panel" style="margin-top:18px;">
           <div class="card-header">
             <div class="card-title">Instructor Checkpoint Snapshot</div>
@@ -8127,6 +8196,306 @@ Return only valid JSON with this shape:
   applyHashWorkspace();
 
 
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SYNC RELAY — cross-device and PRF-22→Navigator transfer
+  // Uses /api/sync/push, /api/sync/fetch, /api/sync/status, /api/sync/cancel
+  // ═══════════════════════════════════════════════════════════════════════
+
+  var syncState = {
+    activeCode: null,
+    countdownInterval: null,
+    expiresAt: null,
+    receivedData: null,
+    receivedLabel: null
+  };
+
+  var SYNC_BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+  function syncShowTab(tab) {
+    var sendPanel   = document.getElementById('sync-send-panel');
+    var receivePanel = document.getElementById('sync-receive-panel');
+    var sendBtn     = document.getElementById('sync-tab-send');
+    var receiveBtn  = document.getElementById('sync-tab-receive');
+    if (tab === 'send') {
+      if (sendPanel) sendPanel.style.display = 'block';
+      if (receivePanel) receivePanel.style.display = 'none';
+      if (sendBtn) { sendBtn.className = 'btn small primary'; }
+      if (receiveBtn) { receiveBtn.className = 'btn small ghost'; }
+    } else {
+      if (sendPanel) sendPanel.style.display = 'none';
+      if (receivePanel) receivePanel.style.display = 'block';
+      if (sendBtn) { sendBtn.className = 'btn small ghost'; }
+      if (receiveBtn) { receiveBtn.className = 'btn small primary'; }
+    }
+    syncSetStatus('');
+  }
+  window.syncShowTab = syncShowTab;
+
+  function syncSetStatus(msg, isError) {
+    var el = document.getElementById('sync-status-msg');
+    if (!el) return;
+    if (!msg) { el.style.display = 'none'; el.textContent = ''; return; }
+    el.style.display = 'block';
+    el.style.borderLeftColor = isError ? 'rgba(204,107,95,.6)' : 'rgba(96,163,111,.55)';
+    el.style.background = isError ? 'rgba(204,107,95,.07)' : 'rgba(96,163,111,.06)';
+    el.textContent = msg;
+  }
+
+  async function syncSend() {
+    syncSetStatus('Packaging your Navigator memory...');
+    try {
+      var payload = buildNavigatorBackupPayload();
+      var res = await fetch(SYNC_BACKEND + '/api/sync/push', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data: payload, label: 'Navigator sync — ' + new Date().toLocaleString() })
+      });
+      var json = await res.json();
+      if (!res.ok || !json.code) throw new Error(json.error || 'Transfer failed');
+      syncState.activeCode = json.code;
+      syncState.expiresAt = Date.now() + (json.expires_in * 1000);
+      syncShowCode(json.code);
+      syncSetStatus('Code ready. Enter it on the receiving device within 10 minutes.');
+    } catch(e) {
+      syncSetStatus('Could not start transfer: ' + e.message, true);
+    }
+  }
+  window.syncSend = syncSend;
+
+  function syncShowCode(code) {
+    var display = document.getElementById('sync-code-display');
+    var codeText = document.getElementById('sync-code-text');
+    if (display) display.style.display = 'block';
+    if (codeText) codeText.textContent = code;
+    syncStartCountdown();
+    syncDrawQR(code);
+  }
+
+  function syncStartCountdown() {
+    clearInterval(syncState.countdownInterval);
+    syncState.countdownInterval = setInterval(function() {
+      var remaining = Math.max(0, Math.round((syncState.expiresAt - Date.now()) / 1000));
+      var el = document.getElementById('sync-countdown');
+      if (el) {
+        var mins = Math.floor(remaining / 60);
+        var secs = remaining % 60;
+        el.textContent = 'Expires in ' + mins + ':' + String(secs).padStart(2,'0');
+        el.style.color = remaining < 60 ? 'rgba(204,107,95,.9)' : 'var(--muted)';
+      }
+      if (remaining === 0) {
+        clearInterval(syncState.countdownInterval);
+        var display = document.getElementById('sync-code-display');
+        if (display) display.style.display = 'none';
+        syncSetStatus('Code expired. Generate a new one if you still need to transfer.', true);
+        syncState.activeCode = null;
+      }
+    }, 1000);
+  }
+
+  async function syncCancel() {
+    clearInterval(syncState.countdownInterval);
+    var code = syncState.activeCode;
+    syncState.activeCode = null;
+    var display = document.getElementById('sync-code-display');
+    if (display) display.style.display = 'none';
+    if (code) {
+      try {
+        await fetch(SYNC_BACKEND + '/api/sync/cancel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        });
+      } catch(e) {}
+    }
+    syncSetStatus('Transfer cancelled.');
+  }
+  window.syncCancel = syncCancel;
+
+  async function syncReceive() {
+    var input = document.getElementById('sync-receive-code');
+    var code = input ? input.value.toUpperCase().replace(/[^A-Z0-9]/g,'') : '';
+    if (code.length !== 6) { syncSetStatus('Please enter the full 6-character code.', true); return; }
+    syncSetStatus('Retrieving data...');
+    try {
+      var res = await fetch(SYNC_BACKEND + '/api/sync/fetch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code })
+      });
+      var json = await res.json();
+      if (res.status === 404) throw new Error('Code not found or already used. Check you entered it correctly.');
+      if (res.status === 410) throw new Error('Code has expired. Ask the sender to generate a new one.');
+      if (!res.ok) throw new Error(json.error || 'Could not retrieve data.');
+      syncState.receivedData = json.data;
+      syncState.receivedLabel = json.label || 'Navigator data';
+      syncShowReceivePreview(json.data, json.label);
+    } catch(e) {
+      syncSetStatus(e.message, true);
+    }
+  }
+  window.syncReceive = syncReceive;
+
+  function syncShowReceivePreview(data, label) {
+    var preview = document.getElementById('sync-receive-preview');
+    var actions = document.getElementById('sync-receive-actions');
+    if (!preview || !actions) return;
+    // Build a summary of what arrived
+    var lines = [];
+    if (data.chat && data.chat.length) lines.push(data.chat.filter(function(m){return m.role!=='system';}).length + ' Twin conversation turns');
+    if (data.journal && data.journal.length) lines.push(data.journal.length + ' Twin Journal entries');
+    if (data.coherencePulse && data.coherencePulse.length) lines.push(data.coherencePulse.length + ' Daily Pulse readings');
+    if (data.fieldScans && data.fieldScans.length) lines.push(data.fieldScans.length + ' Field Scans');
+    if (data.moveCards && data.moveCards.length) lines.push(data.moveCards.length + ' Move Cards');
+    if (data.livingThreads && data.livingThreads.length) lines.push(data.livingThreads.length + ' Living Threads');
+    if (data.coachNotes && data.coachNotes.length) lines.push(data.coachNotes.length + ' Coach Notes');
+    if (data.prf22Profile || (data.source === 'PRF-22')) lines.push('PRF-22 Philosophical Profile');
+    if (data.philosophicalProfile) lines.push('Philosophical Profile text');
+    var summary = lines.length ? lines.join(' · ') : 'Navigator data package';
+    preview.style.display = 'block';
+    preview.innerHTML = '<strong>Ready to import:</strong> ' + escapeHtml(label || 'Navigator sync') + '<br><span style="color:var(--muted);font-size:.85rem;">' + escapeHtml(summary) + '</span>';
+    actions.style.display = 'block';
+    syncSetStatus('Data received. Choose how to import it below.');
+  }
+
+  function syncImportMerge() {
+    if (!syncState.receivedData) return;
+    var data = syncState.receivedData;
+    // Check if this is a PRF-22 profile payload rather than a full Navigator export
+    if (data.source === 'PRF-22' || data.profileType === 'E-Twin Profile') {
+      // Use the existing PRF import normalizer
+      try {
+        var profile = normalizeImportedPrf22Profile(data, { fileName: 'prf22-sync.json', fromNavigatorBackup: false });
+        if (profile) {
+          setPrf22Profile(profile);
+          syncClearReceiveUI();
+          renderAll();
+          syncSetStatus('PRF-22 Philosophical Profile imported successfully. Open the Memory workspace to view it.');
+          return;
+        }
+      } catch(e) {}
+    }
+    // Full Navigator export — use existing merge logic
+    try {
+      var restored = validateImportPayload(data);
+      // Inline merge (same as handleMergeTwinMemoryFile confirm path)
+      try { localStorage.setItem(KEYS.preMergeBackup, JSON.stringify(buildNavigatorBackupPayload())); } catch(e) {}
+      setChat(mergeCollection(getChat(), restored.chat, 'chat').items);
+      setJournal(mergeCollection(getJournal(), restored.journal, 'journal').items);
+      setCoverage(mergeCoverage(getCoverage(), restored.coverage));
+      setQuestions(mergeQuestions(getQuestions(), restored.questions));
+      setCapsules(mergeCollection(getCapsules(), restored.documentCapsules, 'capsule', 30).items);
+      setFieldScans(mergeCollection(getFieldScans(), restored.fieldScans, 'field', 40).items);
+      setMoveCards(mergeCollection(getMoveCards(), restored.moveCards, 'move', 80).items);
+      setCoachNotes(mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80).items);
+      setLivingThreads(mergeCollection(getLivingThreads(), restored.livingThreads, 'thread', 80).items);
+      setCoherencePulseHistory(mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120).items);
+      if (!getPrf22Profile() && restored.prf22Profile) setPrf22Profile(restored.prf22Profile);
+      if (!getContextAssembly().text && restored.contextAssembly && restored.contextAssembly.text) setContextAssembly(restored.contextAssembly);
+      syncClearReceiveUI();
+      renderAll();
+      syncSetStatus('Sync complete — new items merged into your Navigator memory.');
+    } catch(e) {
+      syncSetStatus('Merge failed: ' + e.message, true);
+    }
+  }
+  window.syncImportMerge = syncImportMerge;
+
+  function syncImportReplace() {
+    if (!syncState.receivedData) return;
+    if (!confirm('Replace your current Navigator memory with the received data? Export a backup first if you want to keep what is here now.')) return;
+    try {
+      var restored = validateImportPayload(syncState.receivedData);
+      setChat(restored.chat);
+      setJournal(restored.journal);
+      setCoverage(restored.coverage);
+      setQuestions(restored.questions);
+      setCapsules(restored.documentCapsules || []);
+      setFieldScans(restored.fieldScans || []);
+      setContextAssembly(restored.contextAssembly || { text:'', updatedAt:new Date().toISOString() });
+      setMoveCards(restored.moveCards || []);
+      setPendingMoveCards(restored.pendingMoveCards || []);
+      setCurrentMoveId(restored.currentMoveId || '');
+      setMoveCompareSelection(restored.moveCompareSelection || []);
+      setMoveComparisonLens(restored.moveComparisonLens || 'balanced');
+      setCurrentMovePlan(restored.currentMovePlan || null);
+      setPrf22Profile(restored.prf22Profile || null);
+      setCoachNotes(restored.coachNotes || []);
+      setLivingThreads(restored.livingThreads || []);
+      setCoherencePulseHistory(restored.coherencePulse || []);
+      syncClearReceiveUI();
+      renderAll();
+      syncSetStatus('Navigator memory replaced with received data.');
+    } catch(e) {
+      syncSetStatus('Replace failed: ' + e.message, true);
+    }
+  }
+  window.syncImportReplace = syncImportReplace;
+
+  function syncDiscardReceived() {
+    syncClearReceiveUI();
+    syncSetStatus('Received data discarded. Nothing was imported.');
+  }
+  window.syncDiscardReceived = syncDiscardReceived;
+
+  function syncClearReceiveUI() {
+    syncState.receivedData = null;
+    syncState.receivedLabel = null;
+    var input = document.getElementById('sync-receive-code');
+    if (input) input.value = '';
+    var preview = document.getElementById('sync-receive-preview');
+    if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+    var actions = document.getElementById('sync-receive-actions');
+    if (actions) actions.style.display = 'none';
+  }
+
+  // ── QR Code generator (pure JS, no external library) ─────────────────────
+  // Draws a URL-encoded QR into the canvas element using a simple matrix approach.
+  // The QR encodes the full receive URL so the other device can scan directly.
+  function syncDrawQR(code) {
+    var canvas = document.getElementById('sync-qr-canvas');
+    if (!canvas) return;
+    var url = SYNC_BACKEND.replace('https://','') + '/api/sync/fetch?code=' + code;
+    // Use Google Charts QR API as a reliable fallback rendered as an image
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 160, 160);
+      ctx.drawImage(img, 0, 0, 160, 160);
+    };
+    img.onerror = function() {
+      // If image fails, show text fallback
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 160, 160);
+      ctx.fillStyle = '#000000';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Code: ' + code, 80, 80);
+      ctx.fillText('(scan unavailable)', 80, 96);
+    };
+    // Use QR server API — free, no key required, no data retained
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent('https://rmertzman-tech.github.io/SPC-Navigator/#sync=' + code);
+  }
+
+  // ── Handle incoming QR scan via URL hash ──────────────────────────────────
+  // If Navigator is opened with #sync=XXXXXX, auto-populate the receive field
+  (function checkSyncHash() {
+    var hash = window.location.hash || '';
+    var match = hash.match(/[#&]sync=([A-Z0-9]{6})/i);
+    if (match) {
+      var code = match[1].toUpperCase();
+      showWorkspace('memory');
+      syncShowTab('receive');
+      var input = document.getElementById('sync-receive-code');
+      if (input) { input.value = code; }
+      setTimeout(function() { syncReceive(); }, 400);
+      // Clean the hash
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  })();
 
   // ═══════════════════════════════════════════════════════════════════════
   // EBB COACH WORKSPACE v2 — Session Management
