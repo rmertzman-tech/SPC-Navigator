@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.2-instructor-maturity-snapshot" />
+  <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — v3.6E.2 Instructor Maturity Snapshot</title>
-  <meta name="description" content="Navigator v3.6E.2 adds an optional, privacy-preserving Instructor Maturity Snapshot for Canvas checkpoints while preserving v3.6E.1 Pulse Helper Patch functionality, visual polish, accessibility improvements, and local-first memory." />
+  <title>The Navigator — v3.6E.3 Private Navigator Refactor</title>
+  <meta name="description" content="Navigator v3.6E.3 removes public Coach workspace language, replaces it with private guide cards, preserves local-first writing areas, and keeps optional privacy-preserving Instructor Maturity Snapshot functionality for Canvas checkpoints." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -875,7 +875,7 @@
     .ebb-check-mark { width:18px; height:18px; border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:.65rem; }
     .ebb-check-mark.done { background:var(--teal); border-color:var(--teal); color:#fff; }
 
-    /* Coach Note review */
+    /* Guide Note review */
     .ebb-note-review { display:none; flex-direction:column; gap:16px; padding:18px; animation:fadeIn .2s ease; }
     .ebb-note-review.visible { display:flex; }
     .ebb-note-title { font-weight:900; color:var(--text); font-size:1.05rem; }
@@ -1233,7 +1233,7 @@
       <button id="workspace-btn-memory" class="workspace-btn" type="button" onclick="showWorkspace('memory')">Memory</button>
       <button id="workspace-btn-field" class="workspace-btn" type="button" onclick="showWorkspace('field')">Field Map</button>
       <button id="workspace-btn-moves" class="workspace-btn" type="button" onclick="showWorkspace('moves')">Moves</button>
-      <button id="workspace-btn-apps" class="workspace-btn" type="button" onclick="showWorkspace('apps')">Coaches</button>
+      <button id="workspace-btn-apps" class="workspace-btn" type="button" onclick="showWorkspace('apps')">Guides</button>
       <button id="workspace-btn-help" class="workspace-btn" type="button" onclick="showWorkspace('help')">Help</button>
     </nav>
 
@@ -1286,7 +1286,7 @@
               <div class="microhelp-item"><strong>Threads</strong>Commitments, fears, questions, and sources of meaning your Twin helps you hold.</div>
               <div class="microhelp-item"><strong>Field Map</strong>A way to see what environments are doing to your agency.</div>
               <div class="microhelp-item"><strong>Moves</strong>Small actions that preserve or expand future possibility.</div>
-              <div class="microhelp-item"><strong>Coaches</strong>Guided workrooms for learning, reasoning, research, or ethical cases.</div>
+              <div class="microhelp-item"><strong>Guides</strong>Private guide cards that help you choose where to work next without directing your answers.</div>
             </div>
           </div>
           <div class="quick-actions">
@@ -1295,7 +1295,7 @@
             <button class="btn small primary" type="button" onclick="showStudentOutputPanel()">Student Output</button>
             <button class="btn small ghost" type="button" onclick="showWorkspace('threads')">Living Threads</button>
             <button class="btn small ghost" type="button" onclick="showWorkspace('field')">Build Field Map</button>
-            <button class="btn small purple" type="button" onclick="showWorkspace('apps')">Open Coaches</button>
+            <button class="btn small purple" type="button" onclick="showWorkspace('apps')">Open Guides</button>
             <button class="btn small ghost" type="button" onclick="exportTwinJournal('json')">Export JSON Backup</button>
           </div>
         </div>
@@ -1657,7 +1657,7 @@
         <div class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="card-title">Memory & Backup</div>
-            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, Pulse history, Move Cards, Coach Notes, PRF profile, mode, and settings.</div>
+            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, Pulse history, Move Cards, Guide Notes, PRF profile, mode, and settings.</div>
             <details class="help-note"><summary>What is this?</summary><div class="help-note-body"><p>Use JSON export as the safest full backup. Use Import / Restore only when you want to replace this browser's memory. Use Merge JSON to add new records from another device, such as a phone session, without erasing this browser's existing memory.</p></div></details>
           </div>
           <div class="card-body">
@@ -1692,7 +1692,7 @@
 
             <!-- ── SEND PANEL ── -->
             <div id="sync-send-panel">
-              <div class="privacy-note"><strong>What gets sent:</strong> your complete Navigator memory — the same as Export JSON. Twin conversations, Pulse history, Field Scans, Move Cards, PRF profile, Coach Notes, and Living Threads.</div>
+              <div class="privacy-note"><strong>What gets sent:</strong> your complete Navigator memory — the same as Export JSON. Twin conversations, Pulse history, Field Scans, Move Cards, PRF profile, Guide Notes, and Living Threads.</div>
               <div class="quick-actions" style="margin-top:12px;">
                 <button class="btn small primary" type="button" onclick="syncSend()">Generate transfer code</button>
               </div>
@@ -2116,114 +2116,59 @@
         <div class="workspace-stack">
           <div class="card">
             <div class="card-header">
-              <div class="eyebrow">Applications &amp; Coaches</div>
-              <div class="card-title">Guided pathways through Navigator.</div>
-              <div class="card-desc">Navigator is the core agency platform; Coaches are guided pathways for applying that platform to particular life, learning, research, and ethical tasks.</div>
+              <div class="eyebrow">Private Guide Cards</div>
+              <div class="card-title">Choose your next Navigator move.</div>
+              <div class="card-desc">Guide cards are not coaches, graders, or authorities. They are private prompts that help you decide which Navigator workspace fits the kind of reflection you want to do next.</div>
             </div>
             <div class="card-body">
-              <div class="experience-strip"><strong>Lived version:</strong> A Coach is like a focused workroom. It helps you use Navigator for one kind of task: reasoning, ethics, research, or capability analysis. It does not replace your judgment.</div>
-              <div class="workspace-note"><strong>Coaches are arenas, not authorities.</strong> They help structure attention, reasoning, comparison, and next-move preparation. They do not grade, diagnose, decide, or replace the user’s authorship.</div>
-              <!-- EBB Coach Workspace v2 -->
-              <div id="ebb-coach-workspace" style="position:relative;">
-                <div id="ebb-catalog-view">
-                  <div id="coach-catalog" class="coach-catalog"></div>
+              <div class="experience-strip"><strong>Lived version:</strong> A guide card is like a quiet signpost. It does not tell you what to think. It helps you choose whether to write, map a field, preserve a thread, compare moves, or prepare an optional export.</div>
+              <div class="workspace-note"><strong>Your authorship stays with you.</strong> Navigator keeps your private writing areas intact. Nothing is submitted, shared, or sent to an instructor unless you intentionally create an export, receipt, or text you choose to share.</div>
+              <div class="start-path-grid">
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 1</div><div class="start-step-status">Private</div></div>
+                  <div class="start-step-title">Clarify what is happening</div>
+                  <div class="start-step-desc">Use the Twin or Journal when you need to hear your own thought more clearly before turning it into a field scan, thread, or plan.</div>
+                  <button class="btn small primary" type="button" onclick="showWorkspace('twin'); startTwin();">Open Twin</button>
                 </div>
-                <div id="ebb-session-workspace" class="ebb-session-workspace" role="region" aria-label="Coach session workspace">
-                  <div class="ebb-session-header">
-                    <div class="ebb-session-title" id="ebb-sess-title">Coach</div>
-                    <div class="ebb-step-counter" id="ebb-sess-counter">Step 1</div>
-                    <button class="ebb-session-exit" onclick="exitCoachSession()" type="button">✕ Exit</button>
-                  </div>
-                  <div class="ebb-progress-rail" id="ebb-progress-rail" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-                    <div class="ebb-progress-fill" id="ebb-progress-fill" style="width:0%"></div>
-                  </div>
-                  <div class="ebb-step-dots" id="ebb-step-dots" aria-hidden="true"></div>
-                  <div class="ebb-session-main" id="ebb-session-main">
-                    <div id="ebb-prev-accordion" class="ebb-prev-accordion" style="display:none;">
-                      <button class="ebb-prev-toggle" onclick="togglePrevAccordion()" type="button">
-                        <span id="ebb-prev-label">Your previous responses</span>
-                        <span id="ebb-prev-chevron">▾</span>
-                      </button>
-                      <div id="ebb-prev-list" class="ebb-prev-list"></div>
-                    </div>
-                    <div class="ebb-step-card" id="ebb-step-card">
-                      <button class="ebb-why-toggle" onclick="toggleWhyBox()" type="button" title="Why this step?">?</button>
-                      <div class="ebb-step-badge" id="ebb-step-badge">Step 1</div>
-                      <div class="ebb-step-context" id="ebb-step-context" style="display:none;"></div>
-                      <div class="ebb-step-prompt" id="ebb-step-prompt"></div>
-                      <div class="ebb-why-box" id="ebb-why-box"></div>
-                    </div>
-                    <div class="ebb-response-wrap">
-                      <label class="ebb-response-label" for="ebb-response-area">Your response</label>
-                      <textarea id="ebb-response-area" class="ebb-response-area"
-                        placeholder="Write specifically — not what seems like the right answer, but what is actually true for you in this situation. Specificity is honesty."
-                        oninput="onResponseInput()" aria-describedby="ebb-char-count"></textarea>
-                      <div class="ebb-char-count" id="ebb-char-count" aria-live="polite">0 characters</div>
-                    </div>
-                    <div class="ebb-reflect-thinking" id="ebb-reflect-thinking">
-                      <div class="ebb-spinner"></div>
-                      <span>Reading your response...</span>
-                    </div>
-                    <div class="ebb-reflection-panel" id="ebb-reflection-panel" role="region" aria-live="polite">
-                      <div class="ebb-reflection-header">
-                        <span class="ebb-reflection-icon">🧭</span>
-                        <span class="ebb-reflection-label">Coach Reflection</span>
-                        <span id="ebb-reflect-count-badge" style="margin-left:auto;font:700 .65rem/1 var(--mono);color:var(--dim);"></span>
-                      </div>
-                      <div class="ebb-reflection-text" id="ebb-reflection-text"></div>
-                      <div class="ebb-reflection-actions">
-                        <button class="btn small ghost" type="button" onclick="reviseResponse()">✎ Revise my response</button>
-                        <button class="btn small primary" type="button" onclick="advanceStep()">Continue to next step →</button>
-                      </div>
-                    </div>
-                    <div style="height:80px;flex-shrink:0;"></div>
-                  </div>
-                  <div class="ebb-completing-overlay" id="ebb-completing-overlay">
-                    <div class="ebb-completing-title">Compiling your session...</div>
-                    <div class="ebb-step-checklist" id="ebb-checklist"></div>
-                    <div class="ebb-reflect-thinking visible" id="ebb-note-spinner">
-                      <div class="ebb-spinner" style="border-top-color:var(--teal);"></div>
-                      <span>Generating your Coach Note...</span>
-                    </div>
-                  </div>
-                  <div class="ebb-note-review" id="ebb-note-review">
-                    <div>
-                      <div class="ebb-note-title" id="ebb-note-review-title">Coach Note</div>
-                      <div class="ebb-note-date" id="ebb-note-review-date"></div>
-                    </div>
-                    <div id="ebb-note-sections"></div>
-                    <div class="ebb-note-edit-hint">Click any section to edit before saving.</div>
-                  </div>
-                  <div class="ebb-note-actions" id="ebb-note-actions" style="display:none;">
-                    <button class="btn primary" type="button" onclick="saveCoachNoteFromReview()">Save Coach Note</button>
-                    <button class="btn ghost small" type="button" onclick="regenerateCoachNote()">Regenerate</button>
-                  </div>
-                  <div class="ebb-post-save" id="ebb-post-save">
-                    <div class="ebb-post-save-icon">✓</div>
-                    <div class="ebb-post-save-title">Coach Note saved.</div>
-                    <div class="ebb-post-save-subtitle">Your Coach Note is now available below and in your Twin conversations.</div>
-                    <div class="ebb-post-save-actions">
-                      <button class="btn primary" type="button" onclick="routeToTwinFromCoach()">Ask Twin about this</button>
-                      <button class="btn ghost" type="button" onclick="exitCoachSession()">Return to Coaches</button>
-                    </div>
-                  </div>
-                  <div class="ebb-session-footer" id="ebb-session-footer">
-                    <div class="ebb-footer-left">
-                      <button class="btn ghost small" type="button" id="ebb-back-btn" onclick="goBackStep()" style="display:none;"><span>←</span> Back</button>
-                    </div>
-                    <div class="ebb-footer-right">
-                      <button class="btn ghost small" type="button" id="ebb-reflect-btn" onclick="reflectWithCoach()">🧭 Reflect with Coach</button>
-                      <button class="btn primary small" type="button" id="ebb-continue-btn" onclick="advanceStep()" disabled>Continue →</button>
-                    </div>
-                  </div>
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 2</div><div class="start-step-status">Private</div></div>
+                  <div class="start-step-title">Preserve what matters</div>
+                  <div class="start-step-desc">Use Memory when you want to keep a journal entry, review capsules, import a profile, or restore/export your local Navigator file.</div>
+                  <button class="btn small ghost" type="button" onclick="showWorkspace('memory')">Open Memory</button>
+                </div>
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 3</div><div class="start-step-status">Private</div></div>
+                  <div class="start-step-title">Map the field</div>
+                  <div class="start-step-desc">Use Field Map when the situation is shaped by rewards, punishments, authority, voice, suppression, or institutional pressure.</div>
+                  <button class="btn small ghost" type="button" onclick="showWorkspace('field')">Open Field Map</button>
+                </div>
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 4</div><div class="start-step-status">Private</div></div>
+                  <div class="start-step-title">Name a Living Thread</div>
+                  <div class="start-step-desc">Use Threads when a concern, commitment, fear, question, or relationship keeps appearing across more than one class, field, or week.</div>
+                  <button class="btn small ghost" type="button" onclick="showWorkspace('threads')">Open Threads</button>
+                </div>
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 5</div><div class="start-step-status">Private</div></div>
+                  <div class="start-step-title">Compare possible moves</div>
+                  <div class="start-step-desc">Use Moves when you are ready to compare small next actions across coherence, capability, responsibility, and future possibility.</div>
+                  <button class="btn small ghost" type="button" onclick="showWorkspace('moves')">Open Moves</button>
+                </div>
+                <div class="start-path-step">
+                  <div class="start-step-top"><div class="start-step-num">Guide 6</div><div class="start-step-status">Chosen export</div></div>
+                  <div class="start-step-title">Prepare something shareable</div>
+                  <div class="start-step-desc">Use Student Output only when you want to create a checkpoint, receipt, or reflection text that you choose to copy or submit outside Navigator.</div>
+                  <button class="btn small purple" type="button" onclick="showWorkspace('output')">Open Student Output</button>
                 </div>
               </div>
+            </div>
+          </div>
           <div class="card" style="margin-top:18px;">
             <div class="card-header">
               <div class="card-title-row">
                 <div>
-                  <div class="card-title">Saved Coach Notes</div>
-                  <div id="summary-coachNotes" class="card-desc">Coach Notes are local records of guided sessions.</div>
+                  <div class="card-title">Saved Guide Notes</div>
+                  <div id="summary-coachNotes" class="card-desc">Guide Notes are local records from earlier guided work. They remain private unless you export or share them.</div>
                 </div>
               </div>
             </div>
@@ -2235,18 +2180,18 @@
         <aside class="side-panel">
           <div class="card">
             <div class="card-header">
-              <div class="card-title">Coach Design Rules</div>
-              <div class="card-desc">These rules keep the Coaches useful and safe.</div>
+              <div class="card-title">Guide Card Design Rules</div>
+              <div class="card-desc">These rules keep Navigator private, user-directed, and course-compatible.</div>
             </div>
             <div class="card-body">
               <ul class="help-list">
-                <li><strong>Minimal context:</strong> use only the local memory needed for the task.</li>
-                <li><strong>No silent authority:</strong> a Coach may suggest distinctions, not decide for the user.</li>
-                <li><strong>PRF humility:</strong> the PRF profile is a starting map, never a verdict.</li>
-                <li><strong>OS1/OS2 discipline:</strong> distinguish shared meaning from shared coordination.</li>
-                <li><strong>Reasoning literacy:</strong> deduction, induction, abduction, analogy, and fallacy detection are treated as tools, each with limits.</li>
+                <li><strong>No hidden authority:</strong> guide cards help route attention; they do not decide what the user should conclude.</li>
+                <li><strong>Private by default:</strong> writing stays in this browser unless the user intentionally exports, copies, or submits it.</li>
+                <li><strong>Minimum necessary context:</strong> use only the workspace and memory needed for the present reflection.</li>
+                <li><strong>PRF humility:</strong> profiles, field scans, and pulse readings are starting maps, never verdicts.</li>
+                <li><strong>Student control:</strong> public-facing output is created only through an explicit user action.</li>
               </ul>
-              <div class="privacy-note">Coach Notes are stored locally and included in JSON export/import. AI-assisted coaching sends selected context to the backend only when you click that button.</div>
+              <div class="privacy-note">Saved Guide Notes are stored locally and included in JSON export/import for backward compatibility. AI-assisted interpretation occurs only when the user intentionally asks the Twin or another backend-supported feature to process selected context.</div>
             </div>
           </div>
         </aside>
@@ -2259,7 +2204,7 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator v3.6E.1 — Pulse Helper Patch</div>
+            <div class="card-title">Navigator v3.6E.3 — Private Navigator Refactor</div>
             <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, Co-Living Twin behavior, the Capability Engine Guided Introduction, Start Here, Pulse scoring anchors, experience-first language, Guided First Session, and Student Reflection Export while adding a first accessibility and visual polish pass.</div>
           </div>
           <div class="card-body">
@@ -2309,7 +2254,7 @@
             </div>
             <div class="help-section">
               <h3>Privacy and security posture</h3>
-              <p><strong>Local-first by design:</strong> conversation, Journal entries, Daily Pulse readings, PRF-22 profile summaries, Document Capsules, Field Scans, Context Assembly, Move Cards, comparison state, Current Move Plans, and Coach Notes are stored in this browser unless the user exports or restores them.</p>
+              <p><strong>Local-first by design:</strong> conversation, Journal entries, Daily Pulse readings, PRF-22 profile summaries, Document Capsules, Field Scans, Context Assembly, Move Cards, comparison state, Current Move Plans, and Guide Notes are stored in this browser unless the user exports or restores them.</p>
               <p><strong>Backend transparency:</strong> backend AI calls occur only when the user asks the Twin to interpret, summarize, deliberate, create a capsule, or generate an AI-assisted response. Those requests require sending selected prompt context to the configured backend service for processing. PRF-22 import stores the raw JSON locally and sends only a short profile summary when Twin Context is turned on. Users should avoid uploading highly sensitive material unless they understand that selected content may be sent for AI processing.</p>
               <p><strong>User control:</strong> users can export JSON, export TXT, import/restore JSON, delete saved items, and clear local memory. Document uploads create reviewable capsules; the app saves only the capsule the user approves, not the raw uploaded document text.</p>
             </div>
@@ -2322,7 +2267,7 @@
               <h3>Near-term roadmap after this stable demo</h3>
               <ul>
                 <li><strong>PWA testing and merge workflow:</strong> confirm install behavior, update behavior, offline app-shell behavior, and JSON Merge Import from phone to laptop.</li>
-                <li><strong>Navigator Private API specification:</strong> dedicated privacy-minimizing endpoints for Twin, Capsules, Field Maps, Move Cards, and Coaches.</li>
+                <li><strong>Navigator Private API specification:</strong> dedicated privacy-minimizing endpoints for Twin, Capsules, Field Maps, Move Cards, and guide-supported workflows.</li>
                 <li><strong>PRF-22 profile integration:</strong> next refinements can make Field Scans and Move Cards more explicitly PRF-aware without turning the profile into a deterministic verdict.</li>
                 <li><strong>Applications & Coaches:</strong> optional guided modules such as AAC&amp;U Critical Thinking Coach, Ethical Reasoning Coach, EBB Chapter Coaches, and Research Project Coach.</li>
                 <li><strong>Timeline and simulation layer:</strong> longer-term trajectory mapping, UCP-based scenario simulation, and agency-preserving planning over time.</li>
@@ -2393,7 +2338,7 @@
                 <div class="glossary-item"><strong>BioBond</strong><span>A person, practice, place, or structure that helps your agency stay alive under pressure.</span></div>
                 <div class="glossary-item"><strong>Agency-preserving next move</strong><span>The next survivable, coherent action that keeps authorship and possibility open.</span></div>
                 <div class="glossary-item"><strong>Decision lens</strong><span>A temporary way of viewing moves, such as urgency, future agency, support-readiness, or reversibility. It is a perspective, not an order.</span></div>
-                <div class="glossary-item"><strong>Current Move Plan</strong><span>A small, revisable action plan for the move the user is presently considering. It names why now, first action, support, risk, non-sacrifice, and check-back.</span></div><div class="glossary-item"><strong>Coach Note</strong><span>A saved output from a guided Coach session, such as Critical Thinking, Ethical Reasoning, Core Traditions, or Research Project coaching.</span></div>
+                <div class="glossary-item"><strong>Current Move Plan</strong><span>A small, revisable action plan for the move the user is presently considering. It names why now, first action, support, risk, non-sacrifice, and check-back.</span></div><div class="glossary-item"><strong>Guide Note</strong><span>A saved output from a guided Coach session, such as Critical Thinking, Ethical Reasoning, Core Traditions, or Research Project coaching.</span></div>
               </div>
             </div>
             <div class="toolbar">
@@ -2919,7 +2864,7 @@
     const notes = getCoachNotes();
     if(notes.length){
       const n = notes[notes.length - 1];
-      signals.push({ label:'Recent Coach Note', text:(n.title || n.coachTitle || 'Coach note') + ': ' + String(n.summary || '').slice(0, 120) });
+      signals.push({ label:'Recent Guide Note', text:(n.title || n.coachTitle || 'Coach note') + ': ' + String(n.summary || '').slice(0, 120) });
     }
     if(!signals.length) signals.push({ label:'Starting point', text:'No continuity signals yet. The Twin should stay in discovery mode and ask one concrete question.' });
     return signals.slice(0, 9);
@@ -3502,7 +3447,7 @@
       ['Move Cards', moves.length + ' saved', activeMoves.length + ' active · ' + (moves.length - activeMoves.length) + ' not now'],
       ['Current Move Plan', planMatchesCurrent ? 'saved' : currentMove ? 'needed' : 'not ready', planMatchesCurrent ? truncateText(currentMovePlan.firstSmallAction || currentMovePlan.whyNow || 'Plan saved', 96) : currentMove ? 'Create a plan from the selected Current Move.' : 'Select a Current Move before planning.'],
       ['Context Assembly', ctx.text ? 'saved' : 'not yet saved', ctx.text ? truncateText(ctx.text, 96) : 'Use Field Map to name the combined situation.'],
-      ['Coach Notes', coachNotes.length + ' saved', coachNotes.length ? truncateText((coachNotes[coachNotes.length - 1].title || 'Latest Coach Note'), 96) : 'Open Coaches for critical thinking, ethics, traditions, research, or templates.'],
+      ['Guide Notes', coachNotes.length + ' saved', coachNotes.length ? truncateText((coachNotes[coachNotes.length - 1].title || 'Latest Guide Note'), 96) : 'Open Coaches for critical thinking, ethics, traditions, research, or templates.'],
       ['Living Threads', activeLivingThreads.length + ' active', livingThreads.length ? truncateText((activeLivingThreads[activeLivingThreads.length - 1] || livingThreads[livingThreads.length - 1]).title || 'Living Thread', 96) : 'Create a thread for a commitment, fear, inquiry, relationship, practice, or source of Beauty/Awe.'],
       ['Largest gap', largest ? largest.suppressionGap : 'none', largest ? truncateText(largest.title || largest.environment || 'Field Scan', 96) : 'No suppression gap mapped yet.'],
       ['Next workspace', moves.length ? 'Moves' : scans.length ? 'Moves / Field' : 'Field Map', nextHint],
@@ -3529,7 +3474,7 @@
         { label:'Context Assembly', ready: !!ctx.text, note: ctx.text ? 'Combined context saved' : 'Name what the fields create together.' },
         { label:'Current Move', ready: !!currentMove, note: currentMove ? truncateText(currentMove.title || 'selected', 60) : 'Set one move as current when ready.' },
         { label:'Current Move Plan', ready: planMatchesCurrent, note: planMatchesCurrent ? 'Plan saved for current move' : currentMove ? 'Create a deliberation plan next.' : 'Requires a Current Move first.' },
-        { label:'Coach Note', ready: coachNotes.length > 0, note: coachNotes.length ? coachNotes.length + ' saved coaching sessions' : 'Use a Coach when you need a guided reasoning arena.' },
+        { label:'Guide Note', ready: coachNotes.length > 0, note: coachNotes.length ? coachNotes.length + ' saved coaching sessions' : 'Use a Coach when you need a guided reasoning arena.' },
         { label:'Daily Pulse', ready: pulseSummary.count > 0, note: pulseSummary.count ? pulseSummary.summary : 'Complete a seven-signal check-in when you want a quick coherence reading.' }
       ];
       readiness.innerHTML = items.map(item => '<div class="readiness-item ' + (item.ready ? 'ready' : 'waiting') + '"><strong>' + (item.ready ? '✓ ' : '○ ') + escapeHtml(item.label) + '</strong>' + escapeHtml(item.note) + '</div>').join('');
@@ -4656,7 +4601,7 @@ Current conversation stance: ${stance.label}. Use this stance: ${stance.prompt}.
 Core evolution from earlier versions:
 - Do NOT keep using the same formula of serious recognition, synthesis, and “what do you want next?”
 - Vary your conversational form. Sometimes be a witness, sometimes a memory keeper, sometimes a pattern spotter, sometimes a Pulse interpreter, sometimes a Current Move companion, sometimes a gentle challenger, sometimes a Beauty/Awe inviter, sometimes a co-designer, and sometimes a philosophy/science explorer.
-- Use continuity: Pulse patterns, Current Move, PRF baseline, Field Scans, Document Capsules, Coach Notes, and Twin Journal entries when relevant.
+- Use continuity: Pulse patterns, Current Move, PRF baseline, Field Scans, Document Capsules, Guide Notes, and Twin Journal entries when relevant.
 - Follow up on plans and concerns rather than treating every message as a new first encounter.
 - Notice progress, endurance, blocked agency, and possible dark coherence.
 
@@ -5532,8 +5477,8 @@ Return only valid JSON with this exact shape:
         + formatLivingThreadsForText(getLivingThreads())
         + '\n\n--- Capability Engine Guided Introduction ---\n'
         + formatCapabilityLessonProgressForText(getCapabilityLessonProgress())
-        + '\n\n--- Coach Notes ---\n'
-        + getCoachNotes().map((n,i) => (i+1) + '. ' + (n.title || 'Coach Note') + ' [' + (n.coachTitle || n.coachId || 'coach') + ']\n' + (n.summary || '') + '\n' + (n.structuredText || '')).join('\n\n')
+        + '\n\n--- Guide Notes ---\n'
+        + getCoachNotes().map((n,i) => (i+1) + '. ' + (n.title || 'Guide Note') + ' [' + (n.coachTitle || n.coachId || 'coach') + ']\n' + (n.summary || '') + '\n' + (n.structuredText || '')).join('\n\n')
         + '\n\n--- Conversation ---\n'
         + chat.map(m => (m.role === 'assistant' ? 'Twin' : m.role === 'user' ? 'You' : 'System') + ': ' + m.content).join('\n\n');
       type = 'text/plain'; filename = 'navigator-twin-journal.txt';
@@ -5674,7 +5619,7 @@ Return only valid JSON with this exact shape:
       id: n.id || uid('coachnote'),
       coachId: String(n.coachId || 'custom').slice(0, 80),
       coachTitle: String(n.coachTitle || 'Coach').slice(0, 120),
-      title: String(n.title || 'Imported Coach Note').slice(0, 140),
+      title: String(n.title || 'Imported Guide Note').slice(0, 140),
       input: String(n.input || '').slice(0, 4000),
       mode: ['quick','full'].includes(n.mode) ? n.mode : 'quick',
       contextUsed: n.contextUsed && typeof n.contextUsed === 'object' ? n.contextUsed : {},
@@ -5964,7 +5909,7 @@ Return only valid JSON with this exact shape:
       + mergeStatsLine('Field Scans', c.fieldScans)
       + mergeStatsLine('Move Cards', c.moveCards)
       + mergeStatsLine('Pending Move drafts', c.pendingMoveCards)
-      + mergeStatsLine('Coach Notes', c.coachNotes)
+      + mergeStatsLine('Guide Notes', c.coachNotes)
       + mergeStatsLine('Living Threads', c.livingThreads)
       + mergeStatsLine('Daily Pulse readings', c.coherencePulse)
       + '</ul>'
@@ -7325,7 +7270,7 @@ Return only valid JSON with this shape:
         'Moralism vs. moral world design: Write two short analyses — one treating this primarily as a failure of individual character, one treating it primarily as a failure of institutional design. Which does the EBB framework support? What specific evidence supports that determination?',
         'Capability Lab connection: What did the three-stage simulation reveal? Did any single slider change shift the outcome from Breakdown? What combination was required? Connect your simulation finding to the Rogers Commission systemic failure finding in two sentences.',
         'Meta-awareness: Has your analysis in Steps 1-5 stayed primarily at the case level, or have you recognized something from your own institutional experience? If the case has remained fully external and abstract, notice that. If it has connected to something specific, that connection is what Step 7 is for.',
-        'Personal Field Scan bridge: Where in your own current institutional situation do you see a suppression gap that shares the structural pattern of Boisjoly? Not the same scale — the same structure: knowledge, capacity, or values you carry that the institution cannot route to where they are needed. Name it here, in your Coach Note, for yourself. You do not need to share this in your Reflection Export.'
+        'Personal Field Scan bridge: Where in your own current institutional situation do you see a suppression gap that shares the structural pattern of Boisjoly? Not the same scale — the same structure: knowledge, capacity, or values you carry that the institution cannot route to where they are needed. Name it here, in your Guide Note, for yourself. You do not need to share this in your Reflection Export.'
       ]
     },
     {
@@ -7341,7 +7286,7 @@ Return only valid JSON with this shape:
         'Secondary framework: Choose one framework other than social contract theory and apply it briefly to the Maathai case. What does it make visible that social contract analysis underweights? Where does it converge or diverge?',
         'Field Scan as opportunity: In your most recent Field Scan, what does the institution fail to provide that people genuinely need? Are the three Liberation/Construction conditions present — a real unmet need, a gap, and a possible shared task diverse participants could endorse? If yes, describe it. If no, name what is missing.',
         'Meta-awareness: The Maathai case is often inspiring rather than analytically clarifying. Inspiration is admiring something you cannot reproduce. Analysis identifies what made it work. Which mode has this session primarily been in? If primarily inspirational, return to Step 3 and push for structural specificity.',
-        'The liberation/construction question: Name one thing you could build, maintain, or contribute to alongside your current constraints that serves others genuine needs and your own values simultaneously. What shared task is available in your situation that people with different values could endorse for different reasons? Write two sentences. Private — name it here, in your Coach Note, for yourself.'
+        'The liberation/construction question: Name one thing you could build, maintain, or contribute to alongside your current constraints that serves others genuine needs and your own values simultaneously. What shared task is available in your situation that people with different values could endorse for different reasons? Write two sentences. Private — name it here, in your Guide Note, for yourself.'
       ]
     },
     {
@@ -7356,7 +7301,7 @@ Return only valid JSON with this shape:
         'The other frameworks: Choose one framework other than care ethics and apply it briefly to the Hanna case. What does it make visible that care ethics analysis might underweight? Where does it converge with the care analysis and where does it pull in a different direction? Which framework combination produces the most complete analysis of this situation?',
         'BioBond and the conditions of care: Father Hanna capacity to sustain his ministry depended on specific BioBond sources — the congregation, the Church institution, his spiritual tradition, international attention. Identify the three most important structural supports that made continued caring possible, and the three conditions that were being deliberately dismantled. What does this suggest about the relationship between caring capacity and institutional conditions?',
         'Meta-awareness: Care ethics is the tradition most likely to connect to lived experience, and also the most susceptible to sentimentalization — being reduced to an affirmation that caring is good rather than an analytical framework revealing specific moral obligations. Notice which mode your engagement has primarily been in. If affirmational, return to Step 1 and push for greater specificity about what was at stake in the specific relationships.',
-        'Your own caring-for obligations: Name one specific caring-for obligation you currently carry — a specific person, in a specific relationship, with a specific dependence on your presence or attention. What does that obligation require of you specifically? Where does your current institutional field make fulfilling it more difficult than it should be, and what specifically creates that difficulty? Private — name it here, in your Coach Note, for yourself. You do not need to share this in your Reflection Export.'
+        'Your own caring-for obligations: Name one specific caring-for obligation you currently carry — a specific person, in a specific relationship, with a specific dependence on your presence or attention. What does that obligation require of you specifically? Where does your current institutional field make fulfilling it more difficult than it should be, and what specifically creates that difficulty? Private — name it here, in your Guide Note, for yourself. You do not need to share this in your Reflection Export.'
       ]
     },
     {
@@ -7445,7 +7390,7 @@ Return only valid JSON with this shape:
       id:'coherence-to-action',
       title:'5. From Coherence to Action',
       shortTitle:'Coherence to action',
-      learn:'Navigator reflection should not remain only in insight. A coherent next move is a small causal sequence that preserves future agency while testing reality. The user can move from reflection to Field Scan, Living Thread, Move Card, Current Move Plan, Document Capsule, Coach Note, or Twin conversation.',
+      learn:'Navigator reflection should not remain only in insight. A coherent next move is a small causal sequence that preserves future agency while testing reality. The user can move from reflection to Field Scan, Living Thread, Move Card, Current Move Plan, Document Capsule, Guide Note, or Twin conversation.',
       reflect:'What is one insight from this guided introduction that should become a protected commitment, field scan, or first small move?',
       apply:'Create one Living Thread or Move Card. Then ask the Twin to help you hold it without nagging, over-controlling, or deciding for you.',
       prompt:'Help me convert one Capability Engine insight into a concrete Navigator action: Field Scan, Living Thread, Move Card, Current Move Plan, or Twin conversation. Keep it small, reversible, and agency-preserving.'
@@ -7473,7 +7418,7 @@ Return only valid JSON with this shape:
     return '<div id="capability-guided-intro" class="coach-primer-box" style="margin-top:12px;">'
       + '<div class="card-title-row"><div><strong>Capability Engine Guided Introduction</strong><br><span class="muted">Five short lessons that teach the vocabulary before asking the user to apply it.</span></div><span class="coach-tag">' + doneCount + ' / ' + CAPABILITY_ENGINE_LESSONS.length + ' complete</span></div>'
       + '<div class="progress"><div style="width:' + percent + '%"></div></div>'
-      + '<div class="privacy-note"><strong>Course use:</strong> Each lesson follows Learn / Reflect / Apply. Reflections are stored locally and can be saved as Coach Notes, sent to the Twin, or used to start a Field Scan, Living Thread, or Move Card.</div>'
+      + '<div class="privacy-note"><strong>Course use:</strong> Each lesson follows Learn / Reflect / Apply. Reflections are stored locally and can be saved as Guide Notes, sent to the Twin, or used to start a Field Scan, Living Thread, or Move Card.</div>'
       + CAPABILITY_ENGINE_LESSONS.map(l => {
           const isDone = !!completed[l.id];
           const isOpen = l.id === firstOpen && !isDone;
@@ -7483,7 +7428,7 @@ Return only valid JSON with this shape:
             + '<div><div class="guided-card"><div class="guided-card-title">Learn</div><div class="guided-card-text">' + escapeHtml(l.learn) + '</div></div>'
             + '<div class="guided-card"><div class="guided-card-title">Apply</div><div class="guided-card-text">' + escapeHtml(l.apply) + '</div></div></div>'
             + '<div><div class="field"><label for="cap-lesson-reflection-' + l.id + '">Reflect</label><div class="privacy-note"><strong>Prompt:</strong> ' + escapeHtml(l.reflect) + '</div><textarea id="cap-lesson-reflection-' + l.id + '" placeholder="Write your reflection here. The prompt remains visible above while you answer.">' + escapeHtml(reflections[l.id] || '') + '</textarea></div>'
-            + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="saveCapabilityLessonReflection(\'' + l.id + '\')">Save Reflection</button><button class="btn small primary" type="button" onclick="completeCapabilityLesson(\'' + l.id + '\')">Mark Complete</button><button class="btn small ghost" type="button" onclick="useCapabilityLessonPrompt(\'' + l.id + '\')">Load Prompt</button><button class="btn small ghost" type="button" onclick="saveCapabilityLessonAsCoachNote(\'' + l.id + '\')">Save Coach Note</button><button class="btn small purple" type="button" onclick="askTwinAboutCapabilityLesson(\'' + l.id + '\')">Ask Twin</button></div>'
+            + '<div class="toolbar"><button class="btn small ghost" type="button" onclick="saveCapabilityLessonReflection(\'' + l.id + '\')">Save Reflection</button><button class="btn small primary" type="button" onclick="completeCapabilityLesson(\'' + l.id + '\')">Mark Complete</button><button class="btn small ghost" type="button" onclick="useCapabilityLessonPrompt(\'' + l.id + '\')">Load Prompt</button><button class="btn small ghost" type="button" onclick="saveCapabilityLessonAsCoachNote(\'' + l.id + '\')">Save Guide Note</button><button class="btn small purple" type="button" onclick="askTwinAboutCapabilityLesson(\'' + l.id + '\')">Ask Twin</button></div>'
             + '</div></div></div></details>';
         }).join('')
       + '</div>';
@@ -7513,7 +7458,7 @@ Return only valid JSON with this shape:
     setCapabilityLessonProgress(progress);
     renderCoaches();
     const out = document.getElementById('coach-output');
-    if(out) out.textContent = 'Marked complete: ' + getCapabilityLesson(id).title + '. Next: use the next open lesson or save this reflection as a Coach Note.';
+    if(out) out.textContent = 'Marked complete: ' + getCapabilityLesson(id).title + '. Next: use the next open lesson or save this reflection as a Guide Note.';
   }
   window.completeCapabilityLesson = completeCapabilityLesson;
 
@@ -7535,7 +7480,7 @@ Return only valid JSON with this shape:
   function buildCapabilityLessonNoteText(id){
     const lesson = getCapabilityLesson(id);
     const reflection = capabilityLessonReflectionValue(id);
-    return 'Capability Engine Guided Introduction — ' + lesson.title + '\n\nFormal status: pedagogical guide for learning the Capability Engine; user reflection is a user-specific Navigator inference unless separately supported.\n\nLearn:\n' + lesson.learn + '\n\nReflect Prompt:\n' + lesson.reflect + '\n\nUser Reflection:\n' + (reflection || '[No reflection saved yet.]') + '\n\nApply:\n' + lesson.apply + '\n\nNavigator Bridge:\nThis lesson can become a Coach Note, Journal seed, Field Scan, Living Thread, Move Card, Current Move Plan, or Twin conversation.';
+    return 'Capability Engine Guided Introduction — ' + lesson.title + '\n\nFormal status: pedagogical guide for learning the Capability Engine; user reflection is a user-specific Navigator inference unless separately supported.\n\nLearn:\n' + lesson.learn + '\n\nReflect Prompt:\n' + lesson.reflect + '\n\nUser Reflection:\n' + (reflection || '[No reflection saved yet.]') + '\n\nApply:\n' + lesson.apply + '\n\nNavigator Bridge:\nThis lesson can become a Guide Note, Journal seed, Field Scan, Living Thread, Move Card, Current Move Plan, or Twin conversation.';
   }
 
   function saveCapabilityLessonAsCoachNote(id){
@@ -7545,7 +7490,7 @@ Return only valid JSON with this shape:
     setCoachNotes(getCoachNotes().concat([note]));
     currentCoachDraft = Object.assign({}, note);
     const out = document.getElementById('coach-output');
-    if(out) out.textContent = text + '\n\n[Saved as Coach Note.]';
+    if(out) out.textContent = text + '\n\n[Saved as Guide Note.]';
     renderCoaches();
     renderWorkspaceDashboard();
   }
@@ -7715,12 +7660,12 @@ Return only valid JSON with this shape:
       setTimeout(() => { if(shouldShowCapabilityEbbPanel(active.id)) generateSituationMapperPreview(); }, 0);
     }
     const notes = getCoachNotes();
-    if(summary) summary.textContent = notes.length ? notes.length + ' saved Coach Notes. Latest: ' + (notes[notes.length - 1].title || 'Coach Note') : 'No Coach Notes saved yet.';
+    if(summary) summary.textContent = notes.length ? notes.length + ' saved Guide Notes. Latest: ' + (notes[notes.length - 1].title || 'Guide Note') : 'No Guide Notes saved yet.';
     if(list){
-      if(!notes.length){ list.innerHTML = '<div class="empty">No saved Coach Notes yet. Run a Coach session and save the output when it is useful.</div>'; return; }
+      if(!notes.length){ list.innerHTML = '<div class="empty">No saved Guide Notes yet. Run a Coach session and save the output when it is useful.</div>'; return; }
       list.innerHTML = notes.slice().reverse().map(n => '<div class="coach-note">'
         + '<div class="coach-note-meta">' + escapeHtml(n.coachTitle || 'Coach') + ' · ' + escapeHtml(new Date(n.createdAt || Date.now()).toLocaleString()) + ' · ' + escapeHtml(n.source || 'local') + '</div>'
-        + '<div class="move-card-title">' + escapeHtml(n.title || 'Coach Note') + '</div>'
+        + '<div class="move-card-title">' + escapeHtml(n.title || 'Guide Note') + '</div>'
         + '<div class="capsule-summary">' + escapeHtml(n.summary || truncateText(n.structuredText || '', 260)) + '</div>'
         + '<div class="entry-actions"><button class="btn small ghost" type="button" onclick="viewCoachNote(\'' + n.id + '\')">View</button><button class="btn small ghost" type="button" onclick="askTwinAboutCoachNote(\'' + n.id + '\')">Ask Twin</button><button class="btn small ghost" type="button" onclick="createJournalFromCoachNote(\'' + n.id + '\')">Journal Seed</button><button class="btn small danger" type="button" onclick="deleteCoachNote(\'' + n.id + '\')">Delete</button></div>'
         + '</div>').join('');
@@ -7744,7 +7689,7 @@ Return only valid JSON with this shape:
       return 'The PRF Interpretation Coach helps you work analytically with your PRF-22 profile — not accepting it as a verdict, but examining where it fits your actual experience and where it misses. The goal is to translate abstract foundation scores into lived vocabulary, name the blind spot that comes with your dominant foundation, and connect your profile to the course ethical traditions. This coach runs after you have imported your PRF-22 in Week 2. The meta-awareness step (Step 7) asks you to notice whether you have been producing an acceptable answer or doing genuine self-examination. The OS2 preparation question at the end points toward the social world rather than inward.';
     }
     if(id === 'ebb-field-scan-analysis'){
-      return 'The Field Scan Analysis Coach interprets one of your saved Field Scans analytically. It asks you to distinguish what an institution formally claims to do from what it actually rewards, to name the suppression gap as structural rather than personal, to identify your BioBond sources as structural resources, and to name the specific design lever that would be required to close the gap. This coach recurs throughout the course — your second, third, and fourth Field Scans will each produce a new Coach Note that deepens the pattern. The final step asks you to create a Living Thread from what the scan surfaced.';
+      return 'The Field Scan Analysis Coach interprets one of your saved Field Scans analytically. It asks you to distinguish what an institution formally claims to do from what it actually rewards, to name the suppression gap as structural rather than personal, to identify your BioBond sources as structural resources, and to name the specific design lever that would be required to close the gap. This coach recurs throughout the course — your second, third, and fourth Field Scans will each produce a new Guide Note that deepens the pattern. The final step asks you to create a Living Thread from what the scan surfaced.';
     }
     if(id === 'ebb-boisjoly-witness'){
       return 'The Boisjoly Witness Coach applies the full SAGE framework to the Challenger case. It runs after you have watched the footage, read Chapter 3, and completed the Capability Lab three-stage simulation. The coach moves from situational seeing (specific facts) to structural seeing (what the institutional architecture made probable), through virtue ethics and the moralism vs. moral world design distinction, to the simulation findings, and finally to your own Field Scan. Step 6 is the meta-awareness step — notice whether the case has stayed external and abstract. Step 7 is the personal bridge — private, not required for the Reflection Export.';
@@ -7803,7 +7748,7 @@ Return only valid JSON with this shape:
     const out = document.getElementById('coach-output');
     if(out){
       const def = getCoachDef(id);
-      out.textContent = def.title + ' — Plain-Language Primer\n\n' + getCoachPrimerText(id) + '\n\nHow to use it:\n1. Put your actual situation or question in the text box.\n2. Choose Quick or Full mode.\n3. Check only the memory you want included.\n4. Click Build Local Coach Note for private local structure, or Ask AI-Assisted Coach for a backend-supported response.\n5. Save the note only if it helps.';
+      out.textContent = def.title + ' — Plain-Language Primer\n\n' + getCoachPrimerText(id) + '\n\nHow to use it:\n1. Put your actual situation or question in the text box.\n2. Choose Quick or Full mode.\n3. Check only the memory you want included.\n4. Click Build Local Guide Note for private local structure, or Ask AI-Assisted Coach for a backend-supported response.\n5. Save the note only if it helps.';
     }
   }
   window.showCoachPrimer = showCoachPrimer;
@@ -7819,7 +7764,7 @@ Return only valid JSON with this shape:
       input.scrollIntoView({ behavior:'smooth', block:'center' });
     }
     const out = document.getElementById('coach-output');
-    if(out) out.textContent = 'Example prompt loaded. You can edit it, then click Build Local Coach Note or Ask AI-Assisted Coach.';
+    if(out) out.textContent = 'Example prompt loaded. You can edit it, then click Build Local Guide Note or Ask AI-Assisted Coach.';
   }
   window.useCoachExample = useCoachExample;
 
@@ -7882,7 +7827,7 @@ Return only valid JSON with this shape:
     const moveCount = getMoveCards().length;
     const progress = getCapabilityLessonProgress();
     const completed = CAPABILITY_ENGINE_LESSONS.filter(l => progress.completed && progress.completed[l.id]).map(l => l.shortTitle);
-    return 'Capability Engine Coach Note — Guided Introduction + EBB Practice\n\nSituation / Field / Question:\n' + (input || '[Name the life field, course case, workplace pressure, research issue, or agency challenge.]')
+    return 'Capability Engine Guide Note — Guided Introduction + EBB Practice\n\nSituation / Field / Question:\n' + (input || '[Name the life field, course case, workplace pressure, research issue, or agency challenge.]')
       + '\n\nGuided Introduction Progress:\nCompleted lessons: ' + (completed.length ? completed.join('; ') : 'none yet') + '\n' + formatCapabilityLessonProgressForText(progress)
       + '\n\nEBB Case Connector:\nSelected case: ' + ebb.caseTitle
       + '\n\nGuided Formal Status Map:\nClaim: ' + (ebb.statusClaim || '[Name one claim from the case or your own situation.]')
@@ -7900,7 +7845,7 @@ Return only valid JSON with this shape:
   function buildLocalStructuredText(def, input, mode, sel){
     if(def.id === 'capability-engine') return buildCapabilityEngineLocalNote(input, mode, sel);
     const ctx = gatherCoachContext(sel);
-    let text = def.title + ' — Local Coach Note\n\nTask / Situation:\n' + (input || '[No task entered.]') + '\n\nPurpose:\n' + def.purpose + '\n\nSuggested Structure:';
+    let text = def.title + ' — Local Guide Note\n\nTask / Situation:\n' + (input || '[No task entered.]') + '\n\nPurpose:\n' + def.purpose + '\n\nSuggested Structure:';
     (def.steps || []).forEach((step, i) => { text += '\n' + (i+1) + '. ' + step; });
     text += '\n\nSelected Local Context:\n' + JSON.stringify(ctx, null, 2).slice(0, mode === 'full' ? 7000 : 3000);
     if(def.id === 'ethical-reasoning') text += '\n\nEthical Reasoning Reminder:\nInclude PRF perspective, other PRFs, deduction, induction, abduction, analogy, fallacy checks, OS1/OS2 distinction, and one agency-preserving next move.';
@@ -8007,7 +7952,7 @@ Return only valid JSON with this shape:
     showWorkspace('twin');
     const input = document.getElementById('chat-input');
     if(input){
-      input.value = 'I saved this Coach Note. Please help me reflect on it as my Twin. Do not decide for me. Identify the most important pattern, the main blind spot or risk, and one concrete question I should answer next.\n\n' + (note.structuredText || note.summary || '');
+      input.value = 'I saved this Guide Note. Please help me reflect on it as my Twin. Do not decide for me. Identify the most important pattern, the main blind spot or risk, and one concrete question I should answer next.\n\n' + (note.structuredText || note.summary || '');
       input.focus();
     }
   }
@@ -8016,7 +7961,7 @@ Return only valid JSON with this shape:
   function createJournalFromCoachNote(id){
     const note = getCoachNotes().find(n => n.id === id);
     if(!note) return;
-    const text = prompt('Create a cautious Twin Journal seed from this Coach Note:', 'seems to be using ' + (note.coachTitle || 'a Coach') + ' to clarify agency, reasoning, and next moves');
+    const text = prompt('Create a cautious Twin Journal seed from this Guide Note:', 'seems to be using ' + (note.coachTitle || 'a Coach') + ' to clarify agency, reasoning, and next moves');
     if(text === null) return;
     const entry = { id:uid('journal'), text:sanitizeJournalText(text), category:'ethics', confidence:.62, sourceTurnIds:[], timestamp:new Date().toISOString() };
     setJournal(getJournal().concat([entry]));
@@ -8026,7 +7971,7 @@ Return only valid JSON with this shape:
   window.createJournalFromCoachNote = createJournalFromCoachNote;
 
   function deleteCoachNote(id){
-    if(!confirm('Delete this Coach Note?')) return;
+    if(!confirm('Delete this Guide Note?')) return;
     setCoachNotes(getCoachNotes().filter(n => n.id !== id));
     renderCoaches();
     renderCoherencePulse();
@@ -8084,7 +8029,7 @@ Return only valid JSON with this shape:
       summary:'Demo PRF-22 baseline: strongest recognized pulls are Care/Harm and Fairness/Reciprocity, with evidence-seeking reasoning, moderate stress resilience, and cautious institutional trust. Treat this as a starting map, not a verdict.',
       raw:null
     };
-    const coachNotes = [{ id:'demo_coach_note_1', coachId:'ethical-reasoning', coachTitle:'Ethical Reasoning Coach', title:'Ethical Reasoning Demo Note', input:'Should the fictional student use AI to finish quickly under deadline pressure?', mode:'quick', contextUsed:{ journal:true, prf22:true, fields:true, context:true }, summary:'Maps the issue as a PRF-sensitive conflict between survival pressure, authorship, and OS2 coordination with the course requirements.', structuredText:'Ethical Reasoning Coach Note\n\nSituation / Ethical Issue:\nThe fictional student feels pressure to use AI as the fastest route under deadline stress.\n\nMy PRF Perspective:\nMeaning, authorship, care, and fairness are highly salient.\n\nReasoning Lenses:\nDeduction asks what academic integrity requires. Induction asks what deadline pressure usually produces. Abduction asks whether the behavior is best explained as dishonesty or survival pressure. Analogy compares this to other institutional environments where performance theater crowds out learning.\n\nFallacy Watch:\nAvoid false dilemma: either pure original work or total cheating. Avoid hasty generalization about student character.\n\nOS1 / OS2:\nOS1 disagreement may concern what counts as authentic authorship. OS2 bridge may be a transparent AI-use plan that preserves learning while meeting course tasks.\n\nAgency-Preserving Next Move:\nAsk one clarifying question and create a plan for what AI may and may not do.', source:'demo', createdAt:iso, updatedAt:iso }];
+    const coachNotes = [{ id:'demo_coach_note_1', coachId:'ethical-reasoning', coachTitle:'Ethical Reasoning Coach', title:'Ethical Reasoning Demo Note', input:'Should the fictional student use AI to finish quickly under deadline pressure?', mode:'quick', contextUsed:{ journal:true, prf22:true, fields:true, context:true }, summary:'Maps the issue as a PRF-sensitive conflict between survival pressure, authorship, and OS2 coordination with the course requirements.', structuredText:'Ethical Reasoning Guide Note\n\nSituation / Ethical Issue:\nThe fictional student feels pressure to use AI as the fastest route under deadline stress.\n\nMy PRF Perspective:\nMeaning, authorship, care, and fairness are highly salient.\n\nReasoning Lenses:\nDeduction asks what academic integrity requires. Induction asks what deadline pressure usually produces. Abduction asks whether the behavior is best explained as dishonesty or survival pressure. Analogy compares this to other institutional environments where performance theater crowds out learning.\n\nFallacy Watch:\nAvoid false dilemma: either pure original work or total cheating. Avoid hasty generalization about student character.\n\nOS1 / OS2:\nOS1 disagreement may concern what counts as authentic authorship. OS2 bridge may be a transparent AI-use plan that preserves learning while meeting course tasks.\n\nAgency-Preserving Next Move:\nAsk one clarifying question and create a plan for what AI may and may not do.', source:'demo', createdAt:iso, updatedAt:iso }];
     const coherencePulse = [
       { id:'demo_pulse_1', createdAt:iso, dateLabel:'Demo 1', scores:{ physicalEnergy:2, temporalHorizon:2, relationalCoherence:3, structuralClarity:2, identityIntegrity:3, recoveryAccess:2, beautyAweMeaning:4 }, avg:2.6, lowestKey:'physicalEnergy', note:'Deadline pressure is narrowing the day, but music and one supportive conversation still help.', relationalNote:'A study partner may also be under the same pressure.', abcThought:ABCD_PULSE_THOUGHTS.physicalEnergy },
       { id:'demo_pulse_2', createdAt:iso, dateLabel:'Demo 2', scores:{ physicalEnergy:3, temporalHorizon:3, relationalCoherence:3, structuralClarity:3, identityIntegrity:4, recoveryAccess:2, beautyAweMeaning:4 }, avg:3.1, lowestKey:'recoveryAccess', note:'A small plan created more clarity, but recovery is still limited.', relationalNote:'', abcThought:ABCD_PULSE_THOUGHTS.recoveryAccess }
@@ -8184,7 +8129,7 @@ Return only valid JSON with this shape:
 
   function applyHashWorkspace(){
     const raw = String(window.location.hash || '').replace('#','').toLowerCase();
-    const aliases = { coaches:'apps', coach:'apps', fieldmap:'field', fields:'field', start:'start', firstsession:'firstsession', first:'firstsession', session:'firstsession', guided:'firstsession', pulse:'pulse', twin:'twin', threads:'threads', memory:'memory', moves:'moves', help:'help' };
+    const aliases = { guides:'apps', guide:'apps', coaches:'apps', coach:'apps', fieldmap:'field', fields:'field', start:'start', firstsession:'firstsession', first:'firstsession', session:'firstsession', guided:'firstsession', pulse:'pulse', twin:'twin', threads:'threads', memory:'memory', moves:'moves', help:'help' };
     const name = aliases[raw] || raw;
     if(WORKSPACES.includes(name)) showWorkspace(name);
   }
@@ -8348,7 +8293,7 @@ Return only valid JSON with this shape:
     if (data.fieldScans && data.fieldScans.length) lines.push(data.fieldScans.length + ' Field Scans');
     if (data.moveCards && data.moveCards.length) lines.push(data.moveCards.length + ' Move Cards');
     if (data.livingThreads && data.livingThreads.length) lines.push(data.livingThreads.length + ' Living Threads');
-    if (data.coachNotes && data.coachNotes.length) lines.push(data.coachNotes.length + ' Coach Notes');
+    if (data.coachNotes && data.coachNotes.length) lines.push(data.coachNotes.length + ' Guide Notes');
     if (data.prf22Profile || (data.source === 'PRF-22')) lines.push('PRF-22 Philosophical Profile');
     if (data.philosophicalProfile) lines.push('Philosophical Profile text');
     var summary = lines.length ? lines.join(' · ') : 'Navigator data package';
@@ -9018,7 +8963,7 @@ Return only valid JSON with this shape:
   }
   window.reviseResponse = reviseResponse;
 
-  // ── Session completion & Coach Note generation (Sonnet) ──────────────────
+  // ── Session completion & Guide Note generation (Sonnet) ──────────────────
   async function startSessionCompletion() {
     if(!ebbSession) return;
     ebbSession.state = 'completing';
@@ -9046,10 +8991,10 @@ Return only valid JSON with this shape:
       }).join('');
     }
 
-    // Build payload for Coach Note generation
+    // Build payload for Guide Note generation
     const stepPairs = def.steps.map((s,i) => 'Step ' + (i+1) + ':\n' + s.split('\n')[0].substring(0,200) + '\n\nStudent response:\n' + (ebbSession.responses[i] || '[not answered]')).join('\n\n---\n\n');
 
-    const systemPrompt = 'You are generating a Coach Note for a student who completed a structured EBB ethics coaching session. Synthesize their responses into a Coach Note with these sections:\n\nKEY FINDING: One sentence capturing the most significant analytical discovery from this session.\n\nFRAMEWORKS APPLIED: Which ethical frameworks or concepts were engaged and how — specific, not generic.\n\nPERSONAL CONNECTION: What institutional or personal situation was connected to course material — only if the student provided one; omit if not.\n\nSUPPRESSION GAP / FIELD SCAN: Any gap or field scan findings — only if applicable; omit if not.\n\nLIVING THREAD: Any ongoing concern, commitment, or question surfaced — omit if none apparent.\n\nNEXT MOVE: One specific next action or Twin conversation suggested by this session.\n\nWrite in second person (you), past tense. Specific and analytical, not generic. Each section 1-3 sentences. Under 400 words total. Omit sections with no content.';
+    const systemPrompt = 'You are generating a Guide Note for a student who completed a structured EBB ethics coaching session. Synthesize their responses into a Guide Note with these sections:\n\nKEY FINDING: One sentence capturing the most significant analytical discovery from this session.\n\nFRAMEWORKS APPLIED: Which ethical frameworks or concepts were engaged and how — specific, not generic.\n\nPERSONAL CONNECTION: What institutional or personal situation was connected to course material — only if the student provided one; omit if not.\n\nSUPPRESSION GAP / FIELD SCAN: Any gap or field scan findings — only if applicable; omit if not.\n\nLIVING THREAD: Any ongoing concern, commitment, or question surfaced — omit if none apparent.\n\nNEXT MOVE: One specific next action or Twin conversation suggested by this session.\n\nWrite in second person (you), past tense. Specific and analytical, not generic. Each section 1-3 sentences. Under 400 words total. Omit sections with no content.';
 
     const userMsg = 'Coach: ' + def.title + '\n\nDate: ' + new Date().toLocaleDateString() + '\n\n' + stepPairs;
 
@@ -9078,7 +9023,7 @@ Return only valid JSON with this shape:
       if(overlay) overlay.classList.remove('visible');
       if(main) main.style.visibility = '';
       if(footer) footer.style.display = 'flex';
-      alert('Could not generate Coach Note — your responses are saved. Try completing again.');
+      alert('Could not generate Guide Note — your responses are saved. Try completing again.');
     }
   }
 
@@ -9094,7 +9039,7 @@ Return only valid JSON with this shape:
 
     const title = g('ebb-note-review-title');
     const date = g('ebb-note-review-date');
-    if(title && def) title.textContent = def.title + ' — Coach Note';
+    if(title && def) title.textContent = def.title + ' — Guide Note';
     if(date) date.textContent = new Date().toLocaleString();
 
     // Parse sections from note text
@@ -9144,7 +9089,7 @@ Return only valid JSON with this shape:
     });
     finalText = finalText.trim() || ebbGeneratedNote || '';
 
-    // Build Coach Note object
+    // Build Guide Note object
     const note = {
       id: uid('coachnote'),
       coachId: ebbSession.coachId,
