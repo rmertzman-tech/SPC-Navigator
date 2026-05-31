@@ -1174,6 +1174,27 @@
       .card, .workspace-nav, .start-hero, .language-panel, .guided-card { border-color: rgba(255,255,255,.32); }
     }
 
+  
+
+    /* Chapter Workbook Import Modal (NAV-IMPORT-1B) */
+    .import-modal-backdrop { position: fixed; inset: 0; z-index: 9999; display: none; align-items: flex-start; justify-content: center; padding: 32px 16px; background: rgba(5, 8, 12, .78); backdrop-filter: blur(8px); overflow: auto; }
+    .import-modal-backdrop.active { display: flex; }
+    .import-modal { width: min(980px, 100%); border: 1px solid rgba(201,168,76,.28); background: linear-gradient(180deg, rgba(18,26,31,.98), rgba(10,14,18,.98)); border-radius: 24px; box-shadow: 0 24px 80px rgba(0,0,0,.48); overflow: hidden; }
+    .import-modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,.10); }
+    .import-modal-title { font-family: var(--serif); font-size: 1.35rem; color: var(--text); margin: 0; }
+    .import-modal-body { padding: 18px 20px 22px; display:grid; gap:14px; }
+    .import-preview-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .import-preview-card { border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.035); border-radius: 16px; padding: 12px; }
+    .import-preview-card strong { color: var(--gold); }
+    .import-checks { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 12px; }
+    .import-checks label { display:flex; gap:8px; align-items:flex-start; border:1px solid rgba(255,255,255,.10); border-radius:12px; padding:8px 10px; background:rgba(255,255,255,.025); font-size:.9rem; color:var(--muted); }
+    .import-continuity { border-left:3px solid rgba(96,163,111,.72); background:rgba(96,163,111,.08); padding:12px 14px; border-radius:0 14px 14px 0; color:var(--muted); line-height:1.55; }
+    .development-arc-list { display:grid; gap:10px; margin-top:10px; }
+    .development-arc-entry { border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.035); border-radius:14px; padding:10px 12px; }
+    .development-arc-entry-title { font-weight:900; color:var(--text); }
+    .development-arc-entry-meta { color:var(--dim); font-size:.82rem; margin-top:2px; }
+    @media (max-width: 760px){ .import-preview-grid, .import-checks { grid-template-columns: 1fr; } .import-modal-head { flex-direction:column; } }
+
   </style>
 </head>
 <body>
@@ -1666,12 +1687,17 @@
               <button class="btn small ghost" type="button" onclick="exportTwinJournal('json')">Export JSON</button>
               <button class="btn small primary" type="button" onclick="triggerImportTwinMemory()">Import / Restore JSON</button>
               <input id="import-json-file" type="file" accept="application/json,.json" style="display:none" onchange="handleImportTwinMemoryFile(event)" / aria-label="Import Navigator JSON backup file">
+              <button class="btn small purple" type="button" onclick="triggerChapterWorkbookImport()">Import Chapter Workbook File</button>
+              <input id="chapter-workbook-import-file" type="file" accept="application/json,.json" style="display:none" onchange="handleChapterWorkbookImportFile(event)" aria-label="Import EBB chapter workbook JSON file">
               <button class="btn small purple" type="button" onclick="triggerMergeTwinMemory()">Merge JSON from Device</button>
               <input id="merge-json-file" type="file" accept="application/json,.json" style="display:none" onchange="handleMergeTwinMemoryFile(event)" / aria-label="Merge Navigator JSON file from another device">
               <button class="btn small ghost" type="button" onclick="exportLastPreMergeBackup()">Download Pre-Merge Backup</button>
               <button class="btn small danger" type="button" onclick="clearTwinMemory()">Clear Twin Memory</button>
             </div>
             <div class="privacy-note"><strong>Restore</strong> replaces this browser's memory. <strong>Merge</strong> adds new items from another device while preserving this browser's current PRF profile, settings, Current Move, and Context Assembly unless those are empty. Merge is not cloud sync; it is a local-first bridge for phone-to-laptop continuity.</div>
+            <div class="privacy-note" style="border-left-color: rgba(96,163,111,.65);"><strong>Chapter Workbook Import</strong> brings in a private file created by an EBB chapter app, such as Chapter 2 Moral Lens Lab. You preview it first, choose what to import, and decide whether to add, merge, replace the chapter record, or cancel. Nothing is uploaded automatically.</div>
+            <div id="chapter-import-status" class="privacy-note" style="display:none; border-left-color: rgba(96,163,111,.65);"></div>
+            <div id="development-arc-panel" class="privacy-note" style="border-left-color: rgba(201,168,76,.55);"></div>
             <div id="merge-import-preview" class="privacy-note" style="display:none; border-left-color: rgba(167,139,250,.65);"></div>
           </div>
         </div>
@@ -2365,6 +2391,22 @@
       </section>
     </div>
 
+
+    <div id="chapter-import-modal" class="import-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="chapter-import-modal-title">
+      <div class="import-modal">
+        <div class="import-modal-head">
+          <div>
+            <h2 id="chapter-import-modal-title" class="import-modal-title">Import Chapter Workbook File</h2>
+            <div class="card-desc">Preview the file, choose what to bring into your private Navigator, and decide how to handle repeated chapter imports.</div>
+          </div>
+          <button class="btn small ghost" type="button" onclick="closeChapterImportModal()">Close</button>
+        </div>
+        <div id="chapter-import-modal-body" class="import-modal-body">
+          <div class="empty">No chapter workbook file selected yet.</div>
+        </div>
+      </div>
+    </div>
+
     <pre id="debug-box" class="debug"></pre>
   </main>
 
@@ -2374,7 +2416,7 @@
 
   const ENABLE_PWA = true; // v3.6C PWA build: cache shell only, never backend AI calls.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator v3.6E.2 — Instructor Maturity Snapshot';
+  const APP_VERSION = 'Navigator v3.6E.4 — Private Navigator + Chapter Workbook Import';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -2407,7 +2449,8 @@
     preMergeBackup: 'navigator_twin_v3_premerge_backup',
     firstSession: 'navigator_twin_v3_6c_first_session',
     maturitySnapshotBaseline: 'navigator_twin_v3_6e2_maturity_snapshot_baseline',
-    installId: 'navigator_twin_v3_6e2_install_id'
+    installId: 'navigator_twin_v3_6e2_install_id',
+    chapterImports: 'navigator_twin_v3_6e4_chapter_imports'
   };
 
   const DIMENSIONS = [
@@ -2692,6 +2735,9 @@
   function setCoherencePulseHistory(items){ setStored(KEYS.coherencePulse, Array.isArray(items) ? items.slice(-120) : []); }
   function getLivingThreads(){ return getStored(KEYS.livingThreads, []); }
   function setLivingThreads(items){ setStored(KEYS.livingThreads, Array.isArray(items) ? items.slice(-80) : []); }
+
+  function getChapterImports(){ return getStored(KEYS.chapterImports, []); }
+  function setChapterImports(items){ setStored(KEYS.chapterImports, Array.isArray(items) ? items.slice(-80) : []); }
   function defaultCapabilityLessonProgress(){ return { completed:{}, reflections:{}, updatedAt:'' }; }
   function getCapabilityLessonProgress(){
     const raw = getStored(KEYS.capabilityLessons, defaultCapabilityLessonProgress());
@@ -4518,6 +4564,351 @@
     });
   }
 
+
+  /* NAV-IMPORT-1B — Chapter Workbook Import Modal */
+  let chapterImportPending = null;
+
+  function normalizeChapterImportRecord(r){
+    if(!r || typeof r !== 'object') return null;
+    const key = String(r.chapter_entry_key || r.entryKey || (r.chapter ? ('chapter-' + r.chapter) : '')).slice(0,120);
+    if(!key) return null;
+    return {
+      id: String(r.id || uid('chapterImport')).slice(0,100),
+      entryKey: key,
+      chapter: String(r.chapter || '').slice(0,20),
+      chapterTitle: String(r.chapter_title || r.chapterTitle || '').slice(0,180),
+      sourceApp: String(r.source_app || r.sourceApp || '').slice(0,120),
+      schemaVersion: String(r.schema_version || r.schemaVersion || '').slice(0,40),
+      exportId: String(r.export_id || r.exportId || '').slice(0,180),
+      createdAt: String(r.created_at || r.createdAt || '').slice(0,80),
+      importedAt: String(r.imported_at || r.importedAt || new Date().toISOString()).slice(0,80),
+      mode: String(r.mode || 'imported').slice(0,40),
+      selectedBuckets: Array.isArray(r.selectedBuckets) ? r.selectedBuckets.map(String).slice(0,12) : [],
+      summary: String(r.summary || '').slice(0,1600),
+      payloadSnapshot: r.payloadSnapshot && typeof r.payloadSnapshot === 'object' ? r.payloadSnapshot : {}
+    };
+  }
+
+  function triggerChapterWorkbookImport(){
+    const input = document.getElementById('chapter-workbook-import-file');
+    if(input) input.click();
+  }
+  window.triggerChapterWorkbookImport = triggerChapterWorkbookImport;
+
+  async function handleChapterWorkbookImportFile(event){
+    const file = event && event.target && event.target.files && event.target.files[0];
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const normalized = validateChapterWorkbookFile(data, file.name);
+      chapterImportPending = normalized;
+      openChapterImportModal();
+      renderChapterImportModal();
+    } catch(e){
+      alert('Could not read this chapter workbook file: ' + (e && e.message ? e.message : e));
+      showDebug('CHAPTER WORKBOOK IMPORT ERROR: ' + (e && e.stack ? e.stack : e));
+    } finally {
+      if(event && event.target) event.target.value = '';
+    }
+  }
+  window.handleChapterWorkbookImportFile = handleChapterWorkbookImportFile;
+
+  function validateChapterWorkbookFile(data, fileName){
+    if(!data || typeof data !== 'object') throw new Error('The selected file is not a JSON object.');
+    if(data.ebb_export_type !== 'chapter_workbook') throw new Error('This does not appear to be an EBB chapter workbook export.');
+    const chapter = String(data.chapter || '').trim();
+    const entryKey = String(data.chapter_entry_key || (chapter ? ('chapter-' + chapter) : '')).trim();
+    if(!entryKey) throw new Error('The file is missing both chapter_entry_key and chapter number.');
+    const payload = data.payload && typeof data.payload === 'object' ? data.payload : {};
+    return {
+      raw:data,
+      fileName:fileName || 'chapter-workbook.json',
+      ebb_export_type:data.ebb_export_type,
+      schema_version:String(data.schema_version || 'legacy'),
+      source_app:String(data.source_app || ''),
+      chapter,
+      chapter_title:String(data.chapter_title || ('Chapter ' + chapter)),
+      chapter_entry_key:entryKey,
+      export_id:String(data.export_id || ''),
+      created_at:String(data.created_at || ''),
+      payload,
+      engagement_metadata:data.engagement_metadata && typeof data.engagement_metadata === 'object' ? data.engagement_metadata : {},
+      duplicate:getChapterImports().filter(x => x.entryKey === entryKey).slice(-1)[0] || null
+    };
+  }
+
+  function openChapterImportModal(){
+    const modal = document.getElementById('chapter-import-modal');
+    if(modal) modal.classList.add('active');
+  }
+  function closeChapterImportModal(){
+    const modal = document.getElementById('chapter-import-modal');
+    if(modal) modal.classList.remove('active');
+  }
+  window.closeChapterImportModal = closeChapterImportModal;
+
+  function chapterPayloadCounts(payload){
+    payload = payload || {};
+    return {
+      prf: payload.prf && typeof payload.prf === 'object' ? Object.keys(flattenWorkbookObject(payload.prf)).length : 0,
+      sage: payload.sage && typeof payload.sage === 'object' ? Object.keys(flattenWorkbookObject(payload.sage)).length : 0,
+      fields: Array.isArray(payload.fields) ? payload.fields.length : 0,
+      threads: Array.isArray(payload.threads) ? payload.threads.length : 0,
+      biobond: payload.biobond && typeof payload.biobond === 'object' ? Object.keys(flattenWorkbookObject(payload.biobond)).length : 0,
+      capsules: Array.isArray(payload.document_capsules) ? payload.document_capsules.length : 0,
+      reflection: payload.reflection_prep && typeof payload.reflection_prep === 'object' ? Object.keys(flattenWorkbookObject(payload.reflection_prep)).length : 0,
+      chapterSpecific: payload.chapter_specific && typeof payload.chapter_specific === 'object' ? Object.keys(flattenWorkbookObject(payload.chapter_specific)).length : 0
+    };
+  }
+
+  function flattenWorkbookObject(obj, prefix, out){
+    out = out || {};
+    prefix = prefix || '';
+    if(!obj || typeof obj !== 'object') return out;
+    Object.keys(obj).forEach(k => {
+      const val = obj[k];
+      const key = prefix ? prefix + '.' + k : k;
+      if(val && typeof val === 'object' && !Array.isArray(val)) flattenWorkbookObject(val, key, out);
+      else if(Array.isArray(val)) out[key] = val.map(x => typeof x === 'object' ? JSON.stringify(x) : String(x)).join('; ');
+      else if(String(val || '').trim()) out[key] = String(val || '').trim();
+    });
+    return out;
+  }
+
+  function workbookText(obj, maxLen){
+    const flat = flattenWorkbookObject(obj || {});
+    const lines = Object.keys(flat).map(k => k + ': ' + flat[k]).filter(x => x.trim().length > 3);
+    return lines.join('\n').slice(0, maxLen || 2500);
+  }
+
+  function renderChapterImportModal(viewMode){
+    const box = document.getElementById('chapter-import-modal-body');
+    if(!box) return;
+    const p = chapterImportPending;
+    if(!p){ box.innerHTML = '<div class="empty">No chapter workbook file selected yet.</div>'; return; }
+    const counts = chapterPayloadCounts(p.payload);
+    const duplicate = p.duplicate;
+    const schemaOk = p.schema_version === '1.1';
+    const buckets = [
+      ['prf','PRF / Moral Lens', counts.prf],
+      ['sage','SAGE Notes', counts.sage],
+      ['fields','Field Scans', counts.fields],
+      ['threads','Living Threads', counts.threads],
+      ['biobond','BioBond Notes', counts.biobond],
+      ['capsules','Document Capsules', counts.capsules],
+      ['reflection','Reflection Prep', counts.reflection],
+      ['chapterSpecific','Chapter-Specific Notes', counts.chapterSpecific]
+    ];
+    let html = '';
+    html += '<div class="import-preview-grid">'
+      + '<div class="import-preview-card"><strong>File</strong><br>' + escapeHtml(p.fileName) + '<br><span class="status-line">' + escapeHtml(p.source_app || 'Unknown source app') + '</span></div>'
+      + '<div class="import-preview-card"><strong>Chapter</strong><br>' + escapeHtml((p.chapter ? ('Chapter ' + p.chapter + ' — ') : '') + p.chapter_title) + '<br><span class="status-line">Entry key: ' + escapeHtml(p.chapter_entry_key) + '</span></div>'
+      + '<div class="import-preview-card"><strong>Schema</strong><br>' + (schemaOk ? '<span class="pill"><span class="dot ok"></span>Fall 2026 Schema v1.1</span>' : '<span class="pill"><span class="dot wait"></span>Legacy / ' + escapeHtml(p.schema_version) + '</span>') + '</div>'
+      + '<div class="import-preview-card"><strong>Created</strong><br>' + escapeHtml(p.created_at || 'Not provided') + '</div>'
+      + '</div>';
+    if(duplicate){
+      html += '<div class="privacy-note" style="border-left-color:rgba(216,176,107,.8);"><strong>This chapter already appears in your Navigator.</strong> Existing import: ' + escapeHtml(duplicate.chapterTitle || duplicate.entryKey) + ' · imported ' + escapeHtml(formatDateTime(duplicate.importedAt)) + '. You can view both, add this as a new version, merge selected fields, replace the chapter record, or cancel.</div>';
+    }
+    html += '<div class="import-checks">' + buckets.map(b => '<label><input type="checkbox" class="chapter-import-bucket" value="' + b[0] + '" ' + (b[2] ? 'checked' : '') + ' ' + (!b[2] ? 'disabled' : '') + '> <span><strong>' + escapeHtml(b[1]) + '</strong><br>' + (b[2] ? escapeHtml(String(b[2]) + ' item(s) detected') : 'No content detected') + '</span></label>').join('') + '</div>';
+    html += '<div class="toolbar">'
+      + '<button class="btn small primary" type="button" onclick="applyChapterWorkbookImport(\'import_all\')">Import Selected</button>';
+    if(duplicate){
+      html += '<button class="btn small ghost" type="button" onclick="renderChapterImportModal(\'side_by_side\')">View Side by Side</button>'
+        + '<button class="btn small purple" type="button" onclick="applyChapterWorkbookImport(\'add_version\')">Add as New Version</button>'
+        + '<button class="btn small ghost" type="button" onclick="applyChapterWorkbookImport(\'merge_selected\')">Merge Selected Fields</button>'
+        + '<button class="btn small danger" type="button" onclick="applyChapterWorkbookImport(\'replace_record\')">Replace Chapter Record</button>';
+    }
+    html += '<button class="btn small ghost" type="button" onclick="closeChapterImportModal()">Cancel</button></div>';
+    if(viewMode === 'side_by_side' && duplicate){
+      html += '<div class="import-preview-grid">'
+        + '<div class="import-preview-card"><strong>Existing Navigator chapter record</strong><pre style="white-space:pre-wrap;max-height:260px;overflow:auto;">' + escapeHtml(duplicate.summary || JSON.stringify(duplicate.payloadSnapshot || {}, null, 2)) + '</pre></div>'
+        + '<div class="import-preview-card"><strong>New workbook file preview</strong><pre style="white-space:pre-wrap;max-height:260px;overflow:auto;">' + escapeHtml(buildChapterWorkbookSummary(p)) + '</pre></div>'
+        + '</div>';
+    } else {
+      html += '<div class="import-preview-card"><strong>Preview</strong><pre style="white-space:pre-wrap;max-height:300px;overflow:auto;">' + escapeHtml(buildChapterWorkbookSummary(p)) + '</pre></div>';
+    }
+    box.innerHTML = html;
+  }
+  window.renderChapterImportModal = renderChapterImportModal;
+
+  function selectedChapterImportBuckets(){
+    const boxes = Array.from(document.querySelectorAll('.chapter-import-bucket'));
+    const selected = boxes.filter(cb => cb.checked && !cb.disabled).map(cb => cb.value);
+    return selected.length ? selected : ['prf','sage','fields','threads','biobond','capsules','reflection','chapterSpecific'];
+  }
+
+  function buildChapterWorkbookSummary(p){
+    if(!p) return '';
+    const counts = chapterPayloadCounts(p.payload);
+    const parts = [];
+    parts.push('Chapter: ' + (p.chapter || '') + ' — ' + p.chapter_title);
+    parts.push('Source app: ' + (p.source_app || ''));
+    parts.push('Schema: ' + (p.schema_version || ''));
+    parts.push('Detected: PRF ' + counts.prf + '; SAGE ' + counts.sage + '; Fields ' + counts.fields + '; Threads ' + counts.threads + '; BioBond ' + counts.biobond + '; Capsules ' + counts.capsules + '; Reflection ' + counts.reflection + '.');
+    const prf = workbookText(p.payload.prf, 800); if(prf) parts.push('\nPRF / Moral Lens\n' + prf);
+    const sage = workbookText(p.payload.sage, 800); if(sage) parts.push('\nSAGE\n' + sage);
+    const refl = workbookText(p.payload.reflection_prep, 700); if(refl) parts.push('\nReflection Prep\n' + refl);
+    return parts.join('\n');
+  }
+
+  function applyChapterWorkbookImport(mode){
+    const p = chapterImportPending;
+    if(!p) return;
+    const selected = selectedChapterImportBuckets();
+    if(mode === 'replace_record' && !confirm('Replace the current chapter import record? Existing Field Scans, Threads, Capsules, and Journal notes already created in the Navigator will not be deleted automatically.')) return;
+    const result = mapChapterWorkbookIntoNavigator(p, selected, mode || 'import_selected');
+    setChapterImportStatus(result.message);
+    closeChapterImportModal();
+    chapterImportPending = null;
+    renderAll();
+  }
+  window.applyChapterWorkbookImport = applyChapterWorkbookImport;
+
+  function setChapterImportStatus(message){
+    const el = document.getElementById('chapter-import-status');
+    if(el){ el.style.display = 'block'; el.innerHTML = '<strong>Chapter import complete.</strong><br>' + escapeHtml(message); }
+  }
+
+  function mapChapterWorkbookIntoNavigator(p, selected, mode){
+    const now = new Date().toISOString();
+    const payload = p.payload || {};
+    const selectedSet = new Set(selected || []);
+    const added = [];
+
+    if(selectedSet.has('prf')){
+      const prfText = workbookText(payload.prf, 2200);
+      if(prfText){
+        const entryText = sanitizeJournalText('seems to be developing a Chapter ' + (p.chapter || '') + ' PRF reflection: ' + prfText.slice(0, 220));
+        setJournal(getJournal().concat([{ id:uid('journal'), text:entryText, category:'ethics', confidence:.72, sourceTurnIds:['chapter-workbook:' + p.chapter_entry_key], timestamp:now }]));
+        added.push('PRF Journal note');
+      }
+    }
+
+    if(selectedSet.has('fields') && Array.isArray(payload.fields)){
+      const scans = payload.fields.map((f, i) => workbookFieldToScan(f, p, i)).filter(Boolean);
+      if(scans.length){ setFieldScans(getFieldScans().concat(scans)); added.push(scans.length + ' Field Scan(s)'); }
+    }
+
+    if(selectedSet.has('threads') && Array.isArray(payload.threads)){
+      const threads = payload.threads.map((t, i) => workbookThreadToLivingThread(t, p, i)).filter(Boolean);
+      if(threads.length){ setLivingThreads(getLivingThreads().concat(threads)); added.push(threads.length + ' Living Thread(s)'); }
+    }
+
+    if(selectedSet.has('capsules') && Array.isArray(payload.document_capsules)){
+      const capsules = payload.document_capsules.map((c, i) => workbookCapsuleToNavigatorCapsule(c, p, i)).filter(Boolean);
+      if(capsules.length){ setCapsules(getCapsules().concat(capsules)); added.push(capsules.length + ' Document Capsule(s)'); }
+    }
+
+    if(selectedSet.has('sage') || selectedSet.has('biobond') || selectedSet.has('reflection') || selectedSet.has('chapterSpecific')){
+      const summaryPieces = [];
+      if(selectedSet.has('sage')) summaryPieces.push('SAGE:\n' + workbookText(payload.sage, 1200));
+      if(selectedSet.has('biobond')) summaryPieces.push('BioBond:\n' + workbookText(payload.biobond, 900));
+      if(selectedSet.has('reflection')) summaryPieces.push('Reflection Prep:\n' + workbookText(payload.reflection_prep, 1000));
+      if(selectedSet.has('chapterSpecific')) summaryPieces.push('Chapter-Specific:\n' + workbookText(payload.chapter_specific, 900));
+      const structuredText = summaryPieces.filter(x => x.replace(/^[^\n]+:\n/, '').trim()).join('\n\n');
+      if(structuredText){
+        const notes = getCoachNotes();
+        notes.push({ id:uid('guidenote'), coachId:'chapter-workbook', coachTitle:'Chapter Workbook Import', title:'Imported notes from ' + (p.chapter_title || p.chapter_entry_key), input:'Private chapter workbook import', mode:'quick', contextUsed:{ chapter:p.chapter, entryKey:p.chapter_entry_key }, summary:shortText(structuredText, 420), structuredText, source:'chapter-workbook', createdAt:now, updatedAt:now });
+        setCoachNotes(notes);
+        added.push('Guide Note summary');
+      }
+    }
+
+    const record = normalizeChapterImportRecord({
+      id: uid('chapterImport'), entryKey:p.chapter_entry_key, chapter:p.chapter, chapterTitle:p.chapter_title,
+      sourceApp:p.source_app, schemaVersion:p.schema_version, exportId:p.export_id, createdAt:p.created_at,
+      importedAt:now, mode:mode || 'import_selected', selectedBuckets:selected,
+      summary: buildChapterWorkbookSummary(p), payloadSnapshot: summarizeChapterPayloadForRecord(payload)
+    });
+    let imports = getChapterImports();
+    if(mode === 'replace_record') imports = imports.filter(x => x.entryKey !== p.chapter_entry_key);
+    imports.push(record);
+    setChapterImports(imports);
+
+    const continuity = 'Imported ' + (p.chapter ? ('Chapter ' + p.chapter + ' — ') : '') + (p.chapter_title || p.chapter_entry_key) + '. Added: ' + (added.length ? added.join(', ') : 'chapter record only') + '. Optional next steps: connect one Field Scan to a current case, mark one Living Thread as active, or use a selected note in MCCTS public reasoning.';
+    return { added, message:continuity };
+  }
+
+  function summarizeChapterPayloadForRecord(payload){
+    return {
+      prf: shortText(workbookText(payload && payload.prf, 900), 900),
+      sage: shortText(workbookText(payload && payload.sage, 900), 900),
+      reflection: shortText(workbookText(payload && payload.reflection_prep, 900), 900),
+      fieldCount: Array.isArray(payload && payload.fields) ? payload.fields.length : 0,
+      threadCount: Array.isArray(payload && payload.threads) ? payload.threads.length : 0,
+      capsuleCount: Array.isArray(payload && payload.document_capsules) ? payload.document_capsules.length : 0
+    };
+  }
+
+  function numberFromAny(x, fallback){
+    const m = String(x == null ? '' : x).match(/-?\d+(\.\d+)?/);
+    return m ? Number(m[0]) : fallback;
+  }
+
+  function workbookFieldToScan(f, p, i){
+    if(!f || typeof f !== 'object') return null;
+    const sg = f.suppression_gap && typeof f.suppression_gap === 'object' ? f.suppression_gap : {};
+    const raw = Math.max(0, Math.min(100, numberFromAny(sg.raw_capacity || f.rawCapacity, 72)));
+    const perceived = Math.max(0, Math.min(100, numberFromAny(sg.permitted_expression || f.perceivedCapacity, Math.max(25, raw - 20))));
+    const stress = Math.max(0, Math.min(100, numberFromAny(f.stressLoad || sg.cause, 50)));
+    const gap = Math.max(0, numberFromAny(sg.score || f.suppressionGap, raw - perceived));
+    const risk = classifyFieldRisk(gap, stress);
+    return normalizeImportedFieldScan({
+      id: uid('field'), title: f.name || f.title || ('Chapter ' + (p.chapter || '') + ' Field Scan ' + (i+1)), scanType:'school_learning',
+      environment: f.name || f.environment || f.what_field_makes_easy || 'Imported chapter workbook field',
+      rewards: f.formal_rewards || f.informal_rewards || f.what_field_makes_easy || '',
+      punishes: f.punishments_costs || f.what_field_makes_costly || '',
+      routes: f.what_field_makes_easy || '', lost: f.what_field_suppresses || sg.cause || '',
+      bioBond: workbookText((p.payload || {}).biobond, 700), nextMove: sg.possible_reduction || '',
+      rawCapacity: raw, perceivedCapacity: perceived, stressLoad: stress, suppressionGap: gap, riskLevel:risk.level, riskLabel:risk.label,
+      summary: 'Imported from ' + (p.chapter_title || p.chapter_entry_key) + '. ' + workbookText(f, 1200), createdAt:new Date().toISOString(), savedAt:new Date().toISOString()
+    });
+  }
+
+  function workbookThreadToLivingThread(t, p, i){
+    if(!t || typeof t !== 'object') return null;
+    return normalizeLivingThread({
+      id: uid('thread'), title: t.title || ('Chapter ' + (p.chapter || '') + ' Living Thread ' + (i+1)), type:'inquiry',
+      why: t.text || t.why || t.summary || 'Imported from chapter workbook.', obstacle:'',
+      nextContact:'Return to this thread after the next chapter or case discussion.',
+      twinRole:'Keep this thread visible as a private continuity marker, not as a required disclosure.',
+      connectedSignals:['ethics','meaning'], status:t.status || 'active', createdAt:new Date().toISOString(), updatedAt:new Date().toISOString()
+    });
+  }
+
+  function workbookCapsuleToNavigatorCapsule(c, p, i){
+    if(!c || typeof c !== 'object') return null;
+    return normalizeImportedCapsule({
+      id: uid('doc'), title: c.title || ('Chapter ' + (p.chapter || '') + ' Capsule ' + (i+1)), mode:'quick_context',
+      fileName:p.fileName || '', summary:[c.observation, c.why_it_matters, c.source].filter(Boolean).join('\n'),
+      themes:Array.isArray(c.connections) ? c.connections : ['Chapter Workbook'], styleNotes:['imported from chapter workbook'], projectPurpose:p.chapter_title || '',
+      suggestedJournalEntry:'seems to connect a chapter case or image to a developing ethical pattern',
+      followUpQuestion:'How should this capsule connect to a Field, Thread, or future MCCTS reasoning step?', createdAt:new Date().toISOString()
+    });
+  }
+
+  function renderDevelopmentArcPanel(){
+    const box = document.getElementById('development-arc-panel');
+    if(!box) return;
+    const imports = getChapterImports().slice().sort((a,b) => String(a.importedAt).localeCompare(String(b.importedAt)));
+    if(!imports.length){
+      box.innerHTML = '<strong>Development Arc</strong><br>No chapter workbook imports yet. After you import Chapter 2 and later chapters, this panel will show your course development over time.';
+      return;
+    }
+    box.innerHTML = '<strong>Development Arc</strong><br><span class="status-line">Chapter imports are shown by import date. This is a private timeline unless you choose to export or share something.</span><div class="development-arc-list">'
+      + imports.map(r => '<div class="development-arc-entry"><div class="development-arc-entry-title">' + escapeHtml((r.chapter ? ('Chapter ' + r.chapter + ' — ') : '') + (r.chapterTitle || r.entryKey)) + '</div><div class="development-arc-entry-meta">Imported ' + escapeHtml(formatDateTime(r.importedAt)) + ' · ' + escapeHtml(r.sourceApp || 'workbook') + ' · ' + escapeHtml(r.mode || 'imported') + '</div><div class="status-line">Selected: ' + escapeHtml((r.selectedBuckets || []).join(', ') || 'not specified') + '</div></div>').join('')
+      + '</div>';
+  }
+
+  function formatDateTime(s){
+    if(!s) return 'unknown date';
+    const d = new Date(s);
+    if(isNaN(d.getTime())) return String(s);
+    return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }) + ' ' + d.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+  }
+
+
   function renderAll(){
     setTwinMode(getMode());
     const settings = getSettings();
@@ -4542,6 +4933,7 @@
     renderStudentOutputPanel();
     renderLivingThreads();
     renderWorkspaceDashboard();
+    renderDevelopmentArcPanel();
     updateSaveStatus();
     applyAccessibilityEnhancements();
     applyPanelStates();
@@ -5028,6 +5420,7 @@ Return only valid JSON with this exact shape:
       coherencePulse: getCoherencePulseHistory(),
       firstSession: getFirstSessionState(),
       maturitySnapshotBaseline: getMaturitySnapshotBaseline(),
+      chapterImports: getChapterImports(),
       mode: getMode(),
       twinStance: getTwinStance(),
       settings: getSettings()
@@ -5673,9 +6066,10 @@ Return only valid JSON with this exact shape:
     const capabilityLessons = normalizeCapabilityLessonProgress(data.capabilityLessons || data.capabilityEngineLessons || null);
     const firstSession = normalizeFirstSessionState(data.firstSession || null);
     const maturitySnapshotBaseline = data.maturitySnapshotBaseline && typeof data.maturitySnapshotBaseline === 'object' ? data.maturitySnapshotBaseline : null;
-    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || Object.keys(capabilityLessons.completed || {}).length || Object.keys(capabilityLessons.reflections || {}).length || prf22Profile || maturitySnapshotBaseline || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
+    const chapterImports = Array.isArray(data.chapterImports) ? data.chapterImports.map(normalizeChapterImportRecord).filter(Boolean) : [];
+    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || chapterImports.length || Object.keys(capabilityLessons.completed || {}).length || Object.keys(capabilityLessons.reflections || {}).length || prf22Profile || maturitySnapshotBaseline || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
     if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
-    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, capabilityLessons, coherencePulse, firstSession, maturitySnapshotBaseline }; 
+    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, capabilityLessons, coherencePulse, firstSession, maturitySnapshotBaseline, chapterImports }; 
   }
 
   async function handleImportTwinMemoryFile(event){
@@ -5711,6 +6105,7 @@ Return only valid JSON with this exact shape:
       setCoherencePulseHistory(restored.coherencePulse || []);
       setFirstSessionState(restored.firstSession || normalizeFirstSessionState(null));
       setMaturitySnapshotBaseline(restored.maturitySnapshotBaseline || null);
+      setChapterImports(restored.chapterImports || []);
       clearPendingCapsule();
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
@@ -5825,7 +6220,8 @@ Return only valid JSON with this exact shape:
       pendingMoveCards: mergeCollection(getPendingMoveCards(), restored.pendingMoveCards, 'move', 8),
       coachNotes: mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80),
       livingThreads: mergeCollection(getLivingThreads(), restored.livingThreads, 'thread', 80),
-      coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120)
+      coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120),
+      chapterImports: mergeCollection(getChapterImports(), restored.chapterImports || [], 'chapterImport', 80)
     };
     const questions = mergeQuestions(getQuestions(), restored.questions);
     const coverage = mergeCoverage(getCoverage(), restored.coverage);
@@ -5964,6 +6360,7 @@ Return only valid JSON with this exact shape:
       setLivingThreads(plan.collections.livingThreads.items);
       setCapabilityLessonProgress(plan.capabilityLessons || getCapabilityLessonProgress());
       setCoherencePulseHistory(plan.collections.coherencePulse.items);
+      if(plan.collections.chapterImports) setChapterImports(plan.collections.chapterImports.items);
       setFirstSessionState(plan.firstSession || getFirstSessionState());
       setMaturitySnapshotBaseline(plan.maturitySnapshotBaseline || getMaturitySnapshotBaseline());
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
@@ -8335,6 +8732,7 @@ Return only valid JSON with this shape:
       setCoachNotes(mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80).items);
       setLivingThreads(mergeCollection(getLivingThreads(), restored.livingThreads, 'thread', 80).items);
       setCoherencePulseHistory(mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120).items);
+      setChapterImports(mergeCollection(getChapterImports(), restored.chapterImports || [], 'chapterImport', 80).items);
       if (!getPrf22Profile() && restored.prf22Profile) setPrf22Profile(restored.prf22Profile);
       if (!getContextAssembly().text && restored.contextAssembly && restored.contextAssembly.text) setContextAssembly(restored.contextAssembly);
       syncClearReceiveUI();
