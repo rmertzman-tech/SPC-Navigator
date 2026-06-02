@@ -4,7 +4,7 @@
   <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-IMPORT-1D Chapter 4 Alignment</title>
+  <title>The Navigator — NAV-CORE-2A Coherence Check Cleanup</title>
   <meta name="description" content="Navigator v3.6E.3 removes public Coach workspace language, replaces it with private guide cards, preserves local-first writing areas, and keeps optional privacy-preserving Instructor Maturity Snapshot functionality for Canvas checkpoints." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -2265,7 +2265,7 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator NAV-IMPORT-1D — Chapter 4 Alignment</div>
+            <div class="card-title">Navigator NAV-CORE-2A — Coherence Check Field Scan Refactor</div>
             <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, Co-Living Twin behavior, the Capability Engine Guided Introduction, Start Here, Pulse scoring anchors, experience-first language, Guided First Session, and Student Reflection Export while adding a first accessibility and visual polish pass.</div>
           </div>
           <div class="card-body">
@@ -3528,7 +3528,7 @@
       ['Move Cards', moves.length + ' saved', activeMoves.length + ' active · ' + (moves.length - activeMoves.length) + ' not now'],
       ['Current Move Plan', planMatchesCurrent ? 'saved' : currentMove ? 'needed' : 'not ready', planMatchesCurrent ? truncateText(currentMovePlan.firstSmallAction || currentMovePlan.whyNow || 'Plan saved', 96) : currentMove ? 'Create a plan from the selected Current Move.' : 'Select a Current Move before planning.'],
       ['Context Assembly', ctx.text ? 'saved' : 'not yet saved', ctx.text ? truncateText(ctx.text, 96) : 'Use Field Map to name the combined situation.'],
-      ['Guide Notes', coachNotes.length + ' saved', coachNotes.length ? truncateText((coachNotes[coachNotes.length - 1].title || 'Latest Guide Note'), 96) : 'Open Coaches for critical thinking, ethics, traditions, research, or templates.'],
+      ['Guide Notes', coachNotes.length + ' saved', coachNotes.length ? truncateText((coachNotes[coachNotes.length - 1].title || 'Latest Guide Note'), 96) : 'Open guided modules for critical thinking, ethics, traditions, research, or templates.'],
       ['Living Threads', activeLivingThreads.length + ' active', livingThreads.length ? truncateText((activeLivingThreads[activeLivingThreads.length - 1] || livingThreads[livingThreads.length - 1]).title || 'Living Thread', 96) : 'Create a thread for a commitment, fear, inquiry, relationship, practice, or source of Beauty/Awe.'],
       ['Largest gap', largest ? largest.suppressionGap : 'none', largest ? truncateText(largest.title || largest.environment || 'Field Scan', 96) : 'No suppression gap mapped yet.'],
       ['Next workspace', moves.length ? 'Moves' : scans.length ? 'Moves / Field' : 'Field Map', nextHint],
@@ -3555,7 +3555,7 @@
         { label:'Context Assembly', ready: !!ctx.text, note: ctx.text ? 'Combined context saved' : 'Name what the fields create together.' },
         { label:'Current Move', ready: !!currentMove, note: currentMove ? truncateText(currentMove.title || 'selected', 60) : 'Set one move as current when ready.' },
         { label:'Current Move Plan', ready: planMatchesCurrent, note: planMatchesCurrent ? 'Plan saved for current move' : currentMove ? 'Create a deliberation plan next.' : 'Requires a Current Move first.' },
-        { label:'Guide Note', ready: coachNotes.length > 0, note: coachNotes.length ? coachNotes.length + ' saved coaching sessions' : 'Use a Coach when you need a guided reasoning arena.' },
+        { label:'Guide Note', ready: coachNotes.length > 0, note: coachNotes.length ? coachNotes.length + ' saved guide notes' : 'Use a guided module when you want a structured reasoning arena.' },
         { label:'Daily Pulse', ready: pulseSummary.count > 0, note: pulseSummary.count ? pulseSummary.summary : 'Complete a seven-signal check-in when you want a quick coherence reading.' }
       ];
       readiness.innerHTML = items.map(item => '<div class="readiness-item ' + (item.ready ? 'ready' : 'waiting') + '"><strong>' + (item.ready ? '✓ ' : '○ ') + escapeHtml(item.label) + '</strong>' + escapeHtml(item.note) + '</div>').join('');
@@ -5172,7 +5172,7 @@ Response rules:
 - Ask exactly one clear, concrete question at the end unless the user explicitly requests a list, plan, or essay.
 - If the user expresses danger to self or others, encourage immediate help from trusted people or emergency services.
 
-Essential design principle: The Twin is the coherence core. Coaches, Pulse, Field Maps, and Move Cards are aids. The Twin should help the user return to themselves and choose the next agency-preserving move.`;
+Essential design principle: The Twin is the coherence core. Guide modules, Pulse, Field Maps, and Move Cards are aids. The Twin should help the user return to themselves and choose the next agency-preserving move.`;
   }
 
   function buildTwinContent(userText){
@@ -5863,7 +5863,7 @@ Return only valid JSON with this exact shape:
       '  Daily Pulse readings:       ' + padSnapshotNumber(totals.pulseReadings, 4),
       '  Field Scans saved:          ' + padSnapshotNumber(totals.fieldScans, 4),
       '  Living Threads created:     ' + padSnapshotNumber(totals.livingThreads, 4),
-      '  Coach sessions completed:   ' + padSnapshotNumber(totals.coachSessions, 4),
+      '  Guide notes saved:          ' + padSnapshotNumber(totals.coachSessions, 4),
       '  Document Capsules added:    ' + padSnapshotNumber(totals.documentCapsules, 4),
       '  Move Cards saved:           ' + padSnapshotNumber(totals.moveCards, 4),
       '  PRF-22 imported:           ' + boolYesNo(totals.prf22Imported),
@@ -5926,7 +5926,7 @@ Return only valid JSON with this exact shape:
     }
     const d = baseline.generatedAt ? new Date(baseline.generatedAt).toLocaleString() : 'unknown time';
     const t = baseline.totals || {};
-    box.innerHTML = '<strong>Checkpoint baseline:</strong> Last marked submitted at ' + escapeHtml(d) + '. Baseline totals: Twin ' + escapeHtml(String(t.twinTurns || 0)) + ', Pulse ' + escapeHtml(String(t.pulseReadings || 0)) + ', Field Scans ' + escapeHtml(String(t.fieldScans || 0)) + ', Threads ' + escapeHtml(String(t.livingThreads || 0)) + ', Coaches ' + escapeHtml(String(t.coachSessions || 0)) + ', Capsules ' + escapeHtml(String(t.documentCapsules || 0)) + '.';
+    box.innerHTML = '<strong>Checkpoint baseline:</strong> Last marked submitted at ' + escapeHtml(d) + '. Baseline totals: Twin ' + escapeHtml(String(t.twinTurns || 0)) + ', Pulse ' + escapeHtml(String(t.pulseReadings || 0)) + ', Field Scans ' + escapeHtml(String(t.fieldScans || 0)) + ', Threads ' + escapeHtml(String(t.livingThreads || 0)) + ', Guide Notes ' + escapeHtml(String(t.coachSessions || 0)) + ', Capsules ' + escapeHtml(String(t.documentCapsules || 0)) + '.';
   }
 
   function generateMaturitySnapshotPreview(){
@@ -6265,7 +6265,7 @@ Return only valid JSON with this exact shape:
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
-      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Coach notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '. Capability lessons: ' + Object.keys((restored.capabilityLessons && restored.capabilityLessons.completed) || {}).length + ' completed.');
+      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Guide notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '. Capability lessons: ' + Object.keys((restored.capabilityLessons && restored.capabilityLessons.completed) || {}).length + ' completed.');
     } catch(e) {
       alert('Could not import this JSON file: ' + e.message);
       showDebug('IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
@@ -7880,7 +7880,7 @@ Return only valid JSON with this shape:
       tags:['Hanna','care ethics','relational obligation','Chapter 5','Week 6'],
       outputs:'Caring-for analysis, coercion targets, obligation under pressure, secondary framework, BioBond under care, meta-awareness, personal caring-for obligation.',
       steps:[
-        'CHAPTER 5 — Complete after reading the chapter. Before beginning: slow down. Care ethics rewards attention to particulars. This coach has a different register from the Boisjoly and Maathai coaches — it asks for specific persons and specific relationships, not primarily structural analysis.\n\nCaring-for vs. caring-about: Identify the caring-for obligations in Father Hanna situation — the specific obligations generated by specific relationships with specific persons who had entrusted specific dimensions of their lives to his ministry. Then name what it would have meant to reduce those obligations to caring-about — a general concern for Christians in Iraq. What specifically would have been lost in that reduction?',
+        'CHAPTER 5 — Complete after reading the chapter. Before beginning: slow down. Care ethics rewards attention to particulars. This guide has a different register from the Boisjoly and Maathai coaches — it asks for specific persons and specific relationships, not primarily structural analysis.\n\nCaring-for vs. caring-about: Identify the caring-for obligations in Father Hanna situation — the specific obligations generated by specific relationships with specific persons who had entrusted specific dimensions of their lives to his ministry. Then name what it would have meant to reduce those obligations to caring-about — a general concern for Christians in Iraq. What specifically would have been lost in that reduction?',
         'What the coercion was targeting: Name three specific things the kidnapping and broader persecution of Christian clergy were designed to destroy — not just physical safety, but the specific relational and institutional conditions that made pastoral caring possible. What was being attacked beyond Father Hanna personal wellbeing?',
         'What obligation survives: Apply the question — what relational obligations survive conditions designed to make them impossible? Not whether they can be fully fulfilled, but whether they remain morally real. What does care ethics say about the status of an obligation that coercive conditions prevent from being fulfilled? What is the difference between an obligation that is temporarily interrupted and one that is dissolved?',
         'The other frameworks: Choose one framework other than care ethics and apply it briefly to the Hanna case. What does it make visible that care ethics analysis might underweight? Where does it converge with the care analysis and where does it pull in a different direction? Which framework combination produces the most complete analysis of this situation?',
@@ -7891,7 +7891,7 @@ Return only valid JSON with this shape:
     },
     {
       id:'ebb-chapter-template', title:'EBB Chapter Coach Template', category:'Template Coach',
-      purpose:'A placeholder template for future EBB chapter-specific coaches.',
+      purpose:'A placeholder template for future EBB chapter-specific guide modules.',
       tags:['template','chapter','future'],
       outputs:'Chapter concept map, key terms, self-reflection, case application, Field Scan suggestion, Move Card suggestion.',
       steps:['Name the chapter concept.','Identify key terms.','Connect the concept to lived experience.','Apply the concept to a case or dilemma.','Create or recommend a Field Scan.','Prepare a reflection or assignment outline.']
