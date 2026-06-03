@@ -4,7 +4,7 @@
   <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-CORE-2A Coherence Check Cleanup</title>
+  <title>The Navigator — NAV-IMPORT-1E Critical Thinking Mini-Lab Display</title>
   <meta name="description" content="Navigator v3.6E.3 removes public Coach workspace language, replaces it with private guide cards, preserves local-first writing areas, and keeps optional privacy-preserving Instructor Maturity Snapshot functionality for Canvas checkpoints." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -2265,7 +2265,7 @@
         <div id="release-notes-card" class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="eyebrow">Stable feature build package</div>
-            <div class="card-title">Navigator NAV-CORE-2A — Coherence Check Field Scan Refactor</div>
+            <div class="card-title">Navigator NAV-IMPORT-1E — Critical Thinking Mini-Lab Display Support</div>
             <div class="card-desc">This build preserves Living Threads, PWA installability, phone/laptop merge, Co-Living Twin behavior, the Capability Engine Guided Introduction, Start Here, Pulse scoring anchors, experience-first language, Guided First Session, and Student Reflection Export while adding a first accessibility and visual polish pass.</div>
           </div>
           <div class="card-body">
@@ -4704,6 +4704,7 @@
       mccts: payload.mccts_starter_packet && typeof payload.mccts_starter_packet === 'object' ? Object.keys(flattenWorkbookObject(payload.mccts_starter_packet)).length : 0,
       buildingAlongside: countBuildingAlongsideSignals(payload),
       guidedPractice: countGuidedPracticeSignals(payload),
+      criticalThinking: countCriticalThinkingMiniLabSignals(payload),
       engagement: payload.engagement_receipt && typeof payload.engagement_receipt === 'object' ? Object.keys(flattenWorkbookObject(payload.engagement_receipt)).length : 0
     };
   }
@@ -4801,6 +4802,32 @@
     return gp ? Math.min(8, Object.keys(flattenWorkbookObject({ guided_practice:gp })).length || 1) : 0;
   }
 
+  function extractCriticalThinkingMiniLab(payload){
+    payload = payload || {};
+    const chapterSpecific = payload.chapter_specific && typeof payload.chapter_specific === 'object' ? payload.chapter_specific : {};
+    const lab = payload.critical_thinking_mini_lab || payload.criticalThinkingMiniLab || chapterSpecific.critical_thinking_mini_lab || chapterSpecific.criticalThinkingMiniLab || {};
+    if(lab && typeof lab === 'object') return lab;
+    return {};
+  }
+
+  function countCriticalThinkingMiniLabSignals(payload){
+    const lab = extractCriticalThinkingMiniLab(payload);
+    return lab && typeof lab === 'object' ? Object.keys(flattenWorkbookObject(lab)).length : 0;
+  }
+
+  function renderCriticalThinkingMiniLabSummary(lab, maxLen){
+    lab = lab || {};
+    const rows = [];
+    if(lab.toolbelt_focus) rows.push('Toolbelt Focus: ' + lab.toolbelt_focus);
+    if(lab.practice_response) rows.push('Practice Response: ' + lab.practice_response);
+    if(lab.repair_or_revision) rows.push('Repair or Revision: ' + lab.repair_or_revision);
+    if(lab.objection_and_reply) rows.push('Objection and Reply: ' + lab.objection_and_reply);
+    if(lab.public_reasoning_bridge) rows.push('Public Reasoning Bridge: ' + lab.public_reasoning_bridge);
+    const direct = rows.join('\n');
+    const fallback = workbookText(lab, maxLen || 1200);
+    return shortText(direct || fallback, maxLen || 1200);
+  }
+
   function renderChapterImportModal(viewMode){
     const box = document.getElementById('chapter-import-modal-body');
     if(!box) return;
@@ -4824,6 +4851,7 @@
       ['phenomenologicalVeto','Phenomenological Veto Check', counts.phenomenologicalVeto],
       ['buildingAlongside','Building Alongside / Reform-Build Decision', counts.buildingAlongside],
       ['guidedPractice','Chapter Guided Practice Summary', counts.guidedPractice],
+      ['criticalThinking','Critical Thinking Mini-Lab', counts.criticalThinking],
       ['mccts','MCCTS Starter Packet', counts.mccts],
       ['engagement','Engagement Receipt', counts.engagement]
     ];
@@ -4862,7 +4890,7 @@
   function selectedChapterImportBuckets(){
     const boxes = Array.from(document.querySelectorAll('.chapter-import-bucket'));
     const selected = boxes.filter(cb => cb.checked && !cb.disabled).map(cb => cb.value);
-    return selected.length ? selected : ['prf','sage','fields','threads','biobond','capsules','reflection','chapterSpecific','navigatorFields','publicBridge','formalDomination','phenomenologicalVeto','buildingAlongside','guidedPractice','mccts','engagement'];
+    return selected.length ? selected : ['prf','sage','fields','threads','biobond','capsules','reflection','chapterSpecific','navigatorFields','publicBridge','formalDomination','phenomenologicalVeto','buildingAlongside','guidedPractice','criticalThinking','mccts','engagement'];
   }
 
   function buildChapterWorkbookSummary(p){
@@ -4872,7 +4900,7 @@
     parts.push('Chapter: ' + (p.chapter || '') + ' — ' + p.chapter_title);
     parts.push('Source app: ' + (p.source_app || ''));
     parts.push('Schema: ' + (p.schema_version || ''));
-    parts.push('Detected: PRF ' + counts.prf + '; SAGE ' + counts.sage + '; Fields ' + counts.fields + '; Threads ' + counts.threads + '; BioBond ' + counts.biobond + '; Capsules ' + counts.capsules + '; Reflection ' + counts.reflection + '; Building Alongside ' + counts.buildingAlongside + '.');
+    parts.push('Detected: PRF ' + counts.prf + '; SAGE ' + counts.sage + '; Fields ' + counts.fields + '; Threads ' + counts.threads + '; BioBond ' + counts.biobond + '; Capsules ' + counts.capsules + '; Reflection ' + counts.reflection + '; Building Alongside ' + counts.buildingAlongside + '; Critical Thinking Mini-Lab ' + counts.criticalThinking + '.');
     const prf = workbookText(p.payload.prf, 800); if(prf) parts.push('\nPRF / Moral Lens\n' + prf);
     const sage = workbookText(p.payload.sage, 800); if(sage) parts.push('\nSAGE\n' + sage);
     const refl = workbookText(p.payload.reflection_prep, 700); if(refl) parts.push('\nReflection Prep\n' + refl);
@@ -4882,6 +4910,7 @@
     const buildStatus = extractBuildingAlongsideStatus(p.payload); if(buildStatus) parts.push('\nReform / Build / Both Decision\n' + buildStatus);
     const buildNotes = extractBuildingAlongsideNotes(p.payload); if(buildNotes) parts.push('\nBuilding Alongside Notes\n' + shortText(buildNotes, 900));
     const guided = extractGuidedPracticeSummary(p.payload); if(guided) parts.push('\nGuided Practice Summary\n' + shortText(guided, 900));
+    const ctLab = renderCriticalThinkingMiniLabSummary(extractCriticalThinkingMiniLab(p.payload), 1200); if(ctLab) parts.push('\nCritical Thinking Mini-Lab\n' + ctLab);
     return parts.join('\n');
   }
 
@@ -4933,7 +4962,7 @@
       if(capsules.length){ setCapsules(getCapsules().concat(capsules)); added.push(capsules.length + ' Document Capsule(s)'); }
     }
 
-    if(selectedSet.has('sage') || selectedSet.has('biobond') || selectedSet.has('reflection') || selectedSet.has('chapterSpecific') || selectedSet.has('buildingAlongside') || selectedSet.has('guidedPractice')){
+    if(selectedSet.has('sage') || selectedSet.has('biobond') || selectedSet.has('reflection') || selectedSet.has('chapterSpecific') || selectedSet.has('buildingAlongside') || selectedSet.has('guidedPractice') || selectedSet.has('criticalThinking')){
       const summaryPieces = [];
       if(selectedSet.has('sage')) summaryPieces.push('SAGE:\n' + workbookText(payload.sage, 1200));
       if(selectedSet.has('biobond')) summaryPieces.push('BioBond:\n' + workbookText(payload.biobond, 900));
@@ -4941,6 +4970,7 @@
       if(selectedSet.has('chapterSpecific')) summaryPieces.push('Chapter-Specific:\n' + workbookText(payload.chapter_specific, 900));
       if(selectedSet.has('buildingAlongside')) summaryPieces.push('Building Alongside / Reform-Build Decision:\n' + [extractBuildingAlongsideStatus(payload), extractBuildingAlongsideNotes(payload)].filter(Boolean).join('\n\n'));
       if(selectedSet.has('guidedPractice')) summaryPieces.push('Chapter Guided Practice Summary:\n' + extractGuidedPracticeSummary(payload));
+      if(selectedSet.has('criticalThinking')) summaryPieces.push('Critical Thinking Mini-Lab:\n' + renderCriticalThinkingMiniLabSummary(extractCriticalThinkingMiniLab(payload), 1500));
       const structuredText = summaryPieces.filter(x => x.replace(/^[^\n]+:\n/, '').trim()).join('\n\n');
       if(structuredText){
         const notes = getCoachNotes();
@@ -4980,6 +5010,9 @@
       buildingAlongsideStatus: shortText(extractBuildingAlongsideStatus(payload), 500),
       buildingAlongsideNotes: shortText(extractBuildingAlongsideNotes(payload), 1000),
       guidedPractice: shortText(extractGuidedPracticeSummary(payload), 1000),
+      criticalThinkingMiniLab: shortText(renderCriticalThinkingMiniLabSummary(extractCriticalThinkingMiniLab(payload), 1200), 1200),
+      ctToolbeltFocus: shortText(extractCriticalThinkingMiniLab(payload).toolbelt_focus || '', 300),
+      ctPublicBridge: shortText(extractCriticalThinkingMiniLab(payload).public_reasoning_bridge || '', 700),
       mccts: shortText(workbookText(payload.mccts_starter_packet, 900), 900),
       fieldCount: Array.isArray(payload.fields) ? payload.fields.length : (payload.navigator_fields && Array.isArray(payload.navigator_fields.field_scan) ? payload.navigator_fields.field_scan.length : 0),
       threadCount: Array.isArray(payload.threads) ? payload.threads.length : (payload.navigator_fields && Array.isArray(payload.navigator_fields.living_threads) ? payload.navigator_fields.living_threads.length : 0),
@@ -5061,6 +5094,9 @@
     if(snap.vetoStatus) rows.push('<div class="status-line"><strong>Veto status:</strong> ' + escapeHtml(shortText(snap.vetoStatus, 180)) + '</div>');
     if(snap.buildingAlongsideStatus) rows.push('<div class="status-line"><strong>Reform / Build / Both:</strong> ' + escapeHtml(shortText(snap.buildingAlongsideStatus, 180)) + '</div>');
     if(!snap.buildingAlongsideStatus && snap.buildingAlongsideNotes) rows.push('<div class="status-line"><strong>Building alongside:</strong> ' + escapeHtml(shortText(snap.buildingAlongsideNotes, 180)) + '</div>');
+    if(snap.ctToolbeltFocus) rows.push('<div class="status-line"><strong>CT focus:</strong> ' + escapeHtml(shortText(snap.ctToolbeltFocus, 180)) + '</div>');
+    if(snap.ctPublicBridge) rows.push('<div class="status-line"><strong>CT public bridge:</strong> ' + escapeHtml(shortText(snap.ctPublicBridge, 180)) + '</div>');
+    else if(snap.criticalThinkingMiniLab) rows.push('<div class="status-line"><strong>Critical Thinking Mini-Lab:</strong> ' + escapeHtml(shortText(snap.criticalThinkingMiniLab, 180)) + '</div>');
     return rows.join('');
   }
 
