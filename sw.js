@@ -1,6 +1,6 @@
-/* NAV-IMPORT-1E / NAV-PWA-1 — GitHub Pages-safe service worker
+/* NAV-IMPORT-1E.1 / NAV-PWA-1 — GitHub Pages-safe service worker
    Caches only the Navigator app shell. User data remains in localStorage/exports and is not cached here. */
-const CACHE_NAME = 'spc-navigator-nav-import-1e-2026-06-02';
+const CACHE_NAME = 'spc-navigator-nav-import-1e1-2026-06-03';
 const APP_SHELL = [
   './',
   './index.html',
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
       try {
         await cache.add(new Request(url, {cache: 'reload'}));
       } catch (err) {
-        console.warn('NAV-IMPORT-1E cache add skipped:', url, err);
+        console.warn('NAV-IMPORT-1E.1 cache add skipped:', url, err);
       }
     }
     await self.skipWaiting();
