@@ -3218,39 +3218,44 @@ html lang="en">
     ];
     box.innerHTML = '<div class="profile-card"><div class="profile-head"><div><div class="profile-title">Imported PRF-22 Profile</div><div class="profile-subtitle">' + escapeHtml(p.fileName || p.version || 'local profile') + '</div></div><span class="pill"><span class="dot ' + (p.includeInTwin === false ? 'wait' : 'ok') + '"></span>' + (p.includeInTwin === false ? 'Local only' : 'Twin summary on') + '</span></div><div class="capsule-tags">' + top + '</div><div class="profile-grid">' + metrics.map(m => '<div class="profile-metric"><div class="profile-metric-label">' + escapeHtml(m[0]) + '</div><div class="profile-metric-value">' + escapeHtml(String(m[1])) + '</div></div>').join('') + '</div><div class="profile-summary">' + escapeHtml(p.summary || '') + '</div><div class="profile-warning">Use this as a starting moral topology, not a fixed identity. The Twin should ask whether the profile fits lived experience before relying on it.</div></div>';
   }
+async function handleImportPrf22File(event){
+  const input = event && event.target;
+  const file = input && input.files && input.files[0];
+  if(!file) return;
 
-  function triggerImportPrf22Profile(){
-    const input = document.getElementById('import-prf22-file');
-    if(input) input.click();
-  }
-  window.triggerImportPrf22Profile = triggerImportPrf22Profile;
-
-  async function handleImportPrf22File(event){
-    if(isStandaloneDailyPulseJSON(data)){
-  importStandaloneDailyPulseJSON(data);
-  return;
-}
-    const input = event && event.target;
-    const file = input && input.files && input.files[0];
-    if(!file) return;
-    try {
-      if(file.size > 300 * 1024) throw new Error('This PRF-22 JSON file is larger than 300 KB. Use the exported profile JSON, not a large document.');
-      const data = JSON.parse(await file.text());
-      const profile = normalizeImportedPrf22Profile(data, { fileName:file.name });
-      if(!profile) throw new Error('This JSON could not be read as a PRF-22 / E-Twin profile.');
-      const ranked = profile.foundationsRanked || [];
-      const preview = ranked.length ? ranked.slice(0,3).map(x => x.label + ' ' + x.value).join(', ') : 'limited recognized PRF fields';
-      if(!confirm('Import this PRF-22 profile into local Navigator memory? Preview: ' + preview + '.')) return;
-      setPrf22Profile(profile);
-      renderAll();
-      alert('PRF-22 profile imported. It is stored locally. The Twin will receive only a short summary, not the raw JSON, while Twin Context is on.');
-    } catch(e) {
-      alert('Could not import PRF-22 profile: ' + e.message);
-      showDebug('PRF-22 IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
-    } finally {
-      if(input) input.value = '';
+  try {
+    if(file.size > 300 * 1024) {
+      throw new Error('This PRF-22 JSON file is larger than 300 KB. Use the exported profile JSON, not a large document.');
     }
+
+    const data = JSON.parse(await file.text());
+
+    if(isStandaloneDailyPulseJSON(data)){
+      importStandaloneDailyPulseJSON(data);
+      return;
+    }
+
+    const profile = normalizeImportedPrf22Profile(data, { fileName:file.name });
+    if(!profile) throw new Error('This JSON could not be read as a PRF-22 / E-Twin profile.');
+
+    const ranked = profile.foundationsRanked || [];
+    const preview = ranked.length
+      ? ranked.slice(0,3).map(x => x.label + ' ' + x.value).join(', ')
+      : 'limited recognized PRF fields';
+
+    if(!confirm('Import this PRF-22 profile into local Navigator memory? Preview: ' + preview + '.')) return;
+
+    setPrf22Profile(profile);
+    renderAll();
+
+    alert('PRF-22 profile imported. It is stored locally. The Twin will receive only a short summary, not the raw JSON, while Twin Context is on.');
+  } catch(e) {
+    alert('Could not import PRF-22 profile: ' + e.message);
+    showDebug('PRF-22 IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
+  } finally {
+    if(input) input.value = '';
   }
+}
   window.handleImportPrf22File = handleImportPrf22File;
 
   function togglePrfTwinContext(){
