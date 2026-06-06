@@ -3659,7 +3659,129 @@
       abcThought: String(entry.abcThought || '').slice(0, 1000)
     };
   }
+// ── NAV-PULSE-3: Standalone Daily Pulse Import Adapter ──
 
+function isStandaloneDailyPulseJSON(data){
+  return !!(
+    data &&
+    typeof data === 'object' &&
+    (
+      data.type === 'daily_pulse' ||
+      data.subtype === 'phenomenology_first_abcd' ||
+      (
+        data.responses &&
+        (data.responses.Attend || data.responses.attend || data.responses.A || data.responses.B || data.responses.C || data.responses.D)
+      )
+    )
+  );
+}
+
+function wordCount(text){
+  return String(text || '').trim().split(/\s+/).filter(Boolean).length;
+}
+
+function dailyPulseToCoherencePulseEntry(pulse){
+  const responses = pulse.responses || {};
+  const prompts = pulse.prompts || {};
+
+  const attend = responses.Attend || responses.attend || '';
+  const agency = responses.A || responses.agency || '';
+  const beauty = responses.B || responses.beauty || '';
+  const context = responses.C || responses.context || '';
+  const dynamic = responses.D || responses.dynamic || '';
+
+  const dateKey =
+    pulse.dateKey ||
+    (pulse.createdAt ? new Date(pulse.createdAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10));
+
+  const dateObj = new Date(dateKey + 'T12:00:00');
+  const dateLabel = isNaN(dateObj.getTime())
+    ? dateKey
+    : dateObj.toLocaleDateString([], { month:'short', day:'numeric' });
+
+  const note = [
+    'Imported from Daily Pulse: Phenomenology First.',
+    '',
+    'Attend: ' + attend,
+    '',
+    'Agency: ' + agency,
+    '',
+    'Beauty / Awe: ' + beauty,
+    '',
+    'Context: ' + context,
+    '',
+    'Dynamic: ' + dynamic
+  ].join('\n').slice(0, 3000);
+
+  const promptNote = [
+    prompts.Attend || prompts.attend ? 'Attend prompt: ' + (prompts.Attend || prompts.attend) : '',
+    prompts.A || prompts.agency ? 'Agency prompt: ' + (prompts.A || prompts.agency) : '',
+    prompts.B || prompts.beauty ? 'Beauty/Awe prompt: ' + (prompts.B || prompts.beauty) : '',
+    prompts.C || prompts.context ? 'Context prompt: ' + (prompts.C || prompts.context) : '',
+    prompts.D || prompts.dynamic ? 'Dynamic prompt: ' + (prompts.D || prompts.dynamic) : ''
+  ].filter(Boolean).join('\n').slice(0, 1500);
+
+  // Standalone Daily Pulse is qualitative, not a 0–5 slider pulse.
+  // Use neutral scores so we do not invent a diagnostic score.
+  const scores = {};
+  COHERENCE_PULSE_DOMAINS.forEach(d => { scores[d.key] = 3; });
+
+  return {
+    id: pulse.entryId || uid('pulse'),
+    createdAt: pulse.createdAt || new Date().toISOString(),
+    importedAt: new Date().toISOString(),
+    dateLabel,
+    source: 'standalone_daily_pulse',
+    sourceType: 'daily_pulse',
+    subtype: 'phenomenology_first_abcd',
+    scores,
+    avg: averagePulseScores(scores),
+    lowestKey: 'structuralClarity',
+    note,
+    relationalNote: promptNote,
+    abcThought: 'This was imported from the Phenomenology First Daily Pulse. Treat the slider scores as neutral placeholders; the meaningful content is in the written Attend + ABCD responses.',
+    dailyPulseRaw: pulse,
+    wordCounts: {
+      attend: wordCount(attend),
+      agency: wordCount(agency),
+      beauty: wordCount(beauty),
+      context: wordCount(context),
+      dynamic: wordCount(dynamic)
+    }
+  };
+}
+
+function importStandaloneDailyPulseJSON(pulse){
+  const entry = dailyPulseToCoherencePulseEntry(pulse);
+  const history = getCoherencePulseHistory();
+
+  const alreadyExists = history.some(e =>
+    e.id === entry.id ||
+    (
+      e.sourceType === 'daily_pulse' &&
+      e.createdAt === entry.createdAt
+    )
+  );
+
+  if(alreadyExists){
+    alert('This Daily Pulse already appears to be imported.');
+    return null;
+  }
+
+  history.push(entry);
+  setCoherencePulseHistory(history);
+
+  if(typeof renderAll === 'function') renderAll();
+  if(typeof renderCoherencePulse === 'function') renderCoherencePulse();
+  if(typeof renderStartHere === 'function') renderStartHere();
+  if(typeof renderFirstSession === 'function') renderFirstSession();
+  if(typeof renderStudentOutputPanel === 'function') renderStudentOutputPanel();
+  if(typeof renderMaturitySnapshotPanel === 'function') renderMaturitySnapshotPanel();
+  if(typeof renderWorkspaceDashboard === 'function') renderWorkspaceDashboard();
+
+  alert('Imported Daily Pulse for ' + (pulse.dateKey || entry.dateLabel) + '. It was added to the Navigator Daily Pulse history.');
+  return entry;
+}
   function averagePulseScores(scores){
     const vals = COHERENCE_PULSE_DOMAINS.map(d => Number(scores && scores[d.key] != null ? scores[d.key] : 3));
     return Math.round((vals.reduce((a,b) => a + b, 0) / vals.length) * 10) / 10;
