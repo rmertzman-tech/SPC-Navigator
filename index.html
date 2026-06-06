@@ -3227,6 +3227,10 @@
   window.triggerImportPrf22Profile = triggerImportPrf22Profile;
 
   async function handleImportPrf22File(event){
+    if(isStandaloneDailyPulseJSON(data)){
+  importStandaloneDailyPulseJSON(data);
+  return;
+}
     const input = event && event.target;
     const file = input && input.files && input.files[0];
     if(!file) return;
