@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
+  <meta name="navigator-build" content="navigator-v3.6e.4-nav-pulse-4a2-native-phenomenology" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Navigator — NAV-IMPORT-1E Critical Thinking Mini-Lab Display</title>
@@ -3516,7 +3516,7 @@ async function handleImportPrf22File(event){
 
 
 
-  const WORKSPACES = ['home','start','firstsession','pulse','twin','threads','memory','field','moves','apps','help'];
+  const WORKSPACES = ['home','start','firstsession','pulse','phenom','twin','threads','memory','field','moves','apps','help'];
 
   function getActiveWorkspace(){
     try {
@@ -9256,7 +9256,7 @@ Return only valid JSON with this shape:
 
   function applyHashWorkspace(){
     const raw = String(window.location.hash || '').replace('#','').toLowerCase();
-    const aliases = { guides:'apps', guide:'apps', coaches:'apps', coach:'apps', fieldmap:'field', fields:'field', start:'start', firstsession:'firstsession', first:'firstsession', session:'firstsession', guided:'firstsession', pulse:'pulse', twin:'twin', threads:'threads', memory:'memory', moves:'moves', help:'help' };
+    const aliases = { guides:'apps', guide:'apps', coaches:'apps', coach:'apps', fieldmap:'field', fields:'field', start:'start', firstsession:'firstsession', first:'firstsession', session:'firstsession', guided:'firstsession', pulse:'pulse', phenom:'phenom', phenomenology:'phenom', phenomenological:'phenom', inquiry:'phenom', twin:'twin', threads:'threads', memory:'memory', moves:'moves', help:'help' };
     const name = aliases[raw] || raw;
     if(WORKSPACES.includes(name)) showWorkspace(name);
   }
