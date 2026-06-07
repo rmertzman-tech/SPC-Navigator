@@ -6406,10 +6406,6 @@ Return only valid JSON with this exact shape:
   importStandaloneDailyPulseJSON(data);
   return;
 }
-      if(isStandaloneDailyPulseJSON(data)){
-  importStandaloneDailyPulseJSON(data);
-  return;
-}
       const restored = validateImportPayload(data);
       const currentCount = getChat().length + getJournal().length;
       const msg = currentCount
