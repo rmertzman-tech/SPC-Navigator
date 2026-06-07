@@ -3625,13 +3625,33 @@ async function handleImportPrf22File(event){
     return pulseDateKeyFromDate(entry.createdAt || Date.now()) === pulseDateKeyFromDate(new Date());
   }
 
-  function getStrongestPhenomenologyDimension(responses){
-    const labels = { attend:'Attend', agency:'Agency', beauty:'Beauty/Awe', context:'Context', dynamic:'Dynamic' };
-    const entries = Object.keys(labels).map(key => ({ key, label:labels[key], words:countWords((responses || {})[key]) }));
-    entries.sort((a,b) => b.words - a.words);
-    return entries[0] || { key:'attend', label:'Attend', words:0 };
+  function getStrongestPhenomenologyDimension(entry){
+  if(!entry) return null;
+
+  const responses =
+    entry.responses ||
+    entry.phenomenology?.responses ||
+    {};
+
+  function localWordCount(text){
+    return String(text || '').trim().split(/\s+/).filter(Boolean).length;
   }
 
+  const dimensions = [
+    { key:'attend', label:'Attend', text: responses.attend || responses.Attend || '' },
+    { key:'agency', label:'Agency', text: responses.agency || responses.A || '' },
+    { key:'beauty', label:'Beauty / Awe', text: responses.beauty || responses.B || '' },
+    { key:'context', label:'Context', text: responses.context || responses.C || '' },
+    { key:'dynamic', label:'Dynamic', text: responses.dynamic || responses.D || '' }
+  ];
+
+  const ranked = dimensions
+    .map(d => ({ ...d, words: localWordCount(d.text) }))
+    .sort((a,b) => b.words - a.words);
+
+  return ranked[0] || null;
+}  
+  
   function renderHomePhenomenologyCard(){
     const card = document.getElementById('home-phenom-card');
     if(!card) return;
