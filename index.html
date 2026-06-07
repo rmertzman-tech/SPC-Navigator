@@ -6643,8 +6643,14 @@ Return only valid JSON with this exact shape:
     if(!file) return;
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
-      const restored = validateImportPayload(data);
+const data = JSON.parse(text);
+
+if(isStandaloneDailyPulseJSON(data)){
+  importStandaloneDailyPulseJSON(data);
+  return;
+}
+
+const restored = validateImportPayload(data);
       pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
       renderMergeImportPreview(pendingMergeImportPlan);
       const box = document.getElementById('merge-import-preview');
