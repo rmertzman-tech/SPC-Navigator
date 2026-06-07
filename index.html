@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.3-nav-pulse-3b-hybrid-merge-adapter" />
+  <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Navigator — NAV-IMPORT-1E Critical Thinking Mini-Lab Display</title>
@@ -1249,6 +1249,7 @@
       <button id="workspace-btn-home" class="workspace-btn active" type="button" aria-current="page" onclick="showWorkspace('home')">Home</button>
       <button id="workspace-btn-start" class="workspace-btn" type="button" onclick="showWorkspace('start')">Start Here</button>
       <button id="workspace-btn-pulse" class="workspace-btn" type="button" onclick="showWorkspace('pulse')">Pulse</button>
+      <button id="workspace-btn-phenom" class="workspace-btn" type="button" onclick="showWorkspace('phenom')">Phenomenology</button>
       <button id="workspace-btn-twin" class="workspace-btn" type="button" onclick="showWorkspace('twin')">Twin</button>
       <button id="workspace-btn-threads" class="workspace-btn" type="button" onclick="showWorkspace('threads')">Threads</button>
       <button id="workspace-btn-memory" class="workspace-btn" type="button" onclick="showWorkspace('memory')">Memory</button>
@@ -1508,6 +1509,99 @@
           </div>
         </aside>
       </section>
+    </div>
+
+
+    <div id="workspace-phenom" class="workspace-pane">
+      <div class="grid workspace-grid">
+        <main class="workspace-stack">
+          <section class="card">
+            <div class="card-header">
+              <div class="eyebrow">Phenomenology First</div>
+              <h2 class="card-title">Daily Inquiry Path</h2>
+              <div class="card-desc">Begin with lived appearance, then translate that reflection into a provisional coherence signal. This is not a diagnosis, grade, or requirement to disclose; it is a private meta-constructor exercise.</div>
+            </div>
+            <div class="card-body">
+              <div class="privacy-note"><strong>Private by default:</strong> this entry stays in this browser unless you export it or choose to send it to the Twin. The first phase is written reflection; the second phase is your own translation of that reflection into seven coherence sliders.</div>
+
+              <div class="language-panel">
+                <div class="language-panel-title">Phase 1 — Phenomenological Encounter</div>
+                <p class="language-panel-text">Do not begin with a score. Begin by noticing what is present. Short responses are fine.</p>
+                <div class="field">
+                  <label for="phenom-attend">Attend — before explanation</label>
+                  <textarea id="phenom-attend" placeholder="Before explaining anything, what is present right now? Name a sensation, mood, concern, pull, or pressure."></textarea>
+                </div>
+                <div class="two-col">
+                  <div class="field">
+                    <label for="phenom-agency">Agency</label>
+                    <textarea id="phenom-agency" placeholder="Where do you sense authorship, constraint, choice, resistance, or responsibility?"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="phenom-beauty">Beauty / Awe / Meaning</label>
+                    <textarea id="phenom-beauty" placeholder="What calls, moves, steadies, interrupts, or matters today?"></textarea>
+                  </div>
+                </div>
+                <div class="two-col">
+                  <div class="field">
+                    <label for="phenom-context">Context</label>
+                    <textarea id="phenom-context" placeholder="What are you carrying, inhabiting, inheriting, or responding to?"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="phenom-dynamic">Dynamic</label>
+                    <textarea id="phenom-dynamic" placeholder="What is opening, closing, shifting, repeating, or becoming possible?"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="language-panel">
+                <div class="language-panel-title">Phase 2 — Coherence Translation</div>
+                <p class="language-panel-text">Now translate your written reflection into a provisional signal map. These numbers are not facts about your worth. They are a representation of how your present state appears after reflection.</p>
+                <div class="pulse-scale-guide">
+                  <div class="pulse-scale-row">
+                    <div class="pulse-scale-cell"><strong>0</strong>Collapsed or unavailable</div>
+                    <div class="pulse-scale-cell"><strong>1</strong>Very low; barely present</div>
+                    <div class="pulse-scale-cell"><strong>2</strong>Weak but present</div>
+                    <div class="pulse-scale-cell"><strong>3</strong>Mixed or workable</div>
+                    <div class="pulse-scale-cell"><strong>4</strong>Strong and available</div>
+                    <div class="pulse-scale-cell"><strong>5</strong>Very steady and supportive</div>
+                  </div>
+                </div>
+                <div id="phenom-coherence-form" class="pulse-grid"></div>
+                <div class="field">
+                  <label for="phenom-translation-note">Translation note</label>
+                  <textarea id="phenom-translation-note" placeholder="Optional: What made these numbers feel right or difficult after writing the reflection?"></textarea>
+                </div>
+              </div>
+
+              <div class="toolbar">
+                <button class="btn small primary" type="button" onclick="savePhenomenologyInquiry()">Save Phenomenological Pulse</button>
+                <button class="btn small purple" type="button" onclick="savePhenomenologyInquiry({askTwin:true})">Save & Prepare Twin Reflection</button>
+                <button class="btn small ghost" type="button" onclick="resetPhenomenologyInquiryForm()">Clear Form</button>
+                <button class="btn small ghost" type="button" onclick="exportLatestPhenomenologyPulse()">Export Latest JSON</button>
+              </div>
+              <div id="phenom-save-status" class="status-line"></div>
+            </div>
+          </section>
+        </main>
+
+        <aside class="workspace-stack">
+          <section class="card">
+            <div class="card-header">
+              <div class="card-title-row">
+                <div>
+                  <h2 class="card-title">Phenomenology Log</h2>
+                  <div id="summary-phenomPulse" class="card-desc">No Phenomenology First entries saved yet.</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="phenom-latest-summary" class="pulse-summary-grid"></div>
+              <div id="phenom-history-list" class="pulse-list"></div>
+              <div class="privacy-note">Saved entries are local-first. Each saved Phenomenological Pulse also creates a linked Coherence Pulse reading so the old Pulse history still works, but the written lived-experience entry remains its own record.</div>
+            </div>
+          </section>
+        </aside>
+      </div>
     </div>
 
     <div id="workspace-twin" class="workspace-pane">
@@ -2474,6 +2568,7 @@
     prf22Profile: 'navigator_twin_v2_prf22_profile',
     coachNotes: 'navigator_twin_v3_coach_notes',
     coherencePulse: 'navigator_twin_v3_coherence_pulse',
+    phenomenologyPulse: 'navigator_twin_v3_7_phenomenology_pulse',
     activeCoach: 'navigator_twin_v3_active_coach',
     twinStance: 'navigator_twin_v3_2_twin_stance',
     livingThreads: 'navigator_twin_v3_3_living_threads',
@@ -2768,6 +2863,8 @@
   function setCoachNotes(notes){ setStored(KEYS.coachNotes, Array.isArray(notes) ? notes.slice(-80) : []); }
   function getCoherencePulseHistory(){ return getStored(KEYS.coherencePulse, []); }
   function setCoherencePulseHistory(items){ setStored(KEYS.coherencePulse, Array.isArray(items) ? items.slice(-120) : []); }
+  function getPhenomenologyPulseHistory(){ return getStored(KEYS.phenomenologyPulse, []); }
+  function setPhenomenologyPulseHistory(items){ setStored(KEYS.phenomenologyPulse, Array.isArray(items) ? items.slice(-120) : []); }
   function getLivingThreads(){ return getStored(KEYS.livingThreads, []); }
   function setLivingThreads(items){ setStored(KEYS.livingThreads, Array.isArray(items) ? items.slice(-80) : []); }
 
@@ -3232,7 +3329,12 @@ async function handleImportPrf22File(event){
     const data = JSON.parse(await file.text());
 
     if(isPhenomenologicalPulseJSON(data)){
-      importPhenomenologicalPulseJSON(data);
+      importPhenomenologicalPulseFile(data);
+      return;
+    }
+
+    if(isStandaloneDailyPulseJSON(data)){
+      importStandaloneDailyPulseJSON(data);
       return;
     }
 
@@ -3668,240 +3770,117 @@ async function handleImportPrf22File(event){
       abcThought: String(entry.abcThought || '').slice(0, 1000)
     };
   }
-// ── NAV-PULSE-3B: Phenomenology First + Coherence Translation Merge Adapter ──
-// Transitional bridge: Standalone Pulse JSON → Navigator Merge JSON from Device.
-// Supports older phenomenology-only `daily_pulse` exports and future hybrid
-// `phenomenological_pulse` exports with a post-reflection coherenceTranslation.
+// ── NAV-PULSE-3: Standalone Daily Pulse Import Adapter ──
 
-function isPhenomenologicalPulseJSON(data){
-  if(!data || typeof data !== 'object') return false;
-
-  const type = String(data.type || '').toLowerCase();
-  const subtype = String(data.subtype || '').toLowerCase();
-
-  if(type === 'phenomenological_pulse') return true;
-  if(type === 'daily_pulse') return true;
-  if(subtype === 'phenomenology_first_abcd') return true;
-  if(subtype === 'phenomenology_first_with_coherence_translation') return true;
-
-  const r = data.responses || (data.phenomenology && data.phenomenology.responses) || {};
-  const hasABCD = !!(
-    r.Attend || r.attend ||
-    r.A || r.agency ||
-    r.B || r.beauty || r.beautyAwe ||
-    r.C || r.context ||
-    r.D || r.dynamic
-  );
-
-  const tags = Array.isArray(data.tags) ? data.tags.map(t => String(t).toLowerCase()) : [];
-  return hasABCD && (
-    tags.includes('daily_pulse') ||
-    tags.includes('phenomenology_first') ||
-    tags.includes('phenomenological_pulse') ||
-    !!data.coherenceTranslation
-  );
-}
-
-// Backward-compatible name used by the existing import guards.
 function isStandaloneDailyPulseJSON(data){
-  return isPhenomenologicalPulseJSON(data);
+  return !!(
+    data &&
+    typeof data === 'object' &&
+    (
+      data.type === 'daily_pulse' ||
+      data.subtype === 'phenomenology_first_abcd' ||
+      (
+        data.responses &&
+        (data.responses.Attend || data.responses.attend || data.responses.A || data.responses.B || data.responses.C || data.responses.D)
+      )
+    )
+  );
 }
 
-function pulseWordCount(text){
+function wordCount(text){
   return String(text || '').trim().split(/\s+/).filter(Boolean).length;
 }
 
-function normalizePhenomenologicalPulseImport(pulse){
-  if(!isPhenomenologicalPulseJSON(pulse)) return null;
+function dailyPulseToCoherencePulseEntry(pulse){
+  const responses = pulse.responses || {};
+  const prompts = pulse.prompts || {};
 
-  const phen = pulse.phenomenology || {};
-  const responses = phen.responses || pulse.responses || {};
-  const prompts = phen.prompts || pulse.prompts || {};
-  const translation = pulse.coherenceTranslation || pulse.coherencePulse || null;
-  const translationScores = translation && translation.scores ? translation.scores : (pulse.scores || null);
+  const attend = responses.Attend || responses.attend || '';
+  const agency = responses.A || responses.agency || '';
+  const beauty = responses.B || responses.beauty || '';
+  const context = responses.C || responses.context || '';
+  const dynamic = responses.D || responses.dynamic || '';
 
-  const entryId = pulse.entryId || pulse.id || uid('phenpulse');
-  const createdAt = pulse.createdAt || pulse.dateCreated || new Date().toISOString();
-  const dateKey = pulse.dateKey || (createdAt ? new Date(createdAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10));
+  const dateKey =
+    pulse.dateKey ||
+    (pulse.createdAt ? new Date(pulse.createdAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10));
+
   const dateObj = new Date(dateKey + 'T12:00:00');
   const dateLabel = isNaN(dateObj.getTime())
     ? dateKey
     : dateObj.toLocaleDateString([], { month:'short', day:'numeric' });
 
-  const normalizedResponses = {
-    attend: responses.attend || responses.Attend || '',
-    agency: responses.agency || responses.A || '',
-    beauty: responses.beauty || responses.beautyAwe || responses.B || '',
-    context: responses.context || responses.C || '',
-    dynamic: responses.dynamic || responses.D || ''
-  };
+  const note = [
+    'Imported from Daily Pulse: Phenomenology First.',
+    '',
+    'Attend: ' + attend,
+    '',
+    'Agency: ' + agency,
+    '',
+    'Beauty / Awe: ' + beauty,
+    '',
+    'Context: ' + context,
+    '',
+    'Dynamic: ' + dynamic
+  ].join('\n').slice(0, 3000);
 
-  const normalizedPrompts = {
-    attend: prompts.attend || prompts.Attend || '',
-    agency: prompts.agency || prompts.A || '',
-    beauty: prompts.beauty || prompts.beautyAwe || prompts.B || '',
-    context: prompts.context || prompts.C || '',
-    dynamic: prompts.dynamic || prompts.D || ''
-  };
+  const promptNote = [
+    prompts.Attend || prompts.attend ? 'Attend prompt: ' + (prompts.Attend || prompts.attend) : '',
+    prompts.A || prompts.agency ? 'Agency prompt: ' + (prompts.A || prompts.agency) : '',
+    prompts.B || prompts.beauty ? 'Beauty/Awe prompt: ' + (prompts.B || prompts.beauty) : '',
+    prompts.C || prompts.context ? 'Context prompt: ' + (prompts.C || prompts.context) : '',
+    prompts.D || prompts.dynamic ? 'Dynamic prompt: ' + (prompts.D || prompts.dynamic) : ''
+  ].filter(Boolean).join('\n').slice(0, 1500);
 
-  const wordCounts = {
-    attend: pulseWordCount(normalizedResponses.attend),
-    agency: pulseWordCount(normalizedResponses.agency),
-    beauty: pulseWordCount(normalizedResponses.beauty),
-    context: pulseWordCount(normalizedResponses.context),
-    dynamic: pulseWordCount(normalizedResponses.dynamic)
-  };
+  // Standalone Daily Pulse is qualitative, not a 0–5 slider pulse.
+  // Use neutral scores so we do not invent a diagnostic score.
+  const scores = {};
+  COHERENCE_PULSE_DOMAINS.forEach(d => { scores[d.key] = 3; });
 
   return {
-    id: entryId,
-    type: 'phenomenological_pulse',
-    subtype: translationScores ? 'phenomenology_first_with_coherence_translation' : 'phenomenology_first_abcd',
-    version: pulse.version || '3B-import-adapter',
-    createdAt,
+    id: pulse.entryId || uid('pulse'),
+    createdAt: pulse.createdAt || new Date().toISOString(),
     importedAt: new Date().toISOString(),
-    dateKey,
     dateLabel,
-    phenomenology: {
-      responses: normalizedResponses,
-      prompts: normalizedPrompts,
-      wordCounts
-    },
-    coherenceTranslation: translationScores ? {
-      completedAfterPhenomenology: translation && translation.completedAfterPhenomenology !== false,
-      scores: normalizeCoherenceTranslationScores(translationScores),
-      studentNote: (translation && (translation.studentNote || translation.note)) || '',
-      source: translation && translation.source ? translation.source : 'phenomenology_first_translation'
-    } : null,
-    reflection: pulse.reflection || { mode:'none', text:null },
-    studentControl: pulse.studentControl || {},
-    tags: Array.from(new Set([...(Array.isArray(pulse.tags) ? pulse.tags : []), 'phenomenological_pulse', 'phenomenology_first'])) ,
-    rawImport: pulse
-  };
-}
-
-function normalizeCoherenceTranslationScores(scores){
-  const out = {};
-  COHERENCE_PULSE_DOMAINS.forEach(d => {
-    const raw = scores && scores[d.key] != null ? scores[d.key] : 3;
-    out[d.key] = Math.max(0, Math.min(5, Number(raw)));
-  });
-  return out;
-}
-
-function phenomenologicalPulseStorageKey(id){
-  return 'navigator:phenomenologyPulse:entry:' + id;
-}
-
-function getPhenomenologicalPulseIndex(){
-  try { return JSON.parse(localStorage.getItem('navigator:phenomenologyPulse:index') || '[]'); }
-  catch(e){ return []; }
-}
-
-function setPhenomenologicalPulseIndex(index){
-  try { localStorage.setItem('navigator:phenomenologyPulse:index', JSON.stringify(Array.isArray(index) ? index.slice(-160) : [])); }
-  catch(e){}
-}
-
-function getPhenomenologicalPulseEntries(){
-  return getPhenomenologicalPulseIndex()
-    .map(id => {
-      try { return JSON.parse(localStorage.getItem(phenomenologicalPulseStorageKey(id)) || 'null'); }
-      catch(e){ return null; }
-    })
-    .filter(Boolean);
-}
-window.getPhenomenologicalPulseEntries = getPhenomenologicalPulseEntries;
-
-function savePhenomenologicalPulseEntry(entry){
-  if(!entry || !entry.id) return null;
-  try { localStorage.setItem(phenomenologicalPulseStorageKey(entry.id), JSON.stringify(entry)); } catch(e) {}
-  const index = getPhenomenologicalPulseIndex();
-  if(!index.includes(entry.id)) index.push(entry.id);
-  setPhenomenologicalPulseIndex(index);
-  return entry;
-}
-
-function buildPhenomenologyNoteForPulse(entry){
-  const r = entry && entry.phenomenology ? entry.phenomenology.responses || {} : {};
-  return [
-    'Imported from Phenomenology First Pulse.',
-    '',
-    'Attend: ' + (r.attend || ''),
-    '',
-    'Agency: ' + (r.agency || ''),
-    '',
-    'Beauty / Awe: ' + (r.beauty || ''),
-    '',
-    'Context: ' + (r.context || ''),
-    '',
-    'Dynamic: ' + (r.dynamic || '')
-  ].join('\n').slice(0, 3000);
-}
-
-function buildPromptNoteForPulse(entry){
-  const p = entry && entry.phenomenology ? entry.phenomenology.prompts || {} : {};
-  const parts = [
-    p.attend ? 'Attend prompt: ' + p.attend : '',
-    p.agency ? 'Agency prompt: ' + p.agency : '',
-    p.beauty ? 'Beauty/Awe prompt: ' + p.beauty : '',
-    p.context ? 'Context prompt: ' + p.context : '',
-    p.dynamic ? 'Dynamic prompt: ' + p.dynamic : ''
-  ].filter(Boolean);
-  const translationNote = entry && entry.coherenceTranslation && entry.coherenceTranslation.studentNote
-    ? '\n\nStudent translation note: ' + entry.coherenceTranslation.studentNote
-    : '';
-  return (parts.join('\n') + translationNote).slice(0, 1500);
-}
-
-function addLinkedCoherencePulseIfPresent(entry){
-  if(!entry || !entry.coherenceTranslation || !entry.coherenceTranslation.scores) return null;
-  const scores = normalizeCoherenceTranslationScores(entry.coherenceTranslation.scores);
-  const low = getLowestPulseDomain(scores);
-  const history = getCoherencePulseHistory();
-  const pulseId = entry.id + '-coherence';
-
-  const existingIndex = history.findIndex(e => e.id === pulseId || e.linkedPhenomenologyPulseId === entry.id);
-  const coherenceEntry = {
-    id: pulseId,
-    createdAt: entry.createdAt || new Date().toISOString(),
-    importedAt: new Date().toISOString(),
-    dateLabel: entry.dateLabel,
-    source: 'phenomenological_pulse_translation',
-    sourceType: 'coherence_translation',
-    subtype: 'phenomenology_first_with_coherence_translation',
-    linkedPhenomenologyPulseId: entry.id,
+    source: 'standalone_daily_pulse',
+    sourceType: 'daily_pulse',
+    subtype: 'phenomenology_first_abcd',
     scores,
     avg: averagePulseScores(scores),
-    lowestKey: low.key,
-    note: buildPhenomenologyNoteForPulse(entry),
-    relationalNote: buildPromptNoteForPulse(entry),
-    abcThought: 'This Coherence Pulse was translated after a Phenomenology First entry. Treat the numbers as a reflective signal map, not a diagnosis.',
-    phenomenologyWordCounts: entry.phenomenology && entry.phenomenology.wordCounts ? entry.phenomenology.wordCounts : {}
+    lowestKey: 'structuralClarity',
+    note,
+    relationalNote: promptNote,
+    abcThought: 'This was imported from the Phenomenology First Daily Pulse. Treat the slider scores as neutral placeholders; the meaningful content is in the written Attend + ABCD responses.',
+    dailyPulseRaw: pulse,
+    wordCounts: {
+      attend: wordCount(attend),
+      agency: wordCount(agency),
+      beauty: wordCount(beauty),
+      context: wordCount(context),
+      dynamic: wordCount(dynamic)
+    }
   };
-
-  if(existingIndex >= 0) history[existingIndex] = Object.assign({}, history[existingIndex], coherenceEntry, { editedAt:new Date().toISOString() });
-  else history.push(coherenceEntry);
-
-  setCoherencePulseHistory(history);
-  return coherenceEntry;
 }
 
-function importPhenomenologicalPulseJSON(pulse){
-  const entry = normalizePhenomenologicalPulseImport(pulse);
-  if(!entry) throw new Error('This file looks like a Pulse export, but its phenomenology fields could not be read.');
+function importStandaloneDailyPulseJSON(pulse){
+  const entry = dailyPulseToCoherencePulseEntry(pulse);
+  const history = getCoherencePulseHistory();
 
-  const existing = getPhenomenologicalPulseEntries().find(e =>
+  const alreadyExists = history.some(e =>
     e.id === entry.id ||
-    (e.createdAt === entry.createdAt && e.dateKey === entry.dateKey)
+    (
+      e.sourceType === 'daily_pulse' &&
+      e.createdAt === entry.createdAt
+    )
   );
 
-  if(existing){
-    alert('This Phenomenology First Pulse already appears to be imported.');
-    return existing;
+  if(alreadyExists){
+    alert('This Daily Pulse already appears to be imported.');
+    return null;
   }
 
-  savePhenomenologicalPulseEntry(entry);
-  const linked = addLinkedCoherencePulseIfPresent(entry);
+  history.push(entry);
+  setCoherencePulseHistory(history);
 
   if(typeof renderAll === 'function') renderAll();
   if(typeof renderCoherencePulse === 'function') renderCoherencePulse();
@@ -3911,22 +3890,9 @@ function importPhenomenologicalPulseJSON(pulse){
   if(typeof renderMaturitySnapshotPanel === 'function') renderMaturitySnapshotPanel();
   if(typeof renderWorkspaceDashboard === 'function') renderWorkspaceDashboard();
 
-  if(linked){
-    alert('Imported Phenomenology First Pulse for ' + entry.dateKey + '. Its Coherence Translation sliders were added to the Navigator Daily Pulse history.');
-  } else {
-    alert('Imported Phenomenology First Pulse for ' + entry.dateKey + '. This entry has no Coherence Translation sliders yet, so it was stored as qualitative phenomenology data for the next Pulse History view.');
-  }
-
+  alert('Imported Daily Pulse for ' + (pulse.dateKey || entry.dateLabel) + '. It was added to the Navigator Daily Pulse history.');
   return entry;
 }
-
-// Backward-compatible name used by earlier NAV-PULSE-3 guards.
-function importStandaloneDailyPulseJSON(pulse){
-  return importPhenomenologicalPulseJSON(pulse);
-}
-window.importStandaloneDailyPulseJSON = importStandaloneDailyPulseJSON;
-window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
-
   function averagePulseScores(scores){
     const vals = COHERENCE_PULSE_DOMAINS.map(d => Number(scores && scores[d.key] != null ? scores[d.key] : 3));
     return Math.round((vals.reduce((a,b) => a + b, 0) / vals.length) * 10) / 10;
@@ -4013,6 +3979,7 @@ window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
   function togglePulseHistory(){
     pulseHistoryExpanded = !pulseHistoryExpanded;
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
   }
   window.togglePulseHistory = togglePulseHistory;
 
@@ -4463,6 +4430,7 @@ window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
     editingPulseId = null;
     resetCoherencePulseForm();
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
     renderStartHere();
     renderFirstSession();
     renderStudentOutputPanel();
@@ -4472,6 +4440,205 @@ window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
     setPulseAfterSaveMessage('<strong>Daily Pulse ' + escapeHtml(action) + '.</strong> Latest average: ' + escapeHtml(String(entry.avg)) + '/5. Lowest signal: ' + escapeHtml(low.label) + '.<div class="quick-actions"><button class="btn small purple" type="button" onclick="askTwinAboutLatestPulse()">Ask Twin About Today</button><button class="btn small ghost" type="button" onclick="createStabilizingMoveFromPulse()">Create Small Stabilizing Move</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'home\')">Return Home</button></div>');
   }
   window.saveCoherencePulse = saveCoherencePulse;
+
+
+  // ── NAV-PULSE-4A: Native Phenomenology First Inquiry Path ──
+  function collectPhenomenologyResponses(){
+    return {
+      attend: String((document.getElementById('phenom-attend') || {}).value || '').slice(0, 2400),
+      agency: String((document.getElementById('phenom-agency') || {}).value || '').slice(0, 2400),
+      beauty: String((document.getElementById('phenom-beauty') || {}).value || '').slice(0, 2400),
+      context: String((document.getElementById('phenom-context') || {}).value || '').slice(0, 2400),
+      dynamic: String((document.getElementById('phenom-dynamic') || {}).value || '').slice(0, 2400)
+    };
+  }
+
+  function collectPhenomenologyScores(){
+    const scores = {};
+    COHERENCE_PULSE_DOMAINS.forEach(d => {
+      const input = document.getElementById('phenom-slider-' + d.key);
+      scores[d.key] = Math.max(0, Math.min(5, Number(input ? input.value : 3)));
+    });
+    return scores;
+  }
+
+  function phenomenologyWordCount(responses){
+    return Object.values(responses || {}).reduce((sum, txt) => sum + String(txt || '').trim().split(/\s+/).filter(Boolean).length, 0);
+  }
+
+  function setPhenomenologyStatus(html){
+    const el = document.getElementById('phenom-save-status');
+    if(el) el.innerHTML = html || '';
+  }
+
+  function renderPhenomenologyInquiry(){
+    const form = document.getElementById('phenom-coherence-form');
+    if(form && !form.dataset.rendered){
+      form.innerHTML = COHERENCE_PULSE_DOMAINS.map(d => {
+        return '<div class="pulse-domain">'
+          + '<div class="pulse-domain-header"><div class="pulse-domain-name">' + escapeHtml(d.label) + '</div><div id="phenom-score-' + d.key + '" class="pulse-domain-score">3</div></div>'
+          + '<div class="pulse-domain-desc">' + escapeHtml(d.question) + '</div>'
+          + '<input id="phenom-slider-' + d.key + '" type="range" min="0" max="5" step="1" value="3" oninput="updatePhenomenologySliderLabels()" />'
+          + '<div class="pulse-domain-desc" style="margin-top:5px;">Translate the written reflection into a provisional signal.</div>'
+          + '</div>';
+      }).join('');
+      form.dataset.rendered = '1';
+    }
+    updatePhenomenologySliderLabels();
+    renderPhenomenologyHistory();
+  }
+  window.renderPhenomenologyInquiry = renderPhenomenologyInquiry;
+
+  function updatePhenomenologySliderLabels(){
+    COHERENCE_PULSE_DOMAINS.forEach(d => {
+      const input = document.getElementById('phenom-slider-' + d.key);
+      const out = document.getElementById('phenom-score-' + d.key);
+      if(out) out.textContent = String(input ? input.value : 3);
+    });
+  }
+  window.updatePhenomenologySliderLabels = updatePhenomenologySliderLabels;
+
+  function savePhenomenologyInquiry(options){
+    options = options || {};
+    const responses = collectPhenomenologyResponses();
+    if(phenomenologyWordCount(responses) < 3){
+      alert('Add at least a few words to the Phenomenological Encounter before saving.');
+      return null;
+    }
+    const scores = collectPhenomenologyScores();
+    const low = getLowestPulseDomain(scores);
+    const now = new Date();
+    const id = uid('phenom');
+    const coherenceId = uid('pulse');
+    const translationNote = String((document.getElementById('phenom-translation-note') || {}).value || '').slice(0, 2000);
+    const entry = {
+      id,
+      type:'phenomenological_pulse',
+      subtype:'phenomenology_first_with_coherence_translation',
+      version:'4A-native',
+      createdAt: now.toISOString(),
+      dateLabel: now.toLocaleDateString([], { month:'short', day:'numeric' }),
+      phenomenology: { responses },
+      coherenceTranslation: {
+        completedAfterPhenomenology: true,
+        scores,
+        avg: averagePulseScores(scores),
+        lowestKey: low.key,
+        studentNote: translationNote
+      },
+      linkedCoherencePulseId: coherenceId,
+      studentControl: { savedQuietly: !options.askTwin, sentToAI: false, exported: false },
+      source:'navigator_native_phenomenology_first'
+    };
+    const history = getPhenomenologyPulseHistory();
+    history.push(entry);
+    setPhenomenologyPulseHistory(history);
+
+    const pulseHistory = getCoherencePulseHistory();
+    pulseHistory.push({
+      id: coherenceId,
+      createdAt: entry.createdAt,
+      dateLabel: entry.dateLabel,
+      source:'phenomenology_first_translation',
+      linkedPhenomenologyId: id,
+      scores,
+      avg: entry.coherenceTranslation.avg,
+      lowestKey: low.key,
+      note: 'Translated after Phenomenology First reflection. Attend: ' + responses.attend.slice(0, 260) + (responses.attend.length > 260 ? '…' : ''),
+      relationalNote: translationNote,
+      abcThought: ABCD_PULSE_THOUGHTS[low.key] || ''
+    });
+    setCoherencePulseHistory(pulseHistory);
+
+    renderAll();
+    setPhenomenologyStatus('<strong>Phenomenological Pulse saved.</strong> Linked Coherence Translation: average ' + escapeHtml(String(entry.coherenceTranslation.avg)) + '/5; lowest signal: ' + escapeHtml(low.label) + '.');
+    if(options.askTwin){ prepareTwinFromPhenomenologyEntry(id); }
+    return entry;
+  }
+  window.savePhenomenologyInquiry = savePhenomenologyInquiry;
+
+  function resetPhenomenologyInquiryForm(){
+    ['phenom-attend','phenom-agency','phenom-beauty','phenom-context','phenom-dynamic','phenom-translation-note'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.value = '';
+    });
+    COHERENCE_PULSE_DOMAINS.forEach(d => {
+      const input = document.getElementById('phenom-slider-' + d.key);
+      if(input) input.value = 3;
+    });
+    updatePhenomenologySliderLabels();
+    setPhenomenologyStatus('');
+  }
+  window.resetPhenomenologyInquiryForm = resetPhenomenologyInquiryForm;
+
+  function renderPhenomenologyHistory(){
+    const history = getPhenomenologyPulseHistory();
+    const summary = document.getElementById('summary-phenomPulse');
+    if(summary) summary.textContent = history.length ? (history.length + ' Phenomenology First entries saved. Latest: ' + (history[history.length - 1].dateLabel || 'today')) : 'No Phenomenology First entries saved yet.';
+    const latestBox = document.getElementById('phenom-latest-summary');
+    const list = document.getElementById('phenom-history-list');
+    const latest = history.length ? history[history.length - 1] : null;
+    if(latestBox){
+      if(!latest){
+        latestBox.innerHTML = '<div class="pulse-summary-card"><div class="pulse-summary-label">Status</div><div class="pulse-summary-value">No entries yet</div></div>';
+      } else {
+        const low = latest.coherenceTranslation && latest.coherenceTranslation.scores ? getLowestPulseDomain(latest.coherenceTranslation.scores) : null;
+        latestBox.innerHTML = [
+          ['Latest', latest.dateLabel || 'Entry'],
+          ['Words', phenomenologyWordCount((latest.phenomenology || {}).responses || {})],
+          ['Lowest translation', low ? low.short + ' ' + latest.coherenceTranslation.scores[low.key] : 'not scored']
+        ].map(pair => '<div class="pulse-summary-card"><div class="pulse-summary-label">' + escapeHtml(pair[0]) + '</div><div class="pulse-summary-value">' + escapeHtml(String(pair[1])) + '</div></div>').join('');
+      }
+    }
+    if(!list) return;
+    if(!history.length){ list.innerHTML = '<div class="status-line">No Phenomenology First entries yet.</div>'; return; }
+    list.innerHTML = history.slice(-8).reverse().map(e => {
+      const r = (e.phenomenology || {}).responses || {};
+      const scores = (e.coherenceTranslation || {}).scores || {};
+      const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
+      const excerpt = [r.attend, r.agency, r.beauty, r.context, r.dynamic].filter(Boolean).join(' · ').slice(0, 360);
+      return '<div class="pulse-entry">'
+        + '<div class="pulse-entry-head"><div><div class="pulse-entry-title">' + escapeHtml(e.dateLabel || 'Phenomenology First') + '</div><div class="pulse-entry-meta">' + (low ? ('Lowest translation: ' + escapeHtml(low.label) + ' · Avg ' + escapeHtml(String((e.coherenceTranslation || {}).avg)) + '/5') : 'Phenomenology only') + '</div></div>'
+        + '<div class="pulse-history-actions"><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Ask Twin</button><button class="btn small danger" type="button" onclick="deletePhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Delete</button></div></div>'
+        + '<div class="pulse-entry-text" style="color:var(--muted);font-size:.9rem;line-height:1.45;">' + escapeHtml(excerpt || '[no written excerpt]') + '</div>'
+        + (low ? '<div class="pulse-mini-scores">' + COHERENCE_PULSE_DOMAINS.map(d => '<span class="pulse-chip">' + escapeHtml(d.short) + ' ' + escapeHtml(String(scores[d.key])) + '</span>').join('') + '</div>' : '')
+        + '</div>';
+    }).join('');
+  }
+
+  function deletePhenomenologyEntry(id){
+    if(!confirm('Delete this Phenomenology First entry? The linked Coherence Pulse reading will remain unless you delete it separately from Pulse.')) return;
+    setPhenomenologyPulseHistory(getPhenomenologyPulseHistory().filter(e => e.id !== id));
+    renderAll();
+  }
+  window.deletePhenomenologyEntry = deletePhenomenologyEntry;
+
+  function prepareTwinFromPhenomenologyEntry(id){
+    const entry = getPhenomenologyPulseHistory().find(e => e.id === id) || getPhenomenologyPulseHistory().slice(-1)[0];
+    if(!entry){ alert('Save a Phenomenology First entry first.'); return; }
+    const r = (entry.phenomenology || {}).responses || {};
+    const scores = (entry.coherenceTranslation || {}).scores || {};
+    const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
+    const msg = 'I completed a Phenomenology First Pulse. Please help me reflect on it without diagnosing me. First, name one connection between the written phenomenology and the coherence translation. Then ask one concrete next question.\n\nAttend: ' + (r.attend || '[none]') + '\nAgency: ' + (r.agency || '[none]') + '\nBeauty/Awe/Meaning: ' + (r.beauty || '[none]') + '\nContext: ' + (r.context || '[none]') + '\nDynamic: ' + (r.dynamic || '[none]') + '\n\nCoherence translation: ' + (Object.keys(scores).length ? formatPulseScores(scores) : '[not scored]') + (low ? '\nLowest signal: ' + low.label : '') + '\nTranslation note: ' + ((entry.coherenceTranslation || {}).studentNote || '[none]');
+    showWorkspace('twin');
+    const input = document.getElementById('chat-input');
+    if(input){ input.value = msg; input.focus(); }
+  }
+  window.prepareTwinFromPhenomenologyEntry = prepareTwinFromPhenomenologyEntry;
+
+  function exportLatestPhenomenologyPulse(){
+    const latest = getPhenomenologyPulseHistory().slice(-1)[0];
+    if(!latest){ alert('Save a Phenomenology First entry before exporting.'); return; }
+    const data = Object.assign({}, latest, { exportedAt:new Date().toISOString() });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'phenomenology-pulse-' + (latest.createdAt || new Date().toISOString()).slice(0,10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 800);
+  }
+  window.exportLatestPhenomenologyPulse = exportLatestPhenomenologyPulse;
+
 
   function editCoherencePulse(id){
     const entry = getCoherencePulseHistory().find(e => e.id === id);
@@ -4506,6 +4673,7 @@ window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
     setCoherencePulseHistory(getCoherencePulseHistory().filter(e => e.id !== id));
     if(editingPulseId === id) editingPulseId = null;
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
     renderStartHere();
     renderFirstSession();
     renderStudentOutputPanel();
@@ -5388,6 +5556,7 @@ window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
     renderCurrentMovePlan();
     renderCoaches();
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
     renderStartHere();
     renderFirstSession();
     renderStudentOutputPanel();
@@ -5878,6 +6047,7 @@ Return only valid JSON with this exact shape:
       livingThreads: getLivingThreads(),
       capabilityLessons: getCapabilityLessonProgress(),
       coherencePulse: getCoherencePulseHistory(),
+      phenomenologyPulse: getPhenomenologyPulseHistory(),
       firstSession: getFirstSessionState(),
       maturitySnapshotBaseline: getMaturitySnapshotBaseline(),
       chapterImports: getChapterImports(),
@@ -6490,6 +6660,45 @@ Return only valid JSON with this exact shape:
     return normalizeLivingThread(t);
   }
 
+
+  function normalizeImportedPhenomenologyPulse(entry){
+    if(!entry || typeof entry !== 'object') return null;
+    const id = String(entry.id || entry.entryId || uid('phenom'));
+    const createdAt = entry.createdAt || entry.date || new Date().toISOString();
+    const phen = entry.phenomenology || entry;
+    const responses = phen.responses || entry.responses || {};
+    const coherence = entry.coherenceTranslation || entry.coherence || {};
+    const scores = coherence.scores && typeof coherence.scores === 'object' ? coherence.scores : (entry.scores && typeof entry.scores === 'object' ? entry.scores : null);
+    const cleanScores = {};
+    if(scores){
+      COHERENCE_PULSE_DOMAINS.forEach(d => { cleanScores[d.key] = Math.max(0, Math.min(5, Number(scores[d.key] != null ? scores[d.key] : 3))); });
+    }
+    return {
+      id,
+      type:'phenomenological_pulse',
+      subtype:'phenomenology_first_with_coherence_translation',
+      createdAt,
+      dateLabel: entry.dateLabel || new Date(createdAt).toLocaleDateString([], { month:'short', day:'numeric' }),
+      phenomenology:{
+        attend:String(responses.attend || responses.Attend || '').slice(0, 2400),
+        agency:String(responses.agency || responses.A || '').slice(0, 2400),
+        beauty:String(responses.beauty || responses.B || '').slice(0, 2400),
+        context:String(responses.context || responses.C || '').slice(0, 2400),
+        dynamic:String(responses.dynamic || responses.D || '').slice(0, 2400)
+      },
+      coherenceTranslation:{
+        completedAfterPhenomenology: true,
+        scores: scores ? cleanScores : null,
+        avg: scores ? averagePulseScores(cleanScores) : null,
+        lowestKey: scores ? getLowestPulseDomain(cleanScores).key : '',
+        studentNote:String((coherence.studentNote || entry.translationNote || entry.note || '')).slice(0, 2000)
+      },
+      linkedCoherencePulseId:String(entry.linkedCoherencePulseId || ''),
+      source: entry.source || 'navigator_import',
+      importedAt: entry.importedAt || new Date().toISOString()
+    };
+  }
+
   function validateImportPayload(data){
     if(!data || typeof data !== 'object') throw new Error('The selected file is not a valid Navigator Twin JSON object.');
     const chat = Array.isArray(data.chat) ? data.chat.map(normalizeImportedMessage).filter(m => m.content.trim()) : [];
@@ -6522,13 +6731,14 @@ Return only valid JSON with this exact shape:
     const prf22Profile = normalizeImportedPrf22Profile(data.prf22Profile || data.prfProfile || null, { fromNavigatorBackup:true });
     const coachNotes = Array.isArray(data.coachNotes) ? data.coachNotes.map(normalizeImportedCoachNote).filter(Boolean) : [];
     const coherencePulse = Array.isArray(data.coherencePulse) ? data.coherencePulse.map(normalizeImportedCoherencePulse).filter(Boolean) : [];
+    const phenomenologyPulse = Array.isArray(data.phenomenologyPulse) ? data.phenomenologyPulse.map(normalizeImportedPhenomenologyPulse).filter(Boolean) : [];
     const livingThreads = Array.isArray(data.livingThreads) ? data.livingThreads.map(normalizeImportedLivingThread).filter(Boolean) : [];
     const capabilityLessons = normalizeCapabilityLessonProgress(data.capabilityLessons || data.capabilityEngineLessons || null);
     const firstSession = normalizeFirstSessionState(data.firstSession || null);
     const maturitySnapshotBaseline = data.maturitySnapshotBaseline && typeof data.maturitySnapshotBaseline === 'object' ? data.maturitySnapshotBaseline : null;
-    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || livingThreads.length || Object.keys(capabilityLessons.completed || {}).length || Object.keys(capabilityLessons.reflections || {}).length || prf22Profile || maturitySnapshotBaseline || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
+    const hasUsable = chat.length || journal.length || documentCapsules.length || fieldScans.length || moveCards.length || pendingMoveCards.length || coachNotes.length || coherencePulse.length || phenomenologyPulse.length || livingThreads.length || Object.keys(capabilityLessons.completed || {}).length || Object.keys(capabilityLessons.reflections || {}).length || prf22Profile || maturitySnapshotBaseline || (contextAssembly && contextAssembly.text && contextAssembly.text.trim());
     if(!hasUsable) throw new Error('The selected JSON does not contain usable Navigator memory records.');
-    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, capabilityLessons, coherencePulse, firstSession, maturitySnapshotBaseline }; 
+    return { chat, journal, coverage, questions, mode, twinStance, documentCapsules, fieldScans, contextAssembly, moveCards, pendingMoveCards, currentMoveId, moveCompareSelection, moveComparisonLens, currentMovePlan, prf22Profile, coachNotes, livingThreads, capabilityLessons, coherencePulse, phenomenologyPulse, firstSession, maturitySnapshotBaseline }; 
   }
 
   async function handleImportTwinMemoryFile(event){
@@ -6538,12 +6748,16 @@ Return only valid JSON with this exact shape:
     try {
       const text = await file.text();
       const data = JSON.parse(text);
-
+      
       if(isPhenomenologicalPulseJSON(data)){
-        importPhenomenologicalPulseJSON(data);
+        importPhenomenologicalPulseFile(data);
         return;
       }
-
+      
+      if(isStandaloneDailyPulseJSON(data)){
+  importStandaloneDailyPulseJSON(data);
+  return;
+}
       const restored = validateImportPayload(data);
       const currentCount = getChat().length + getJournal().length;
       const msg = currentCount
@@ -6568,13 +6782,14 @@ Return only valid JSON with this exact shape:
       setLivingThreads(restored.livingThreads || []);
       setCapabilityLessonProgress(restored.capabilityLessons || defaultCapabilityLessonProgress());
       setCoherencePulseHistory(restored.coherencePulse || []);
+      setPhenomenologyPulseHistory(restored.phenomenologyPulse || []);
       setFirstSessionState(restored.firstSession || normalizeFirstSessionState(null));
       setMaturitySnapshotBaseline(restored.maturitySnapshotBaseline || null);
       clearPendingCapsule();
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
-      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '.');
+      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Guide notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '. Phenomenology First entries: ' + (restored.phenomenologyPulse || []).length + '. Capability lessons: ' + Object.keys((restored.capabilityLessons && restored.capabilityLessons.completed) || {}).length + ' completed.');
     } catch(e) {
       alert('Could not import this JSON file: ' + e.message);
       showDebug('IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
@@ -6684,7 +6899,8 @@ Return only valid JSON with this exact shape:
       pendingMoveCards: mergeCollection(getPendingMoveCards(), restored.pendingMoveCards, 'move', 8),
       coachNotes: mergeCollection(getCoachNotes(), restored.coachNotes, 'coach', 80),
       livingThreads: mergeCollection(getLivingThreads(), restored.livingThreads, 'thread', 80),
-      coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120)
+      coherencePulse: mergeCollection(getCoherencePulseHistory(), restored.coherencePulse, 'pulse', 120),
+      phenomenologyPulse: mergeCollection(getPhenomenologyPulseHistory(), restored.phenomenologyPulse, 'phenom', 120)
     };
     const questions = mergeQuestions(getQuestions(), restored.questions);
     const coverage = mergeCoverage(getCoverage(), restored.coverage);
@@ -6771,38 +6987,46 @@ Return only valid JSON with this exact shape:
       + mergeStatsLine('Guide Notes', c.coachNotes)
       + mergeStatsLine('Living Threads', c.livingThreads)
       + mergeStatsLine('Daily Pulse readings', c.coherencePulse)
+      + mergeStatsLine('Phenomenology First entries', c.phenomenologyPulse)
       + '</ul>'
       + '<p><strong>Preserved by default:</strong> settings and backend URL. PRF profile: ' + escapeHtml(plan.prfAction) + '. Context Assembly: ' + escapeHtml(plan.contextAction) + '. Current Move: ' + escapeHtml(plan.currentMoveAction) + '. Current Move Plan: ' + escapeHtml(plan.currentMovePlanAction) + '.</p>'
       + '<div class="toolbar"><button class="btn small primary" type="button" onclick="confirmMergeTwinMemory()">Confirm Merge</button><button class="btn small ghost" type="button" onclick="cancelMergeTwinMemory()">Cancel Merge</button></div>';
   }
 
   async function handleMergeTwinMemoryFile(event){
-    const input = event && event.target;
-    const file = input && input.files && input.files[0];
-    if(!file) return;
-    try {
-      const text = await file.text();
-      const data = JSON.parse(text);
+  const input = event && event.target;
+  const file = input && input.files && input.files[0];
+  if(!file) return;
 
-      if(isPhenomenologicalPulseJSON(data)){
-        importPhenomenologicalPulseJSON(data);
-        return;
-      }
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
 
-      const restored = validateImportPayload(data);
-      pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
-      renderMergeImportPreview(pendingMergeImportPlan);
-      const box = document.getElementById('merge-import-preview');
-      if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
-    } catch(e) {
-      pendingMergeImportPlan = null;
-      renderMergeImportPreview(null);
-      alert('Could not prepare this JSON file for merge: ' + e.message);
-      showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
-    } finally {
-      if(input) input.value = '';
+    if(isPhenomenologicalPulseJSON(data)){
+      importPhenomenologicalPulseFile(data);
+      return;
     }
+
+    if(isStandaloneDailyPulseJSON(data)){
+      importStandaloneDailyPulseJSON(data);
+      return;
+    }
+
+    const restored = validateImportPayload(data);
+    pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
+    renderMergeImportPreview(pendingMergeImportPlan);
+
+    const box = document.getElementById('merge-import-preview');
+    if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
+  } catch(e) {
+    pendingMergeImportPlan = null;
+    renderMergeImportPreview(null);
+    alert('Could not prepare this JSON file for merge: ' + e.message);
+    showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
+  } finally {
+    if(input) input.value = '';
   }
+}
   window.handleMergeTwinMemoryFile = handleMergeTwinMemoryFile;
 
   function confirmMergeTwinMemory(){
@@ -6829,6 +7053,7 @@ Return only valid JSON with this exact shape:
       setLivingThreads(plan.collections.livingThreads.items);
       setCapabilityLessonProgress(plan.capabilityLessons || getCapabilityLessonProgress());
       setCoherencePulseHistory(plan.collections.coherencePulse.items);
+      setPhenomenologyPulseHistory(plan.collections.phenomenologyPulse.items);
       setFirstSessionState(plan.firstSession || getFirstSessionState());
       setMaturitySnapshotBaseline(plan.maturitySnapshotBaseline || getMaturitySnapshotBaseline());
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
@@ -8813,6 +9038,7 @@ Return only valid JSON with this shape:
     currentCoachDraft = Object.assign({}, note);
     renderCoaches();
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
     renderStartHere();
     renderFirstSession();
     renderStudentOutputPanel();
@@ -8875,6 +9101,7 @@ Return only valid JSON with this shape:
     setCoachNotes(getCoachNotes().filter(n => n.id !== id));
     renderCoaches();
     renderCoherencePulse();
+    renderPhenomenologyInquiry();
     renderStartHere();
     renderFirstSession();
     renderStudentOutputPanel();
@@ -8975,7 +9202,7 @@ Return only valid JSON with this shape:
 
   function clearTwinMemory(){
     if(!confirm('Clear the Twin conversation, journal, PRF-22 profile, capsules, Daily Pulse readings, field scans, context assembly, move cards, coach notes, and comparison selections from this browser?')) return;
-    [KEYS.chat, KEYS.journal, KEYS.coverage, KEYS.questions, KEYS.capsules, KEYS.pendingCapsule, KEYS.fieldScans, KEYS.contextAssembly, KEYS.moveCards, KEYS.pendingMoveCards, KEYS.currentMoveId, KEYS.moveCompareSelection, KEYS.moveComparisonLens, KEYS.currentMovePlan, KEYS.prf22Profile, KEYS.coachNotes, KEYS.livingThreads, KEYS.coherencePulse, KEYS.lastSaved].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+    [KEYS.chat, KEYS.journal, KEYS.coverage, KEYS.questions, KEYS.capsules, KEYS.pendingCapsule, KEYS.fieldScans, KEYS.contextAssembly, KEYS.moveCards, KEYS.pendingMoveCards, KEYS.currentMoveId, KEYS.moveCompareSelection, KEYS.moveComparisonLens, KEYS.currentMovePlan, KEYS.prf22Profile, KEYS.coachNotes, KEYS.livingThreads, KEYS.coherencePulse, KEYS.phenomenologyPulse, KEYS.lastSaved].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
     renderAll();
   }
   window.clearTwinMemory = clearTwinMemory;
@@ -9268,6 +9495,7 @@ Return only valid JSON with this shape:
       setCoachNotes(restored.coachNotes || []);
       setLivingThreads(restored.livingThreads || []);
       setCoherencePulseHistory(restored.coherencePulse || []);
+      setPhenomenologyPulseHistory(restored.phenomenologyPulse || []);
       syncClearReceiveUI();
       renderAll();
       syncSetStatus('Navigator memory replaced with received data.');
