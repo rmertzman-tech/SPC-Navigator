@@ -3837,6 +3837,12 @@ function wordCount(text){
   return String(text || '').trim().split(/\s+/).filter(Boolean).length;
 }
 
+// NAV-PULSE-4B.1 compatibility alias: newer Phenomenology cards call countWords(),
+// while the Navigator already used wordCount(). Keep both names available.
+function countWords(text){
+  return wordCount(text);
+}
+
 function dailyPulseToCoherencePulseEntry(pulse){
   const responses = pulse.responses || {};
   const prompts = pulse.prompts || {};
