@@ -1,6 +1,7 @@
-html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.3-private-navigator-refactor" />
+  <meta name="navigator-build" content="navigator-v3.6e.3-nav-pulse-3b-hybrid-merge-adapter" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Navigator — NAV-IMPORT-1E Critical Thinking Mini-Lab Display</title>
@@ -3230,8 +3231,8 @@ async function handleImportPrf22File(event){
 
     const data = JSON.parse(await file.text());
 
-    if(isStandaloneDailyPulseJSON(data)){
-      importStandaloneDailyPulseJSON(data);
+    if(isPhenomenologicalPulseJSON(data)){
+      importPhenomenologicalPulseJSON(data);
       return;
     }
 
@@ -3667,117 +3668,240 @@ async function handleImportPrf22File(event){
       abcThought: String(entry.abcThought || '').slice(0, 1000)
     };
   }
-// ── NAV-PULSE-3: Standalone Daily Pulse Import Adapter ──
+// ── NAV-PULSE-3B: Phenomenology First + Coherence Translation Merge Adapter ──
+// Transitional bridge: Standalone Pulse JSON → Navigator Merge JSON from Device.
+// Supports older phenomenology-only `daily_pulse` exports and future hybrid
+// `phenomenological_pulse` exports with a post-reflection coherenceTranslation.
 
-function isStandaloneDailyPulseJSON(data){
-  return !!(
-    data &&
-    typeof data === 'object' &&
-    (
-      data.type === 'daily_pulse' ||
-      data.subtype === 'phenomenology_first_abcd' ||
-      (
-        data.responses &&
-        (data.responses.Attend || data.responses.attend || data.responses.A || data.responses.B || data.responses.C || data.responses.D)
-      )
-    )
+function isPhenomenologicalPulseJSON(data){
+  if(!data || typeof data !== 'object') return false;
+
+  const type = String(data.type || '').toLowerCase();
+  const subtype = String(data.subtype || '').toLowerCase();
+
+  if(type === 'phenomenological_pulse') return true;
+  if(type === 'daily_pulse') return true;
+  if(subtype === 'phenomenology_first_abcd') return true;
+  if(subtype === 'phenomenology_first_with_coherence_translation') return true;
+
+  const r = data.responses || (data.phenomenology && data.phenomenology.responses) || {};
+  const hasABCD = !!(
+    r.Attend || r.attend ||
+    r.A || r.agency ||
+    r.B || r.beauty || r.beautyAwe ||
+    r.C || r.context ||
+    r.D || r.dynamic
+  );
+
+  const tags = Array.isArray(data.tags) ? data.tags.map(t => String(t).toLowerCase()) : [];
+  return hasABCD && (
+    tags.includes('daily_pulse') ||
+    tags.includes('phenomenology_first') ||
+    tags.includes('phenomenological_pulse') ||
+    !!data.coherenceTranslation
   );
 }
 
-function wordCount(text){
+// Backward-compatible name used by the existing import guards.
+function isStandaloneDailyPulseJSON(data){
+  return isPhenomenologicalPulseJSON(data);
+}
+
+function pulseWordCount(text){
   return String(text || '').trim().split(/\s+/).filter(Boolean).length;
 }
 
-function dailyPulseToCoherencePulseEntry(pulse){
-  const responses = pulse.responses || {};
-  const prompts = pulse.prompts || {};
+function normalizePhenomenologicalPulseImport(pulse){
+  if(!isPhenomenologicalPulseJSON(pulse)) return null;
 
-  const attend = responses.Attend || responses.attend || '';
-  const agency = responses.A || responses.agency || '';
-  const beauty = responses.B || responses.beauty || '';
-  const context = responses.C || responses.context || '';
-  const dynamic = responses.D || responses.dynamic || '';
+  const phen = pulse.phenomenology || {};
+  const responses = phen.responses || pulse.responses || {};
+  const prompts = phen.prompts || pulse.prompts || {};
+  const translation = pulse.coherenceTranslation || pulse.coherencePulse || null;
+  const translationScores = translation && translation.scores ? translation.scores : (pulse.scores || null);
 
-  const dateKey =
-    pulse.dateKey ||
-    (pulse.createdAt ? new Date(pulse.createdAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10));
-
+  const entryId = pulse.entryId || pulse.id || uid('phenpulse');
+  const createdAt = pulse.createdAt || pulse.dateCreated || new Date().toISOString();
+  const dateKey = pulse.dateKey || (createdAt ? new Date(createdAt).toISOString().slice(0,10) : new Date().toISOString().slice(0,10));
   const dateObj = new Date(dateKey + 'T12:00:00');
   const dateLabel = isNaN(dateObj.getTime())
     ? dateKey
     : dateObj.toLocaleDateString([], { month:'short', day:'numeric' });
 
-  const note = [
-    'Imported from Daily Pulse: Phenomenology First.',
-    '',
-    'Attend: ' + attend,
-    '',
-    'Agency: ' + agency,
-    '',
-    'Beauty / Awe: ' + beauty,
-    '',
-    'Context: ' + context,
-    '',
-    'Dynamic: ' + dynamic
-  ].join('\n').slice(0, 3000);
+  const normalizedResponses = {
+    attend: responses.attend || responses.Attend || '',
+    agency: responses.agency || responses.A || '',
+    beauty: responses.beauty || responses.beautyAwe || responses.B || '',
+    context: responses.context || responses.C || '',
+    dynamic: responses.dynamic || responses.D || ''
+  };
 
-  const promptNote = [
-    prompts.Attend || prompts.attend ? 'Attend prompt: ' + (prompts.Attend || prompts.attend) : '',
-    prompts.A || prompts.agency ? 'Agency prompt: ' + (prompts.A || prompts.agency) : '',
-    prompts.B || prompts.beauty ? 'Beauty/Awe prompt: ' + (prompts.B || prompts.beauty) : '',
-    prompts.C || prompts.context ? 'Context prompt: ' + (prompts.C || prompts.context) : '',
-    prompts.D || prompts.dynamic ? 'Dynamic prompt: ' + (prompts.D || prompts.dynamic) : ''
-  ].filter(Boolean).join('\n').slice(0, 1500);
+  const normalizedPrompts = {
+    attend: prompts.attend || prompts.Attend || '',
+    agency: prompts.agency || prompts.A || '',
+    beauty: prompts.beauty || prompts.beautyAwe || prompts.B || '',
+    context: prompts.context || prompts.C || '',
+    dynamic: prompts.dynamic || prompts.D || ''
+  };
 
-  // Standalone Daily Pulse is qualitative, not a 0–5 slider pulse.
-  // Use neutral scores so we do not invent a diagnostic score.
-  const scores = {};
-  COHERENCE_PULSE_DOMAINS.forEach(d => { scores[d.key] = 3; });
+  const wordCounts = {
+    attend: pulseWordCount(normalizedResponses.attend),
+    agency: pulseWordCount(normalizedResponses.agency),
+    beauty: pulseWordCount(normalizedResponses.beauty),
+    context: pulseWordCount(normalizedResponses.context),
+    dynamic: pulseWordCount(normalizedResponses.dynamic)
+  };
 
   return {
-    id: pulse.entryId || uid('pulse'),
-    createdAt: pulse.createdAt || new Date().toISOString(),
+    id: entryId,
+    type: 'phenomenological_pulse',
+    subtype: translationScores ? 'phenomenology_first_with_coherence_translation' : 'phenomenology_first_abcd',
+    version: pulse.version || '3B-import-adapter',
+    createdAt,
     importedAt: new Date().toISOString(),
+    dateKey,
     dateLabel,
-    source: 'standalone_daily_pulse',
-    sourceType: 'daily_pulse',
-    subtype: 'phenomenology_first_abcd',
-    scores,
-    avg: averagePulseScores(scores),
-    lowestKey: 'structuralClarity',
-    note,
-    relationalNote: promptNote,
-    abcThought: 'This was imported from the Phenomenology First Daily Pulse. Treat the slider scores as neutral placeholders; the meaningful content is in the written Attend + ABCD responses.',
-    dailyPulseRaw: pulse,
-    wordCounts: {
-      attend: wordCount(attend),
-      agency: wordCount(agency),
-      beauty: wordCount(beauty),
-      context: wordCount(context),
-      dynamic: wordCount(dynamic)
-    }
+    phenomenology: {
+      responses: normalizedResponses,
+      prompts: normalizedPrompts,
+      wordCounts
+    },
+    coherenceTranslation: translationScores ? {
+      completedAfterPhenomenology: translation && translation.completedAfterPhenomenology !== false,
+      scores: normalizeCoherenceTranslationScores(translationScores),
+      studentNote: (translation && (translation.studentNote || translation.note)) || '',
+      source: translation && translation.source ? translation.source : 'phenomenology_first_translation'
+    } : null,
+    reflection: pulse.reflection || { mode:'none', text:null },
+    studentControl: pulse.studentControl || {},
+    tags: Array.from(new Set([...(Array.isArray(pulse.tags) ? pulse.tags : []), 'phenomenological_pulse', 'phenomenology_first'])) ,
+    rawImport: pulse
   };
 }
 
-function importStandaloneDailyPulseJSON(pulse){
-  const entry = dailyPulseToCoherencePulseEntry(pulse);
-  const history = getCoherencePulseHistory();
+function normalizeCoherenceTranslationScores(scores){
+  const out = {};
+  COHERENCE_PULSE_DOMAINS.forEach(d => {
+    const raw = scores && scores[d.key] != null ? scores[d.key] : 3;
+    out[d.key] = Math.max(0, Math.min(5, Number(raw)));
+  });
+  return out;
+}
 
-  const alreadyExists = history.some(e =>
+function phenomenologicalPulseStorageKey(id){
+  return 'navigator:phenomenologyPulse:entry:' + id;
+}
+
+function getPhenomenologicalPulseIndex(){
+  try { return JSON.parse(localStorage.getItem('navigator:phenomenologyPulse:index') || '[]'); }
+  catch(e){ return []; }
+}
+
+function setPhenomenologicalPulseIndex(index){
+  try { localStorage.setItem('navigator:phenomenologyPulse:index', JSON.stringify(Array.isArray(index) ? index.slice(-160) : [])); }
+  catch(e){}
+}
+
+function getPhenomenologicalPulseEntries(){
+  return getPhenomenologicalPulseIndex()
+    .map(id => {
+      try { return JSON.parse(localStorage.getItem(phenomenologicalPulseStorageKey(id)) || 'null'); }
+      catch(e){ return null; }
+    })
+    .filter(Boolean);
+}
+window.getPhenomenologicalPulseEntries = getPhenomenologicalPulseEntries;
+
+function savePhenomenologicalPulseEntry(entry){
+  if(!entry || !entry.id) return null;
+  try { localStorage.setItem(phenomenologicalPulseStorageKey(entry.id), JSON.stringify(entry)); } catch(e) {}
+  const index = getPhenomenologicalPulseIndex();
+  if(!index.includes(entry.id)) index.push(entry.id);
+  setPhenomenologicalPulseIndex(index);
+  return entry;
+}
+
+function buildPhenomenologyNoteForPulse(entry){
+  const r = entry && entry.phenomenology ? entry.phenomenology.responses || {} : {};
+  return [
+    'Imported from Phenomenology First Pulse.',
+    '',
+    'Attend: ' + (r.attend || ''),
+    '',
+    'Agency: ' + (r.agency || ''),
+    '',
+    'Beauty / Awe: ' + (r.beauty || ''),
+    '',
+    'Context: ' + (r.context || ''),
+    '',
+    'Dynamic: ' + (r.dynamic || '')
+  ].join('\n').slice(0, 3000);
+}
+
+function buildPromptNoteForPulse(entry){
+  const p = entry && entry.phenomenology ? entry.phenomenology.prompts || {} : {};
+  const parts = [
+    p.attend ? 'Attend prompt: ' + p.attend : '',
+    p.agency ? 'Agency prompt: ' + p.agency : '',
+    p.beauty ? 'Beauty/Awe prompt: ' + p.beauty : '',
+    p.context ? 'Context prompt: ' + p.context : '',
+    p.dynamic ? 'Dynamic prompt: ' + p.dynamic : ''
+  ].filter(Boolean);
+  const translationNote = entry && entry.coherenceTranslation && entry.coherenceTranslation.studentNote
+    ? '\n\nStudent translation note: ' + entry.coherenceTranslation.studentNote
+    : '';
+  return (parts.join('\n') + translationNote).slice(0, 1500);
+}
+
+function addLinkedCoherencePulseIfPresent(entry){
+  if(!entry || !entry.coherenceTranslation || !entry.coherenceTranslation.scores) return null;
+  const scores = normalizeCoherenceTranslationScores(entry.coherenceTranslation.scores);
+  const low = getLowestPulseDomain(scores);
+  const history = getCoherencePulseHistory();
+  const pulseId = entry.id + '-coherence';
+
+  const existingIndex = history.findIndex(e => e.id === pulseId || e.linkedPhenomenologyPulseId === entry.id);
+  const coherenceEntry = {
+    id: pulseId,
+    createdAt: entry.createdAt || new Date().toISOString(),
+    importedAt: new Date().toISOString(),
+    dateLabel: entry.dateLabel,
+    source: 'phenomenological_pulse_translation',
+    sourceType: 'coherence_translation',
+    subtype: 'phenomenology_first_with_coherence_translation',
+    linkedPhenomenologyPulseId: entry.id,
+    scores,
+    avg: averagePulseScores(scores),
+    lowestKey: low.key,
+    note: buildPhenomenologyNoteForPulse(entry),
+    relationalNote: buildPromptNoteForPulse(entry),
+    abcThought: 'This Coherence Pulse was translated after a Phenomenology First entry. Treat the numbers as a reflective signal map, not a diagnosis.',
+    phenomenologyWordCounts: entry.phenomenology && entry.phenomenology.wordCounts ? entry.phenomenology.wordCounts : {}
+  };
+
+  if(existingIndex >= 0) history[existingIndex] = Object.assign({}, history[existingIndex], coherenceEntry, { editedAt:new Date().toISOString() });
+  else history.push(coherenceEntry);
+
+  setCoherencePulseHistory(history);
+  return coherenceEntry;
+}
+
+function importPhenomenologicalPulseJSON(pulse){
+  const entry = normalizePhenomenologicalPulseImport(pulse);
+  if(!entry) throw new Error('This file looks like a Pulse export, but its phenomenology fields could not be read.');
+
+  const existing = getPhenomenologicalPulseEntries().find(e =>
     e.id === entry.id ||
-    (
-      e.sourceType === 'daily_pulse' &&
-      e.createdAt === entry.createdAt
-    )
+    (e.createdAt === entry.createdAt && e.dateKey === entry.dateKey)
   );
 
-  if(alreadyExists){
-    alert('This Daily Pulse already appears to be imported.');
-    return null;
+  if(existing){
+    alert('This Phenomenology First Pulse already appears to be imported.');
+    return existing;
   }
 
-  history.push(entry);
-  setCoherencePulseHistory(history);
+  savePhenomenologicalPulseEntry(entry);
+  const linked = addLinkedCoherencePulseIfPresent(entry);
 
   if(typeof renderAll === 'function') renderAll();
   if(typeof renderCoherencePulse === 'function') renderCoherencePulse();
@@ -3787,9 +3911,22 @@ function importStandaloneDailyPulseJSON(pulse){
   if(typeof renderMaturitySnapshotPanel === 'function') renderMaturitySnapshotPanel();
   if(typeof renderWorkspaceDashboard === 'function') renderWorkspaceDashboard();
 
-  alert('Imported Daily Pulse for ' + (pulse.dateKey || entry.dateLabel) + '. It was added to the Navigator Daily Pulse history.');
+  if(linked){
+    alert('Imported Phenomenology First Pulse for ' + entry.dateKey + '. Its Coherence Translation sliders were added to the Navigator Daily Pulse history.');
+  } else {
+    alert('Imported Phenomenology First Pulse for ' + entry.dateKey + '. This entry has no Coherence Translation sliders yet, so it was stored as qualitative phenomenology data for the next Pulse History view.');
+  }
+
   return entry;
 }
+
+// Backward-compatible name used by earlier NAV-PULSE-3 guards.
+function importStandaloneDailyPulseJSON(pulse){
+  return importPhenomenologicalPulseJSON(pulse);
+}
+window.importStandaloneDailyPulseJSON = importStandaloneDailyPulseJSON;
+window.importPhenomenologicalPulseJSON = importPhenomenologicalPulseJSON;
+
   function averagePulseScores(scores){
     const vals = COHERENCE_PULSE_DOMAINS.map(d => Number(scores && scores[d.key] != null ? scores[d.key] : 3));
     return Math.round((vals.reduce((a,b) => a + b, 0) / vals.length) * 10) / 10;
@@ -6401,11 +6538,12 @@ Return only valid JSON with this exact shape:
     try {
       const text = await file.text();
       const data = JSON.parse(text);
-      
-      if(isStandaloneDailyPulseJSON(data)){
-  importStandaloneDailyPulseJSON(data);
-  return;
-}
+
+      if(isPhenomenologicalPulseJSON(data)){
+        importPhenomenologicalPulseJSON(data);
+        return;
+      }
+
       const restored = validateImportPayload(data);
       const currentCount = getChat().length + getJournal().length;
       const msg = currentCount
@@ -6436,7 +6574,7 @@ Return only valid JSON with this exact shape:
       try { localStorage.setItem(KEYS.mode, restored.mode); localStorage.setItem(KEYS.twinStance, restored.twinStance || 'auto'); } catch(e) {}
       try { localStorage.setItem(KEYS.lastSaved, new Date().toISOString()); } catch(e) {}
       renderAll();
-      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '. Document capsules: ' + (restored.documentCapsules || []).length + '. Field scans: ' + (restored.fieldScans || []).length + '. Move cards: ' + (restored.moveCards || []).length + '. Current move plan: ' + (restored.currentMovePlan ? 'yes' : 'no') + '. PRF-22 profile: ' + (restored.prf22Profile ? 'yes' : 'no') + '. Guide notes: ' + (restored.coachNotes || []).length + '. Living Threads: ' + (restored.livingThreads || []).length + '. Daily Pulse readings: ' + (restored.coherencePulse || []).length + '. Capability lessons: ' + Object.keys((restored.capabilityLessons && restored.capabilityLessons.completed) || {}).length + ' completed.');
+      alert('Twin memory restored. Conversation turns: ' + restored.chat.length + '. Journal entries: ' + restored.journal.length + '.');
     } catch(e) {
       alert('Could not import this JSON file: ' + e.message);
       showDebug('IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
@@ -6639,34 +6777,32 @@ Return only valid JSON with this exact shape:
   }
 
   async funasync function handleMergeTwinMemoryFile(event){
-  const input = event && event.target;
-  const file = input && input.files && input.files[0];
-  if(!file) return;
+    const input = event && event.target;
+    const file = input && input.files && input.files[0];
+    if(!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
 
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
+      if(isPhenomenologicalPulseJSON(data)){
+        importPhenomenologicalPulseJSON(data);
+        return;
+      }
 
-    if(isStandaloneDailyPulseJSON(data)){
-      importStandaloneDailyPulseJSON(data);
-      return;
+      const restored = validateImportPayload(data);
+      pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
+      renderMergeImportPreview(pendingMergeImportPlan);
+      const box = document.getElementById('merge-import-preview');
+      if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
+    } catch(e) {
+      pendingMergeImportPlan = null;
+      renderMergeImportPreview(null);
+      alert('Could not prepare this JSON file for merge: ' + e.message);
+      showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
+    } finally {
+      if(input) input.value = '';
     }
-
-    const restored = validateImportPayload(data);
-    pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
-    renderMergeImportPreview(pendingMergeImportPlan);
-
-    const box = document.getElementById('merge-import-preview');
-    if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
-  } catch(e) {
-    pendingMergeImportPlan = null;
-    renderMergeImportPreview(null);
-    alert('Could not prepare this JSON file for merge: ' + e.message);
-    showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
-  } finally {
-    if(input) input.value = '';
   }
-}
   window.handleMergeTwinMemoryFile = handleMergeTwinMemoryFile;
 
   function confirmMergeTwinMemory(){
