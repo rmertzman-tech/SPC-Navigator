@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.4-nav-pulse-4a2-native-phenomenology" />
+  <meta name="navigator-build" content="navigator-v3.6e.5-nav-pulse-4b-native-integration-cleanup" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-IMPORT-1E Critical Thinking Mini-Lab Display</title>
-  <meta name="description" content="Navigator v3.6E.3 removes public Coach workspace language, replaces it with private guide cards, preserves local-first writing areas, and keeps optional privacy-preserving Instructor Maturity Snapshot functionality for Canvas checkpoints." />
+  <title>The Navigator — NAV-PULSE-4B Phenomenology First Integration</title>
+  <meta name="description" content="Navigator v3.6E.5 integrates Phenomenology First as a native Daily Inquiry path: lived reflection, coherence translation, local save, optional Twin bridge, and SAGE-style next-step reflection." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1050,7 +1050,7 @@
     .first-session-title { font-family:var(--serif); font-size:1.35rem; font-weight:800; color:var(--text); margin-bottom:6px; }
     .first-session-subtitle { color:var(--muted); line-height:1.55; max-width:760px; }
     .first-session-progress { margin:14px 0; }
-    .first-session-steps { display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:8px; margin-top:12px; }
+    .first-session-steps { display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:8px; margin-top:12px; }
     .first-session-chip { border:1px solid var(--border); border-radius:999px; padding:8px 10px; font:800 .72rem/1.15 var(--mono); color:var(--muted); background:rgba(255,255,255,.035); text-align:center; }
     .first-session-chip.done { color:var(--teal); border-color:rgba(75,201,184,.38); background:rgba(75,201,184,.08); }
     .first-session-chip.current { color:var(--gold); border-color:rgba(201,168,76,.65); background:rgba(201,168,76,.12); }
@@ -1273,7 +1273,8 @@
             <div class="quick-actions" style="margin-top:14px;">
               <button class="btn small primary" type="button" onclick="openFirstSession()">Begin My First Navigator Session</button>
               <button class="btn small ghost" type="button" onclick="showWorkspace('start')">Start Here: 10-minute path</button>
-              <button class="btn small ghost" type="button" onclick="showWorkspace('pulse')">Do Today’s Pulse</button>
+              <button class="btn small primary" type="button" onclick="showWorkspace('phenom')">Begin Phenomenology First</button>
+              <button class="btn small ghost" type="button" onclick="showWorkspace('pulse')">Open Coherence Pulse</button>
               <button class="btn small ghost" type="button" onclick="showWorkspace('twin'); startTwin();">Talk with My Twin</button>
               <button class="btn small purple" type="button" onclick="showWorkspace('moves')">Choose One Move</button>
             </div>
@@ -1289,11 +1290,13 @@
                   <div class="language-card"><strong>Move</strong><em>You sense that something needs to change.</em> A move is the next concrete step small enough to begin.</div>
                   <div class="language-card"><strong>Living Thread</strong><em>Some things are tended, not finished.</em> A thread is a commitment, fear, question, relationship, practice, or source of meaning that needs continuity over time.</div>
                   <div class="language-card"><strong>BioBond</strong><em>Something helps you stay yourself under pressure.</em> A BioBond can be a person, practice, place, memory, or community that helps preserve agency and coherence.</div>
+                  <div class="language-card"><strong>Phenomenology First</strong><em>You notice before you measure.</em> Begin with lived appearance, then translate that reflection into a provisional signal map.</div>
                   <div class="language-card"><strong>Daily Pulse</strong><em>You check how you actually are.</em> The Pulse tracks the conditions of agency, not your worth, mood, or grade.</div>
                   <div class="language-card"><strong>Context Assembly</strong><em>Several pressures combine into one real situation.</em> This helps you see what your fields create together.</div>
                   <div class="language-card"><strong>Twin</strong><em>You discover what you think by hearing yourself say it.</em> The Twin reflects, questions, and remembers what you choose to share.</div>
                 </div>
               </div>
+          <div id="home-phenom-card" class="home-thread-card"></div>
           <div id="home-daily-pulse-card" class="home-pulse-card"></div>
           <div id="home-living-threads-card" class="home-thread-card"></div>
           <div id="home-dashboard" class="home-dashboard"></div>
@@ -1303,6 +1306,7 @@
             <div class="guided-card-title">What each tool is for</div>
             <div class="guided-card-text">Navigator has depth, but each part has a simple purpose. Use only what helps today.</div>
             <div class="microhelp-grid">
+              <div class="microhelp-item"><strong>Phenomenology First</strong>A Daily Inquiry path: notice lived experience, then translate it into coherence signals.</div>
               <div class="microhelp-item"><strong>Pulse</strong>A quick daily snapshot of the conditions supporting your agency.</div>
               <div class="microhelp-item"><strong>Twin</strong>A conversation where your self-understanding grows over time.</div>
               <div class="microhelp-item"><strong>Threads</strong>Commitments, fears, questions, and sources of meaning your Twin helps you hold.</div>
@@ -1523,6 +1527,7 @@
             </div>
             <div class="card-body">
               <div class="privacy-note"><strong>Private by default:</strong> this entry stays in this browser unless you export it or choose to send it to the Twin. The first phase is written reflection; the second phase is your own translation of that reflection into seven coherence sliders.</div>
+              <div id="phenom-daily-prompts" class="confidence-note"></div>
 
               <div class="language-panel">
                 <div class="language-panel-title">Phase 1 — Phenomenological Encounter</div>
@@ -1576,6 +1581,7 @@
               <div class="toolbar">
                 <button class="btn small primary" type="button" onclick="savePhenomenologyInquiry()">Save Phenomenological Pulse</button>
                 <button class="btn small purple" type="button" onclick="savePhenomenologyInquiry({askTwin:true})">Save & Prepare Twin Reflection</button>
+                <button class="btn small ghost" type="button" onclick="savePhenomenologyInquiry({sage:true})">Save & Take into SAGE</button>
                 <button class="btn small ghost" type="button" onclick="resetPhenomenologyInquiryForm()">Clear Form</button>
                 <button class="btn small ghost" type="button" onclick="exportLatestPhenomenologyPulse()">Export Latest JSON</button>
               </div>
@@ -3608,10 +3614,49 @@ async function handleImportPrf22File(event){
       + '<div class="quick-actions"><button class="btn small ghost" type="button" onclick="showWorkspace(\'pulse\')">Open Pulse</button><button class="btn small purple" type="button" onclick="askTwinAboutLatestPulse()">Ask Twin About Today</button><button class="btn small ghost" type="button" onclick="createStabilizingMoveFromPulse()">Small Stabilizing Move</button></div>';
   }
 
+
+  function getLatestPhenomenologyPulse(){
+    const history = getPhenomenologyPulseHistory();
+    return history.length ? history[history.length - 1] : null;
+  }
+
+  function phenomenologyEntryIsToday(entry){
+    if(!entry) return false;
+    return pulseDateKeyFromDate(entry.createdAt || Date.now()) === pulseDateKeyFromDate(new Date());
+  }
+
+  function getStrongestPhenomenologyDimension(responses){
+    const labels = { attend:'Attend', agency:'Agency', beauty:'Beauty/Awe', context:'Context', dynamic:'Dynamic' };
+    const entries = Object.keys(labels).map(key => ({ key, label:labels[key], words:countWords((responses || {})[key]) }));
+    entries.sort((a,b) => b.words - a.words);
+    return entries[0] || { key:'attend', label:'Attend', words:0 };
+  }
+
+  function renderHomePhenomenologyCard(){
+    const card = document.getElementById('home-phenom-card');
+    if(!card) return;
+    const history = getPhenomenologyPulseHistory();
+    const latest = history.length ? history[history.length - 1] : null;
+    const doneToday = !!(latest && phenomenologyEntryIsToday(latest));
+    const r = latest && latest.phenomenology ? latest.phenomenology.responses || {} : {};
+    const strongest = getStrongestPhenomenologyDimension(r);
+    const scores = latest && latest.coherenceTranslation ? latest.coherenceTranslation.scores || {} : {};
+    const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
+    const status = doneToday ? 'Completed today' : history.length ? 'Latest saved earlier' : 'Not started yet';
+    const subtitle = latest ? 'Last entry: ' + (latest.dateLabel || (latest.createdAt || '').slice(0,10) || 'saved entry') : 'Begin with Attend + ABCD, then translate the reflection into seven coherence signals.';
+    card.innerHTML = '<div class="home-thread-head"><div><div class="home-thread-title">Phenomenology First</div><div class="home-pulse-status">' + escapeHtml(status) + '</div></div><button class="btn small primary" type="button" onclick="showWorkspace(\'phenom\')">' + (doneToday ? 'Review Today' : 'Begin Daily Inquiry') + '</button></div>'
+      + '<p class="home-thread-text">' + escapeHtml(subtitle) + '</p>'
+      + '<div class="home-thread-row"><div class="home-thread-item"><strong>Entries</strong> ' + escapeHtml(String(history.length)) + ' saved locally</div>'
+      + '<div class="home-thread-item"><strong>Written signal</strong> ' + escapeHtml(strongest.words ? (strongest.label + ' · ' + strongest.words + ' words') : 'waiting') + '</div>'
+      + '<div class="home-thread-item"><strong>Coherence translation</strong> ' + escapeHtml(low ? ('Lowest: ' + low.label) : 'not translated yet') + '</div></div>'
+      + '<div class="quick-actions"><button class="btn small ghost" type="button" onclick="showWorkspace(\'phenom\')">Open Phenomenology</button><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry()">Ask Twin</button><button class="btn small ghost" type="button" onclick="prepareSageFromPhenomenologyEntry()">SAGE Bridge</button></div>';
+  }
+
   function renderWorkspaceDashboard(){
     const box = document.getElementById('home-dashboard');
     if(!box) return;
     renderHomeDailyPulseCard();
+    renderHomePhenomenologyCard();
     const journal = getJournal();
     const capsules = getCapsules();
     const scans = getFieldScans();
@@ -3633,6 +3678,7 @@ async function handleImportPrf22File(event){
     const cards = [
       ['Twin stage', stage.name, journal.length + ' journal entries · ' + Math.min(100, Math.round((journal.length/14)*100)) + '% coherence path'],
       ['Daily Pulse', pulseSummary.count ? (pulseSummary.latest.avg + ' / 5') : 'not yet', pulseSummary.count ? ('Lowest: ' + pulseSummary.lowest.label + ' · Trend: ' + pulseSummary.trend) : 'Open Pulse for seven quick coherence signals.'],
+      ['Phenomenology First', getPhenomenologyPulseHistory().length ? (getPhenomenologyPulseHistory().length + ' entries') : 'not yet', getPhenomenologyPulseHistory().length ? 'Latest entry can bridge to Twin or SAGE.' : 'Begin with lived appearance before sliders.'],
       ['Memory', capsules.length + ' capsules', 'Export JSON before changing devices or browsers.'],
       ['PRF-22 Profile', prfProfile ? 'imported' : 'optional', prfProfile ? truncateText(prfProfile.summary || 'Profile baseline available', 96) : 'Import an E-Twin JSON baseline when available.'],
       ['Field Map', scans.length + ' scans', scans.length ? (summary.highRisk + ' high risk · ' + summary.moderateRisk + ' moderate risk') : 'Map one active environment first.'],
@@ -3997,7 +4043,8 @@ function importStandaloneDailyPulseJSON(pulse){
     const activeThreads = getLivingThreads().filter(t => (t.status || 'active') === 'active').length;
     const hasMove = !!(getCurrentMoveId() || getCurrentMovePlan() || getMoveCards().length);
     return [
-      { key:'pulse', label:'Check In', title:'Do Today’s Pulse', desc:'Use seven quick signals to notice today’s agency conditions. This is a weather report, not a grade.', done:getCoherencePulseHistory().length > 0, action:"showWorkspace('pulse')", button:'Open Pulse' },
+      { key:'phenom', label:'Attend', title:'Begin Phenomenology First', desc:'Start from lived appearance before measurement. Write Attend + ABCD, then translate the entry into coherence sliders.', done:getPhenomenologyPulseHistory().length > 0, action:"showWorkspace('phenom')", button:'Open Daily Inquiry' },
+      { key:'pulse', label:'Translate', title:'Review Coherence Pulse', desc:'Use seven quick signals to notice today’s agency conditions. Phenomenology First creates a linked Pulse automatically after translation.', done:getCoherencePulseHistory().length > 0, action:"showWorkspace('pulse')", button:'Open Pulse' },
       { key:'twin', label:'Meet', title:'Talk with My Twin', desc:'Tell the Twin one thing that matters right now. Let it begin learning with you.', done:userMessages > 0, action:"showWorkspace('twin'); startTwin();", button:'Open Twin' },
       { key:'insight', label:'Remember', title:'Save One Insight', desc:'Let one cautious learning become durable memory. The Twin Journal makes self-understanding easier to return to.', done:getJournal().length > 0, action:"startHereLoadTwinPrompt('Please help me name one cautious insight from our conversation that might belong in my Twin Journal. Keep it brief and revisable.');", button:'Ask Twin' },
       { key:'thread', label:'Protect', title:'Name One Living Thread', desc:'Identify one commitment, concern, question, relationship, practice, or source of Beauty/Awe worth holding over time.', done:activeThreads > 0, action:"showWorkspace('threads')", button:'Open Threads' },
@@ -4069,6 +4116,7 @@ function importStandaloneDailyPulseJSON(pulse){
     const st = getFirstSessionState();
     const activeThreads = getLivingThreads().filter(t => (t.status || 'active') === 'active');
     return [
+      { key:'phenom', label:'Attend', title:'Phenomenology First', done:getPhenomenologyPulseHistory().length > 0 },
       { key:'pulse', label:'Pulse', title:'Check In', done:getCoherencePulseHistory().length > 0 },
       { key:'twin', label:'Twin', title:'Meet Your Twin', done:userMessages > 0 || !!st.notes.firstMatter },
       { key:'insight', label:'Insight', title:'Save One Insight', done:getJournal().length > 0 || !!st.notes.insight },
@@ -4442,6 +4490,106 @@ function importStandaloneDailyPulseJSON(pulse){
   window.saveCoherencePulse = saveCoherencePulse;
 
 
+
+  // ── NAV-PULSE-4B: Daily prompt pools, home integration, and SAGE bridge ──
+  const PHENOM_PROMPT_POOLS = {
+    attend: [
+      'Before explaining anything, what is present right now? Name one sensation, one mood, and one concern, pull, or pressure.',
+      'What are you noticing before you decide what it means?',
+      'What feels close, loud, heavy, unfinished, or quietly important right now?',
+      'What is asking for attention before you turn it into a problem to solve?',
+      'If this moment had a texture, weather, or tone, what would it be?',
+      'What is here that you might normally skip over?',
+      'Where does your attention land before you direct it?'
+    ],
+    agency: [
+      'Where do you sense authorship, constraint, choice, resistance, or responsibility today?',
+      'Where do you feel able to act, and where do you feel acted upon?',
+      'What part of today feels like it still belongs to you?',
+      'Where is your agency supported, and where is it narrowed?',
+      'What choice, however small, is still available?',
+      'Where are you performing control, and where do you actually have it?',
+      'What would preserve your future agency today?'
+    ],
+    beauty: [
+      'What calls, moves, steadies, interrupts, or matters today?',
+      'Where did Beauty, Awe, meaning, humor, craft, care, or wonder appear?',
+      'What helped you remember that life is more than pressure?',
+      'What did you notice that felt worth protecting?',
+      'What gave you even a small sense of dignity, gratitude, or enlargement?',
+      'What would be easy to miss but matters?',
+      'Where did attention become less mechanical?'
+    ],
+    context: [
+      'What are you carrying, inhabiting, inheriting, or responding to today?',
+      'What background condition is shaping the foreground of your experience?',
+      'What field, relationship, deadline, history, body state, or expectation is acting on you?',
+      'What part of this situation did you not choose but still have to navigate?',
+      'What is the context asking of you, and is that ask fair?',
+      'What hidden cost or support is part of today’s situation?',
+      'What would someone need to understand before judging your response?'
+    ],
+    dynamic: [
+      'What is opening, closing, shifting, repeating, or becoming possible?',
+      'What seems to be changing, even slightly?',
+      'What pattern might continue if nothing changes?',
+      'What small move could make tomorrow more open?',
+      'Where do you feel stuck, and where is there motion?',
+      'What is becoming easier or harder to imagine?',
+      'What is the next reversible step?'
+    ]
+  };
+
+  function simpleHash(text){
+    text = String(text || '');
+    let h = 2166136261;
+    for(let i = 0; i < text.length; i++){
+      h ^= text.charCodeAt(i);
+      h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+    }
+    return Math.abs(h >>> 0);
+  }
+
+  function phenomDateKey(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function phenomDailyPrompt(key){
+    const pool = PHENOM_PROMPT_POOLS[key] || [];
+    if(!pool.length) return '';
+    const idx = simpleHash(phenomDateKey() + ':' + key) % pool.length;
+    return pool[idx];
+  }
+
+  function applyPhenomenologyDailyPrompts(){
+    const mapping = { attend:'phenom-attend', agency:'phenom-agency', beauty:'phenom-beauty', context:'phenom-context', dynamic:'phenom-dynamic' };
+    Object.keys(mapping).forEach(key => {
+      const el = document.getElementById(mapping[key]);
+      const prompt = phenomDailyPrompt(key);
+      if(el && prompt && !String(el.value || '').trim()) el.setAttribute('placeholder', prompt);
+    });
+    const box = document.getElementById('phenom-daily-prompts');
+    if(box){
+      box.innerHTML = '<strong>Today’s shared inquiry prompts.</strong> These are date-seeded, so everyone receives the same prompt pattern today. You may follow them or write your own honest response.'
+        + '<div class="pulse-mini-scores" style="margin-top:10px;">'
+        + ['attend','agency','beauty','context','dynamic'].map(k => '<span class="pulse-chip"><strong>' + escapeHtml(k === 'beauty' ? 'Beauty/Awe' : k.charAt(0).toUpperCase() + k.slice(1)) + ':</strong> ' + escapeHtml(phenomDailyPrompt(k)) + '</span>').join('')
+        + '</div>';
+    }
+  }
+
+  function buildPhenomenologyLocalFeedback(entry){
+    const r = entry && entry.phenomenology ? entry.phenomenology.responses || {} : {};
+    const strongest = getStrongestPhenomenologyDimension(r);
+    const scores = entry && entry.coherenceTranslation ? entry.coherenceTranslation.scores || {} : {};
+    const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
+    const avg = entry && entry.coherenceTranslation ? entry.coherenceTranslation.avg : null;
+    const bridge = low ? ('Your lowest translated signal is ' + low.label + '. Treat it as a place to listen, not a verdict.') : 'No slider translation was saved.';
+    return '<div class="confidence-note"><strong>Local feedback:</strong> Your strongest written signal appears to be ' + escapeHtml(strongest.label) + (strongest.words ? (' (' + strongest.words + ' words). ') : '. ')
+      + escapeHtml(bridge) + (avg != null ? (' Average translation: ' + escapeHtml(String(avg)) + '/5.') : '')
+      + '<div class="quick-actions" style="margin-top:10px;"><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry(\'' + escapeAttr(entry.id) + '\')">Ask Twin About This</button><button class="btn small ghost" type="button" onclick="prepareSageFromPhenomenologyEntry(\'' + escapeAttr(entry.id) + '\')">Take into SAGE</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'pulse\')">Review Linked Pulse</button></div></div>';
+  }
+
   // ── NAV-PULSE-4A: Native Phenomenology First Inquiry Path ──
   function collectPhenomenologyResponses(){
     return {
@@ -4485,6 +4633,7 @@ function importStandaloneDailyPulseJSON(pulse){
       form.dataset.rendered = '1';
     }
     updatePhenomenologySliderLabels();
+    applyPhenomenologyDailyPrompts();
     renderPhenomenologyHistory();
   }
   window.renderPhenomenologyInquiry = renderPhenomenologyInquiry;
@@ -4551,8 +4700,9 @@ function importStandaloneDailyPulseJSON(pulse){
     setCoherencePulseHistory(pulseHistory);
 
     renderAll();
-    setPhenomenologyStatus('<strong>Phenomenological Pulse saved.</strong> Linked Coherence Translation: average ' + escapeHtml(String(entry.coherenceTranslation.avg)) + '/5; lowest signal: ' + escapeHtml(low.label) + '.');
+    setPhenomenologyStatus('<strong>Phenomenological Pulse saved.</strong> Linked Coherence Translation: average ' + escapeHtml(String(entry.coherenceTranslation.avg)) + '/5; lowest signal: ' + escapeHtml(low.label) + '.' + buildPhenomenologyLocalFeedback(entry));
     if(options.askTwin){ prepareTwinFromPhenomenologyEntry(id); }
+    if(options.sage){ prepareSageFromPhenomenologyEntry(id); }
     return entry;
   }
   window.savePhenomenologyInquiry = savePhenomenologyInquiry;
@@ -4599,7 +4749,7 @@ function importStandaloneDailyPulseJSON(pulse){
       const excerpt = [r.attend, r.agency, r.beauty, r.context, r.dynamic].filter(Boolean).join(' · ').slice(0, 360);
       return '<div class="pulse-entry">'
         + '<div class="pulse-entry-head"><div><div class="pulse-entry-title">' + escapeHtml(e.dateLabel || 'Phenomenology First') + '</div><div class="pulse-entry-meta">' + (low ? ('Lowest translation: ' + escapeHtml(low.label) + ' · Avg ' + escapeHtml(String((e.coherenceTranslation || {}).avg)) + '/5') : 'Phenomenology only') + '</div></div>'
-        + '<div class="pulse-history-actions"><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Ask Twin</button><button class="btn small danger" type="button" onclick="deletePhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Delete</button></div></div>'
+        + '<div class="pulse-history-actions"><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Ask Twin</button><button class="btn small ghost" type="button" onclick="prepareSageFromPhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">SAGE</button><button class="btn small danger" type="button" onclick="deletePhenomenologyEntry(\'' + escapeAttr(e.id) + '\')">Delete</button></div></div>'
         + '<div class="pulse-entry-text" style="color:var(--muted);font-size:.9rem;line-height:1.45;">' + escapeHtml(excerpt || '[no written excerpt]') + '</div>'
         + (low ? '<div class="pulse-mini-scores">' + COHERENCE_PULSE_DOMAINS.map(d => '<span class="pulse-chip">' + escapeHtml(d.short) + ' ' + escapeHtml(String(scores[d.key])) + '</span>').join('') + '</div>' : '')
         + '</div>';
@@ -4621,10 +4771,25 @@ function importStandaloneDailyPulseJSON(pulse){
     const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
     const msg = 'I completed a Phenomenology First Pulse. Please help me reflect on it without diagnosing me. First, name one connection between the written phenomenology and the coherence translation. Then ask one concrete next question.\n\nAttend: ' + (r.attend || '[none]') + '\nAgency: ' + (r.agency || '[none]') + '\nBeauty/Awe/Meaning: ' + (r.beauty || '[none]') + '\nContext: ' + (r.context || '[none]') + '\nDynamic: ' + (r.dynamic || '[none]') + '\n\nCoherence translation: ' + (Object.keys(scores).length ? formatPulseScores(scores) : '[not scored]') + (low ? '\nLowest signal: ' + low.label : '') + '\nTranslation note: ' + ((entry.coherenceTranslation || {}).studentNote || '[none]');
     showWorkspace('twin');
+    startTwin();
     const input = document.getElementById('chat-input');
     if(input){ input.value = msg; input.focus(); }
   }
   window.prepareTwinFromPhenomenologyEntry = prepareTwinFromPhenomenologyEntry;
+
+  function prepareSageFromPhenomenologyEntry(id){
+    const entry = getPhenomenologyPulseHistory().find(e => e.id === id) || getPhenomenologyPulseHistory().slice(-1)[0];
+    if(!entry){ alert('Save a Phenomenology First entry first.'); return; }
+    const r = (entry.phenomenology || {}).responses || {};
+    const scores = (entry.coherenceTranslation || {}).scores || {};
+    const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
+    const msg = 'Please help me take this Phenomenology First Pulse into SAGE. Keep it practical and non-diagnostic.\n\nSEE: What is showing up in my Attend + ABCD reflection?\nANALYZE: What context or field conditions may be shaping it?\nGENERATE: What small agency-preserving responses are possible?\nENGAGE: What one reversible next move fits?\n\nAttend: ' + (r.attend || '[none]') + '\nAgency: ' + (r.agency || '[none]') + '\nBeauty/Awe/Meaning: ' + (r.beauty || '[none]') + '\nContext: ' + (r.context || '[none]') + '\nDynamic: ' + (r.dynamic || '[none]') + '\n\nCoherence translation: ' + (Object.keys(scores).length ? formatPulseScores(scores) : '[not scored]') + (low ? '\nLowest signal: ' + low.label : '') + '\nTranslation note: ' + ((entry.coherenceTranslation || {}).studentNote || '[none]');
+    showWorkspace('twin');
+    startTwin();
+    const input = document.getElementById('chat-input');
+    if(input){ input.value = msg; input.focus(); }
+  }
+  window.prepareSageFromPhenomenologyEntry = prepareSageFromPhenomenologyEntry;
 
   function exportLatestPhenomenologyPulse(){
     const latest = getPhenomenologyPulseHistory().slice(-1)[0];
