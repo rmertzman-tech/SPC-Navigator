@@ -6776,7 +6776,7 @@ Return only valid JSON with this exact shape:
       + '<div class="toolbar"><button class="btn small primary" type="button" onclick="confirmMergeTwinMemory()">Confirm Merge</button><button class="btn small ghost" type="button" onclick="cancelMergeTwinMemory()">Cancel Merge</button></div>';
   }
 
-  async funasync function handleMergeTwinMemoryFile(event){
+  async function handleMergeTwinMemoryFile(event){
     const input = event && event.target;
     const file = input && input.files && input.files[0];
     if(!file) return;
