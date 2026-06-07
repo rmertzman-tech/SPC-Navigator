@@ -6401,6 +6401,11 @@ Return only valid JSON with this exact shape:
     try {
       const text = await file.text();
       const data = JSON.parse(text);
+      
+      if(isStandaloneDailyPulseJSON(data)){
+  importStandaloneDailyPulseJSON(data);
+  return;
+}
       if(isStandaloneDailyPulseJSON(data)){
   importStandaloneDailyPulseJSON(data);
   return;
