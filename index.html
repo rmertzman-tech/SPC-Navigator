@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.5-nav-pulse-4b-native-integration-cleanup" />
+  <meta name="navigator-build" content="navigator-v3.6e.7-nav-pulse-4d-student-language-receipts" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-PULSE-4C Phenomenology First Integration</title>
-  <meta name="description" content="Navigator v3.6E.6 makes Phenomenology First the primary daily practice, relabels the old Pulse as a Quick Coherence Check, and imports the rich ABCD prompt pools from the prototype." />
+  <title>The Navigator — NAV-PULSE-4D Phenomenology First Polish</title>
+  <meta name="description" content="Navigator v3.6E.7 polishes Phenomenology First as the primary daily practice, adds instructor-safe receipts, clarifies student privacy language, and preserves Coherence Check as the quick slider-only shortcut." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1344,7 +1344,7 @@
                   <div>
                     <div class="eyebrow">Guided first session</div>
                     <div class="first-session-title">Let Navigator walk with you through the first six steps.</div>
-                    <div class="first-session-subtitle">Use this when you want one calm path instead of deciding which tool to open. The flow ends with a small personal map: today’s Coherence Check, one Twin signal, one insight, one Living Thread, one Field, and one Move.</div>
+                    <div class="first-session-subtitle">Use this when you want one calm path instead of deciding which tool to open. The flow ends with a small personal map: today’s Pulse, one Twin signal, one insight, one Living Thread, one Field, and one Move.</div>
                   </div>
                   <button class="btn small primary" type="button" onclick="openFirstSession()">Begin My First Navigator Session</button>
                 </div>
@@ -1460,7 +1460,7 @@
                 <div class="eyebrow">A relational question to hold</div>
                 <p style="font-family:var(--serif);font-size:1.1rem;font-style:italic;margin:0 0 10px;">Is there anyone whose capacity to act from their values is being shaped — supported or limited — by your situation, decisions, or context right now?</p>
                 <p style="color:var(--muted);margin:0 0 10px;">You do not need to solve this. Just notice it.</p>
-                <textarea id="pulse-relational-note" placeholder="A few words, or nothing at all…" aria-label="Optional note about today's Coherence Check check-in"></textarea>
+                <textarea id="pulse-relational-note" placeholder="A few words, or nothing at all…" aria-label="Optional note about today's Pulse check-in"></textarea>
               </div>
               <div class="toolbar pulse-actions">
                 <button id="pulse-save-btn" class="btn small primary" type="button" onclick="saveCoherencePulse()">Save Coherence Check</button>
@@ -1523,15 +1523,15 @@
             <div class="card-header">
               <div class="eyebrow">Phenomenology First</div>
               <h2 class="card-title">Daily Inquiry Path</h2>
-              <div class="card-desc">Begin with lived appearance, then translate that reflection into a provisional coherence signal. This is not a diagnosis, grade, or requirement to disclose; it is a private meta-constructor exercise.</div>
+              <div class="card-desc">Begin with lived appearance, then translate that reflection into a provisional coherence signal. This is the primary daily practice; Coherence Check is the quick shortcut. Nothing here is a diagnosis or grade.</div>
             </div>
             <div class="card-body">
-              <div class="privacy-note"><strong>Private by default:</strong> this entry stays in this browser unless you export it or choose to send it to the Twin. The first phase is written reflection; the second phase is your own translation of that reflection into seven coherence sliders.</div>
+              <div class="privacy-note"><strong>Private by default:</strong> this entry stays in this browser unless you export it, copy a receipt, or choose to send selected content to the Twin. Your instructor can invite use of this tool, but the private text is not submitted automatically. The first phase is written reflection; the second phase is your own translation of that reflection into seven coherence signals.</div>
               <div id="phenom-daily-prompts" class="confidence-note"></div>
 
               <div class="language-panel">
                 <div class="language-panel-title">Phase 1 — Phenomenological Encounter</div>
-                <p class="language-panel-text">Do not begin with a score. Begin by noticing what is present. Short responses are fine.</p>
+                <p class="language-panel-text">Do not begin with a score. Begin by noticing what is present before explanation. Short responses are fine; you control how much to write.</p>
                 <div class="field">
                   <label for="phenom-attend">Attend — before explanation</label>
                   <textarea id="phenom-attend" placeholder="Before explaining anything, what is present right now? Name a sensation, mood, concern, pull, or pressure."></textarea>
@@ -1560,7 +1560,7 @@
 
               <div class="language-panel">
                 <div class="language-panel-title">Phase 2 — Coherence Translation</div>
-                <p class="language-panel-text">Now translate your written reflection into a provisional signal map. These numbers are not facts about your worth. They are a representation of how your present state appears after reflection.</p>
+                <p class="language-panel-text">Now translate your written reflection into a provisional signal map. These numbers are not facts about your worth, health, or ability. They are a student-controlled representation of how your present state appears after reflection.</p>
                 <div class="pulse-scale-guide">
                   <div class="pulse-scale-row">
                     <div class="pulse-scale-cell"><strong>0</strong>Collapsed or unavailable</div>
@@ -1579,11 +1579,13 @@
               </div>
 
               <div class="toolbar">
-                <button class="btn small primary" type="button" onclick="savePhenomenologyInquiry()">Save Phenomenological Pulse</button>
+                <button class="btn small primary" type="button" onclick="savePhenomenologyInquiry()">Save Phenomenology First Entry</button>
                 <button class="btn small purple" type="button" onclick="savePhenomenologyInquiry({askTwin:true})">Save & Prepare Twin Reflection</button>
                 <button class="btn small ghost" type="button" onclick="savePhenomenologyInquiry({sage:true})">Save & Take into SAGE</button>
+                <button class="btn small ghost" type="button" onclick="copyPhenomenologyReceipt()">Copy Completion Receipt</button>
+                <button class="btn small ghost" type="button" onclick="downloadPhenomenologyReceipt()">Download Receipt</button>
                 <button class="btn small ghost" type="button" onclick="resetPhenomenologyInquiryForm()">Clear Form</button>
-                <button class="btn small ghost" type="button" onclick="exportLatestPhenomenologyPulse()">Export Latest JSON</button>
+                <button class="btn small ghost" type="button" onclick="exportLatestPhenomenologyPulse()">Export Private JSON</button>
               </div>
               <div id="phenom-save-status" class="status-line"></div>
             </div>
@@ -1603,7 +1605,8 @@
             <div class="card-body">
               <div id="phenom-latest-summary" class="pulse-summary-grid"></div>
               <div id="phenom-history-list" class="pulse-list"></div>
-              <div class="privacy-note">Saved entries are local-first. Each saved Phenomenological Pulse also creates a linked Coherence Pulse reading so the old Coherence Check history still works, but the written lived-experience entry remains its own record.</div>
+              <div class="privacy-note">Saved entries are local-first. Each saved Phenomenology First entry also creates a linked Coherence Check reading, but the written lived-experience entry remains its own private record.</div>
+              <details class="help-note" style="margin-top:12px;"><summary>Instructor-safe use</summary><div class="help-note-body"><p>Phenomenology First is designed as a private entry ritual, not a required disclosure exercise. Instructors may invite students to use it before discussion, SAGE work, or reflection, but private text should remain student-controlled.</p><p>Use <strong>Copy Completion Receipt</strong> or <strong>Download Receipt</strong> when students need to document completion without revealing private responses or slider scores.</p></div></details>
             </div>
           </section>
         </aside>
@@ -1630,7 +1633,7 @@
                 <option value="auto">Auto — let the Twin choose</option>
                 <option value="listen">Listen with me</option>
                 <option value="understand">Help me understand</option>
-                <option value="pulse">Help me with today’s Coherence Check</option>
+                <option value="pulse">Help me with today’s Pulse</option>
                 <option value="current_move">Follow up on my Current Move</option>
                 <option value="gentle_challenge">Challenge me gently</option>
                 <option value="beauty_awe">Help me find Beauty/Awe</option>
@@ -1778,7 +1781,7 @@
         <div class="card" style="margin-top:18px;">
           <div class="card-header">
             <div class="card-title">Memory & Backup</div>
-            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, Coherence Check history, Move Cards, Guide Notes, PRF profile, mode, and settings.</div>
+            <div class="card-desc">Global controls for the whole app: conversation, Twin Journal, Document Capsules, Field Scans, Pulse history, Move Cards, Guide Notes, PRF profile, mode, and settings.</div>
             <details class="help-note"><summary>What is this?</summary><div class="help-note-body"><p>Use JSON export as the safest full backup. Use Import / Restore only when you want to replace this browser's memory. Use Merge JSON to add new records from another device, such as a phone session, without erasing this browser's existing memory.</p></div></details>
           </div>
           <div class="card-body">
@@ -1818,7 +1821,7 @@
 
             <!-- ── SEND PANEL ── -->
             <div id="sync-send-panel">
-              <div class="privacy-note"><strong>What gets sent:</strong> your complete Navigator memory — the same as Export JSON. Twin conversations, Coherence Check history, Field Scans, Move Cards, PRF profile, Guide Notes, and Living Threads.</div>
+              <div class="privacy-note"><strong>What gets sent:</strong> your complete Navigator memory — the same as Export JSON. Twin conversations, Pulse history, Field Scans, Move Cards, PRF profile, Guide Notes, and Living Threads.</div>
               <div class="quick-actions" style="margin-top:12px;">
                 <button class="btn small primary" type="button" onclick="syncSend()">Generate transfer code</button>
               </div>
@@ -2394,7 +2397,7 @@
                 <div class="glossary-item"><strong>Move</strong><span>The next concrete action small enough to begin, not a complete life plan.</span></div>
                 <div class="glossary-item"><strong>Living Thread</strong><span>Something you tend across time: a relationship, fear, commitment, practice, question, project, or source of meaning.</span></div>
                 <div class="glossary-item"><strong>BioBond</strong><span>A person, practice, place, memory, or community that helps your agency remain coherent under pressure.</span></div>
-                <div class="glossary-item"><strong>Coherence Check</strong><span>A daily self-reading of the conditions supporting agency, not a medical reading or grade.</span></div>
+                <div class="glossary-item"><strong>Daily Pulse</strong><span>A daily self-reading of the conditions supporting agency, not a medical reading or grade.</span></div>
                 <div class="glossary-item"><strong>Context Assembly</strong><span>The practice of seeing what your different fields create together as one real-life situation.</span></div>
                 <div class="glossary-item"><strong>Twin</strong><span>A reflective companion that helps you hear, revise, and deepen what you are trying to say about yourself and your situation.</span></div>
               </div>
@@ -2604,7 +2607,7 @@
     { key:'auto', label:'Auto', prompt:'choose the most fitting stance from witness, memory keeper, Pulse interpreter, move companion, Beauty/Awe inviter, gentle challenger, co-designer, or philosophy/science explorer' },
     { key:'listen', label:'Listen with me', prompt:'be a steady witness; reflect only what is needed and do not rush to advice' },
     { key:'understand', label:'Help me understand', prompt:'help clarify patterns, meanings, assumptions, and context without over-explaining' },
-    { key:'pulse', label:'Today’s Pulse', prompt:'interpret today’s Coherence Check and recent trends gently; connect low signals to small agency-preserving moves' },
+    { key:'pulse', label:'Today’s Pulse', prompt:'interpret today’s Pulse and recent trends gently; connect low signals to small agency-preserving moves' },
     { key:'current_move', label:'Current Move follow-up', prompt:'return to the active Current Move or plan; ask whether it is developing, blocked, complete, or ready for revision' },
     { key:'gentle_challenge', label:'Gentle challenge', prompt:'respect the user while testing blind spots, dark coherence, avoidance, or over-compliance' },
     { key:'beauty_awe', label:'Beauty/Awe', prompt:'help the user notice beauty, awe, meaning, humor, sacredness, creativity, gratitude, or future-pull' },
@@ -3024,7 +3027,7 @@
     const pulse = getLatestPulse();
     if(pulse){
       const low = getLowestPulseDomain(pulse.scores || {});
-      signals.push({ label:'Latest Coherence Check', text:(pulse.dateLabel || 'recent') + ': average ' + (Number(pulse.avg || 0).toFixed(1)) + '; lowest signal: ' + low.label + '.' });
+      signals.push({ label:'Latest Pulse', text:(pulse.dateLabel || 'recent') + ': average ' + (Number(pulse.avg || 0).toFixed(1)) + '; lowest signal: ' + low.label + '.' });
       if(low.key === 'beautyAweMeaning') signals.push({ label:'Beauty/Awe', text:'Beauty/Awe was the lowest recent signal; the Twin should gently reopen contact with meaning, wonder, humor, creativity, or future-pull.' });
       if(low.key === 'recoveryAccess' || low.key === 'physicalEnergy') signals.push({ label:'Capacity caution', text:'Recent capacity is low; the Twin should prefer small, reversible, recovery-preserving moves.' });
       if(low.key === 'identityIntegrity') signals.push({ label:'Identity protection', text:'Identity Integrity is low; the Twin should ask what must not be sacrificed.' });
@@ -3680,7 +3683,7 @@ async function handleImportPrf22File(event){
     const nextHint = planMatchesCurrent ? 'Review current move plan' : currentMove ? 'Create current move plan' : moves.length ? 'Compare saved moves' : scans.length ? 'Generate first Move Cards' : 'Create a first Field Scan';
     const cards = [
       ['Twin stage', stage.name, journal.length + ' journal entries · ' + Math.min(100, Math.round((journal.length/14)*100)) + '% coherence path'],
-      ['Coherence Check', pulseSummary.count ? (pulseSummary.latest.avg + ' / 5') : 'not yet', pulseSummary.count ? ('Lowest: ' + pulseSummary.lowest.label + ' · Trend: ' + pulseSummary.trend) : 'Open Coherence Check for seven quick coherence signals.'],
+      ['Daily Pulse', pulseSummary.count ? (pulseSummary.latest.avg + ' / 5') : 'not yet', pulseSummary.count ? ('Lowest: ' + pulseSummary.lowest.label + ' · Trend: ' + pulseSummary.trend) : 'Open Coherence Check for seven quick coherence signals.'],
       ['Phenomenology First', getPhenomenologyPulseHistory().length ? (getPhenomenologyPulseHistory().length + ' entries') : 'not yet', getPhenomenologyPulseHistory().length ? 'Latest entry can bridge to Twin or SAGE.' : 'Begin here: lived appearance first, coherence translation second.'],
       ['Memory', capsules.length + ' capsules', 'Export JSON before changing devices or browsers.'],
       ['PRF-22 Profile', prfProfile ? 'imported' : 'optional', prfProfile ? truncateText(prfProfile.summary || 'Profile baseline available', 96) : 'Import an E-Twin JSON baseline when available.'],
@@ -3819,7 +3822,7 @@ async function handleImportPrf22File(event){
       abcThought: String(entry.abcThought || '').slice(0, 1000)
     };
   }
-// ── NAV-PULSE-3: Standalone Coherence Check Import Adapter ──
+// ── NAV-PULSE-3: Standalone Daily Pulse Import Adapter ──
 
 function isStandaloneDailyPulseJSON(data){
   return !!(
@@ -3866,7 +3869,7 @@ function dailyPulseToCoherencePulseEntry(pulse){
     : dateObj.toLocaleDateString([], { month:'short', day:'numeric' });
 
   const note = [
-    'Imported from Coherence Check: Phenomenology First.',
+    'Imported from Daily Pulse: Phenomenology First.',
     '',
     'Attend: ' + attend,
     '',
@@ -3887,7 +3890,7 @@ function dailyPulseToCoherencePulseEntry(pulse){
     prompts.D || prompts.dynamic ? 'Dynamic prompt: ' + (prompts.D || prompts.dynamic) : ''
   ].filter(Boolean).join('\n').slice(0, 1500);
 
-  // Standalone Coherence Check is qualitative, not a 0–5 slider pulse.
+  // Standalone Daily Pulse is qualitative, not a 0–5 slider pulse.
   // Use neutral scores so we do not invent a diagnostic score.
   const scores = {};
   COHERENCE_PULSE_DOMAINS.forEach(d => { scores[d.key] = 3; });
@@ -3930,7 +3933,7 @@ function importStandaloneDailyPulseJSON(pulse){
   );
 
   if(alreadyExists){
-    alert('This Coherence Check already appears to be imported.');
+    alert('This Daily Pulse already appears to be imported.');
     return null;
   }
 
@@ -3945,7 +3948,7 @@ function importStandaloneDailyPulseJSON(pulse){
   if(typeof renderMaturitySnapshotPanel === 'function') renderMaturitySnapshotPanel();
   if(typeof renderWorkspaceDashboard === 'function') renderWorkspaceDashboard();
 
-  alert('Imported Coherence Check for ' + (pulse.dateKey || entry.dateLabel) + '. It was added to the Navigator Coherence Check history.');
+  alert('Imported Daily Pulse for ' + (pulse.dateKey || entry.dateLabel) + '. It was added to the Navigator Daily Pulse history.');
   return entry;
 }
   function averagePulseScores(scores){
@@ -4027,7 +4030,7 @@ function importStandaloneDailyPulseJSON(pulse){
   function setPulseSaveMode(){
     const saveBtn = document.getElementById('pulse-save-btn');
     const cancelBtn = document.getElementById('pulse-cancel-edit-btn');
-    if(saveBtn) saveBtn.textContent = editingPulseId ? 'Update Check' : "Save Coherence Check";
+    if(saveBtn) saveBtn.textContent = editingPulseId ? 'Update Pulse' : "Save Coherence Check";
     if(cancelBtn) cancelBtn.style.display = editingPulseId ? 'inline-flex' : 'none';
   }
 
@@ -4323,7 +4326,7 @@ function importStandaloneDailyPulseJSON(pulse){
     const chips = defs.map((s,i) => '<button class="first-session-chip ' + (s.done ? 'done ' : '') + (i === step ? 'current' : '') + '" type="button" onclick="setFirstSessionStep(' + i + ')">' + (i+1) + '. ' + escapeHtml(s.label) + '</button>').join('');
     let body = '';
     if(step === 0){
-      body = '<div class="first-session-step-card"><div class="first-session-step-title">Step 1: Check In</div><div class="first-session-step-text">Begin with today’s Coherence Check. This is not a grade or diagnosis. It is a one-minute weather report for the conditions supporting your agency.</div><div class="quick-actions"><button class="btn small primary" type="button" onclick="showWorkspace(\'pulse\')">Open Coherence Check</button><button class="btn small ghost" type="button" onclick="setFirstSessionStep(1)">Continue</button></div></div>';
+      body = '<div class="first-session-step-card"><div class="first-session-step-title">Step 1: Check In</div><div class="first-session-step-text">Begin with today’s Pulse. This is not a grade or diagnosis. It is a one-minute weather report for the conditions supporting your agency.</div><div class="quick-actions"><button class="btn small primary" type="button" onclick="showWorkspace(\'pulse\')">Open Coherence Check</button><button class="btn small ghost" type="button" onclick="setFirstSessionStep(1)">Continue</button></div></div>';
     } else if(step === 1){
       body = '<div class="first-session-step-card"><div class="first-session-step-title">Step 2: Meet Your Twin</div><div class="first-session-step-text">Tell your Twin one thing that matters right now. A few honest words are enough. The goal is relationship, not performance.</div><div class="first-session-form"><label>What matters to you right now?<textarea id="fs-twin-text" placeholder="Example: I want to get through this semester without losing the part of me that cares about meaningful work.">' + escapeHtml(st.notes.firstMatter || '') + '</textarea></label></div><div class="quick-actions"><button class="btn small primary" type="button" onclick="firstSessionOpenTwinWithSignal()">Open Twin with this signal</button><button class="btn small ghost" type="button" onclick="setFirstSessionStep(2)">Continue</button></div></div>';
     } else if(step === 2){
@@ -4394,7 +4397,7 @@ function importStandaloneDailyPulseJSON(pulse){
     if(chart){
       const history = getCoherencePulseHistory().slice(-14);
       if(!history.length){
-        chart.innerHTML = '<div style="color:var(--muted);font-style:italic;align-self:center;">No readings yet. Complete your first Coherence Check above.</div>';
+        chart.innerHTML = '<div style="color:var(--muted);font-style:italic;align-self:center;">No readings yet. Complete your first Daily Pulse above.</div>';
       } else {
         chart.innerHTML = history.map(e => {
           const h = Math.round(((Number(e.avg) || averagePulseScores(e.scores)) / 5) * 96) + 8;
@@ -4407,7 +4410,7 @@ function importStandaloneDailyPulseJSON(pulse){
       const allHistory = getCoherencePulseHistory().slice().reverse();
       const history = (pulseHistoryExpanded ? allHistory : allHistory.slice(0, 5));
       if(!allHistory.length){
-        list.innerHTML = '<div class="status-line">No Coherence Check history yet.</div>';
+        list.innerHTML = '<div class="status-line">No Daily Pulse history yet.</div>';
       } else {
         const entries = history.map(e => {
           const low = getLowestPulseDomain(e.scores);
@@ -4494,7 +4497,7 @@ function importStandaloneDailyPulseJSON(pulse){
     renderMaturitySnapshotPanel();
     renderLivingThreads();
     renderWorkspaceDashboard();
-    setPulseAfterSaveMessage('<strong>Coherence Check ' + escapeHtml(action) + '.</strong> Latest average: ' + escapeHtml(String(entry.avg)) + '/5. Lowest signal: ' + escapeHtml(low.label) + '.<div class="quick-actions"><button class="btn small purple" type="button" onclick="askTwinAboutLatestPulse()">Ask Twin About Today</button><button class="btn small ghost" type="button" onclick="createStabilizingMoveFromPulse()">Create Small Stabilizing Move</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'home\')">Return Home</button></div>');
+    setPulseAfterSaveMessage('<strong>Daily Pulse ' + escapeHtml(action) + '.</strong> Latest average: ' + escapeHtml(String(entry.avg)) + '/5. Lowest signal: ' + escapeHtml(low.label) + '.<div class="quick-actions"><button class="btn small purple" type="button" onclick="askTwinAboutLatestPulse()">Ask Twin About Today</button><button class="btn small ghost" type="button" onclick="createStabilizingMoveFromPulse()">Create Small Stabilizing Move</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'home\')">Return Home</button></div>');
   }
   window.saveCoherencePulse = saveCoherencePulse;
 
@@ -4593,8 +4596,8 @@ function importStandaloneDailyPulseJSON(pulse){
     const scores = entry && entry.coherenceTranslation ? entry.coherenceTranslation.scores || {} : {};
     const low = Object.keys(scores).length ? getLowestPulseDomain(scores) : null;
     const avg = entry && entry.coherenceTranslation ? entry.coherenceTranslation.avg : null;
-    const bridge = low ? ('Your lowest translated signal is ' + low.label + '. Treat it as a place to listen, not a verdict.') : 'No slider translation was saved.';
-    return '<div class="confidence-note"><strong>Local feedback:</strong> Your strongest written signal appears to be ' + escapeHtml(strongest.label) + (strongest.words ? (' (' + strongest.words + ' words). ') : '. ')
+    const bridge = low ? ('Your lowest translated signal is ' + low.label + '. Treat it as a place to listen, not a verdict or diagnosis.') : 'No slider translation was saved.';
+    return '<div class="confidence-note"><strong>Private local feedback:</strong> Your longest written signal appears to be ' + escapeHtml(strongest.label) + (strongest.words ? (' (' + strongest.words + ' words). ') : '. ')
       + escapeHtml(bridge) + (avg != null ? (' Average translation: ' + escapeHtml(String(avg)) + '/5.') : '')
       + '<div class="quick-actions" style="margin-top:10px;"><button class="btn small purple" type="button" onclick="prepareTwinFromPhenomenologyEntry(\'' + escapeAttr(entry.id) + '\')">Ask Twin About This</button><button class="btn small ghost" type="button" onclick="prepareSageFromPhenomenologyEntry(\'' + escapeAttr(entry.id) + '\')">Take into SAGE</button><button class="btn small ghost" type="button" onclick="showWorkspace(\'pulse\')">Review Linked Check</button></div></div>';
   }
@@ -4683,7 +4686,7 @@ function importStandaloneDailyPulseJSON(pulse){
       id,
       type:'phenomenological_pulse',
       subtype:'phenomenology_first_with_coherence_translation',
-      version:'4C-native',
+      version:'4D-native-polish',
       createdAt: now.toISOString(),
       dateLabel: now.toLocaleDateString([], { month:'short', day:'numeric' }),
       phenomenology: { prompts: collectPhenomenologyPrompts(), responses },
@@ -4719,7 +4722,7 @@ function importStandaloneDailyPulseJSON(pulse){
     setCoherencePulseHistory(pulseHistory);
 
     renderAll();
-    setPhenomenologyStatus('<strong>Phenomenological Pulse saved.</strong> Linked Coherence Translation: average ' + escapeHtml(String(entry.coherenceTranslation.avg)) + '/5; lowest signal: ' + escapeHtml(low.label) + '.' + buildPhenomenologyLocalFeedback(entry));
+    setPhenomenologyStatus('<strong>Phenomenology First entry saved.</strong> Linked Coherence Translation: average ' + escapeHtml(String(entry.coherenceTranslation.avg)) + '/5; lowest signal: ' + escapeHtml(low.label) + '.' + buildPhenomenologyLocalFeedback(entry));
     if(options.askTwin){ prepareTwinFromPhenomenologyEntry(id); }
     if(options.sage){ prepareSageFromPhenomenologyEntry(id); }
     return entry;
@@ -4810,9 +4813,86 @@ function importStandaloneDailyPulseJSON(pulse){
   }
   window.prepareSageFromPhenomenologyEntry = prepareSageFromPhenomenologyEntry;
 
+  // ── NAV-PULSE-4D: Instructor-safe Phenomenology First completion receipts ──
+  function buildPhenomenologyReceipt(entry){
+    entry = entry || getPhenomenologyPulseHistory().slice(-1)[0];
+    if(!entry) return null;
+    const responses = (entry.phenomenology || {}).responses || {};
+    const prompts = (entry.phenomenology || {}).prompts || {};
+    const completedDimensions = ['attend','agency','beauty','context','dynamic'].filter(k => String(responses[k] || '').trim().length > 0);
+    const wordCounts = {};
+    ['attend','agency','beauty','context','dynamic'].forEach(k => { wordCounts[k] = wordCount(responses[k] || ''); });
+    const scores = (entry.coherenceTranslation || {}).scores || {};
+    return {
+      type:'phenomenology_first_completion_receipt',
+      version:'NAV-PULSE-4D',
+      generatedAt:new Date().toISOString(),
+      entryId:entry.id,
+      createdAt:entry.createdAt,
+      dateLabel:entry.dateLabel || '',
+      source:'navigator_native_phenomenology_first',
+      completedDimensions,
+      completedDimensionCount:completedDimensions.length,
+      wordCounts,
+      totalWords:Object.values(wordCounts).reduce((a,b) => a + b, 0),
+      promptsUsed:Object.keys(prompts).length ? true : false,
+      coherenceTranslationCompleted:Object.keys(scores).length > 0,
+      linkedCoherenceCheckCreated:!!entry.linkedCoherencePulseId,
+      privateTextIncluded:false,
+      sliderScoresIncluded:false,
+      note:'This receipt documents completion only. It does not include private written responses or slider scores.'
+    };
+  }
+  window.buildPhenomenologyReceipt = buildPhenomenologyReceipt;
+
+  function formatPhenomenologyReceiptText(receipt){
+    if(!receipt) return '';
+    return [
+      'Phenomenology First Completion Receipt',
+      'Generated: ' + receipt.generatedAt,
+      'Entry created: ' + (receipt.createdAt || ''),
+      'Completed dimensions: ' + receipt.completedDimensions.join(', '),
+      'Total written words: ' + receipt.totalWords,
+      'Coherence Translation completed: ' + (receipt.coherenceTranslationCompleted ? 'yes' : 'no'),
+      'Linked Coherence Check created: ' + (receipt.linkedCoherenceCheckCreated ? 'yes' : 'no'),
+      'Private text included: no',
+      'Slider scores included: no',
+      'Note: This receipt documents completion only. It does not reveal private responses or slider scores.'
+    ].join('\n');
+  }
+
+  function copyPhenomenologyReceipt(){
+    const receipt = buildPhenomenologyReceipt();
+    if(!receipt){ alert('Save a Phenomenology First entry before creating a receipt.'); return; }
+    const text = formatPhenomenologyReceiptText(receipt);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(() => {
+        setPhenomenologyStatus('<strong>Completion receipt copied.</strong> It includes completion metadata only, not private response text or slider scores.');
+      }).catch(() => {
+        prompt('Copy this completion receipt:', text);
+      });
+    } else {
+      prompt('Copy this completion receipt:', text);
+    }
+  }
+  window.copyPhenomenologyReceipt = copyPhenomenologyReceipt;
+
+  function downloadPhenomenologyReceipt(){
+    const receipt = buildPhenomenologyReceipt();
+    if(!receipt){ alert('Save a Phenomenology First entry before downloading a receipt.'); return; }
+    const blob = new Blob([JSON.stringify(receipt, null, 2)], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'phenomenology-first-receipt-' + (receipt.createdAt || new Date().toISOString()).slice(0,10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 800);
+    setPhenomenologyStatus('<strong>Completion receipt downloaded.</strong> It excludes private response text and slider scores.');
+  }
+  window.downloadPhenomenologyReceipt = downloadPhenomenologyReceipt;
+
   function exportLatestPhenomenologyPulse(){
     const latest = getPhenomenologyPulseHistory().slice(-1)[0];
-    if(!latest){ alert('Save a Phenomenology First entry before exporting.'); return; }
+    if(!latest){ alert('Save a Phenomenology First entry before exporting private JSON.'); return; }
     const data = Object.assign({}, latest, { exportedAt:new Date().toISOString() });
     const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
     const a = document.createElement('a');
@@ -4838,7 +4918,7 @@ function importStandaloneDailyPulseJSON(pulse){
     if(rnote) rnote.value = entry.relationalNote || '';
     updatePulseSliderLabels();
     setPulseSaveMode();
-    setPulseAfterSaveMessage('<strong>Editing a saved Coherence Check.</strong> Make changes above, then choose Update Check.');
+    setPulseAfterSaveMessage('<strong>Editing a saved Pulse.</strong> Make changes above, then choose Update Pulse.');
     const form = document.getElementById('workspace-pulse');
     if(form) form.scrollIntoView({ behavior:'smooth', block:'start' });
   }
@@ -6262,12 +6342,12 @@ Return only valid JSON with this exact shape:
 
   function latestPulseTextForOutput(){
     const latest = latestOrNull(getCoherencePulseHistory());
-    if(!latest) return 'No Coherence Check has been saved yet.';
+    if(!latest) return 'No Daily Pulse has been saved yet.';
     const low = getPulseLowestSignal(latest);
     const lowText = low ? (low.label + ' = ' + low.value + '/5') : 'not available';
     const high = getPulseHighestSignal(latest);
     const highText = high ? (high.label + ' = ' + high.value + '/5') : 'not available';
-    return 'Latest Coherence Check average: ' + latest.avg + '/5. Lowest signal: ' + lowText + '. Strongest signal: ' + highText + '. This is a self-reading of agency conditions, not a grade or diagnosis.';
+    return 'Latest Pulse average: ' + latest.avg + '/5. Lowest signal: ' + lowText + '. Strongest signal: ' + highText + '. This is a self-reading of agency conditions, not a grade or diagnosis.';
   }
 
   function latestJournalInsightTextForOutput(){
@@ -6326,7 +6406,7 @@ Return only valid JSON with this exact shape:
       sections.push('Core Reflection: Self, Field, and Agency');
       sections.push('In this Navigator work, I am treating ethics as more than choosing an answer. I am noticing my own agency conditions, the field pressures shaping my choices, and the supports that help me remain coherent enough to act responsibly.');
       sections.push('');
-      if(checkedOutput('out-include-pulse')) sections.push('1. Coherence Check\n' + latestPulseTextForOutput());
+      if(checkedOutput('out-include-pulse')) sections.push('1. Daily Pulse\n' + latestPulseTextForOutput());
       if(checkedOutput('out-include-insight')) sections.push('2. Self-Knowledge / PRF Signal\n' + latestJournalInsightTextForOutput());
       if(checkedOutput('out-include-field')) sections.push('3. Field and Suppression Gap\n' + latestFieldTextForOutput());
       if(checkedOutput('out-include-thread')) sections.push('4. Living Thread / What I am tending\n' + latestThreadTextForOutput());
@@ -8682,8 +8762,8 @@ Return only valid JSON with this shape:
       title:'3. Stress, Survival Compression, and Dark Coherence',
       shortTitle:'Stress and dark coherence',
       learn:'Note: This lesson uses educational framing to understand institutional pressure on agency. It is not a mental health assessment, a diagnostic instrument, or therapeutic guidance. If you are experiencing significant distress, please speak with a counselor or trusted person.\n\nStress can narrow the field of possible action. Survival compression occurs when short-term safety, grades, money, approval, or threat become so dominant that the person can no longer easily access their wider values. Dark coherence names a pattern that may feel stable because it keeps the system going, but does so by shrinking agency, beauty, relationship, truth, or future possibility.',
-      reflect:'Where do you become more automatic, defensive, avoidant, or compliant under pressure? What does your Coherence Check or recent life pattern suggest may be narrowing?',
-      apply:'Save a Coherence Check, then ask the Twin to interpret it cautiously. Consider creating a Fear Wall or Practice Living Thread.',
+      reflect:'Where do you become more automatic, defensive, avoidant, or compliant under pressure? What does your Daily Pulse or recent life pattern suggest may be narrowing?',
+      apply:'Save a Daily Pulse, then ask the Twin to interpret it cautiously. Consider creating a Fear Wall or Practice Living Thread.',
       prompt:'Help me examine whether stress or survival compression is narrowing my agency. Please treat this carefully, not clinically. Connect it to Pulse signals, possible dark coherence, and one agency-preserving action.'
     },
     {
@@ -9144,7 +9224,7 @@ Return only valid JSON with this shape:
       + '\nWhy this matters: students should not treat evidence, formal analogy, pedagogical metaphor, and user-specific inference as if they had the same warrant.'
       + '\n\nThree Capability Freedoms — Scores:\nMovement / Exit Freedom: ' + ebb.movementFreedom + ' / 5\nRefusal / Dissent Freedom: ' + ebb.refusalFreedom + ' / 5\nSocial Reconfiguration / Redesign Freedom: ' + ebb.redesignFreedom + ' / 5'
       + '\n\nCapability Interpretation:\nLowest freedom: ' + sim.lowest_freedom.label + ' (' + sim.lowest_freedom.score + ' / 5).\n' + sim.continuation_question
-      + '\n\nStress, Pulse, and Coherence:\nField stress load: ' + ebb.stressLoad + '. Suppression gap: ' + ebb.suppressionGap + '. BioBond support: ' + ebb.bioBondSupport + '. OS2 bridge potential: ' + ebb.os2BridgePotential + '.\nWhat stress load, survival compression, or dark coherence may be present? ' + (pulse ? ('Latest Coherence Check average: ' + Number(pulse.avg || 0).toFixed(1) + '; lowest signal: ' + (pulseLow ? pulseLow.label : 'not available') + '.') : 'No Coherence Check reading is available yet.')
+      + '\n\nStress, Pulse, and Coherence:\nField stress load: ' + ebb.stressLoad + '. Suppression gap: ' + ebb.suppressionGap + '. BioBond support: ' + ebb.bioBondSupport + '. OS2 bridge potential: ' + ebb.os2BridgePotential + '.\nWhat stress load, survival compression, or dark coherence may be present? ' + (pulse ? ('Latest Pulse average: ' + Number(pulse.avg || 0).toFixed(1) + '; lowest signal: ' + (pulseLow ? pulseLow.label : 'not available') + '.') : 'No Daily Pulse reading is available yet.')
       + '\n\nFunctional Equivalence / OS2 Bridge:\nWhere might different PRFs coordinate around a shared capability or task without requiring full OS1 agreement? What minimal bridge preserves dignity, evidence, safety, agency, relationship, or future possibility?'
       + '\n\nNavigator Actions:\nSuggested next action: choose one.\n1. Create or update a Field Scan.\n2. Start a Living Thread.\n3. Generate a Move Card.\n4. Select or revise a Current Move Plan.\n5. Create a Document Capsule.\n6. Ask the Twin for a Co-Living reflection.\nActive Living Threads currently available: ' + (activeThreads.length ? activeThreads.map(t => t.title).join('; ') : 'none') + '.\nContext available: ' + fieldCount + ' field scans, ' + moveCount + ' move cards.'
       + '\n\nSituation Mapper Input for Future UCP/PA Modeling:\n' + JSON.stringify(sim, null, 2)
