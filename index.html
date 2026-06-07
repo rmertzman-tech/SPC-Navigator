@@ -6638,33 +6638,35 @@ Return only valid JSON with this exact shape:
       + '<div class="toolbar"><button class="btn small primary" type="button" onclick="confirmMergeTwinMemory()">Confirm Merge</button><button class="btn small ghost" type="button" onclick="cancelMergeTwinMemory()">Cancel Merge</button></div>';
   }
 
-  async function handleMergeTwinMemoryFile(event){
-    const input = event && event.target;
-    const file = input && input.files && input.files[0];
-    if(!file) return;
-    try {
-      const text = await file.text();
-const data = JSON.parse(text);
+  async funasync function handleMergeTwinMemoryFile(event){
+  const input = event && event.target;
+  const file = input && input.files && input.files[0];
+  if(!file) return;
 
-if(isStandaloneDailyPulseJSON(data)){
-  importStandaloneDailyPulseJSON(data);
-  return;
-}
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
 
-const restored = validateImportPayload(data);
-      pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
-      renderMergeImportPreview(pendingMergeImportPlan);
-      const box = document.getElementById('merge-import-preview');
-      if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
-    } catch(e) {
-      pendingMergeImportPlan = null;
-      renderMergeImportPreview(null);
-      alert('Could not prepare this JSON file for merge: ' + e.message);
-      showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
-    } finally {
-      if(input) input.value = '';
+    if(isStandaloneDailyPulseJSON(data)){
+      importStandaloneDailyPulseJSON(data);
+      return;
     }
+
+    const restored = validateImportPayload(data);
+    pendingMergeImportPlan = buildMergeImportPlan(restored, file.name);
+    renderMergeImportPreview(pendingMergeImportPlan);
+
+    const box = document.getElementById('merge-import-preview');
+    if(box) box.scrollIntoView({ behavior:'smooth', block:'center' });
+  } catch(e) {
+    pendingMergeImportPlan = null;
+    renderMergeImportPreview(null);
+    alert('Could not prepare this JSON file for merge: ' + e.message);
+    showDebug('MERGE IMPORT ERROR: ' + (e && e.stack ? e.stack : e.message));
+  } finally {
+    if(input) input.value = '';
   }
+}
   window.handleMergeTwinMemoryFile = handleMergeTwinMemoryFile;
 
   function confirmMergeTwinMemory(){
