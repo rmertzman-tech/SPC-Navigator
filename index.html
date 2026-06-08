@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.9-nav-pulse-4e1-countwords-hotfix" />
+  <meta name="navigator-build" content="navigator-v3.6e.10-nav-pulse-4e2-service-worker-cache-bust" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-PULSE-4E.1 CountWords Hotfix</title>
+  <title>The Navigator — NAV-PULSE-4E.2 Service Worker Cache-Bust Hotfix</title>
   <meta name="description" content="Navigator v3.6E.8 makes Phenomenology First Phase 1 prompt-led by visibly integrating the Attend + ABCD prompt bank before writing, while preserving private receipts and Coherence Check as the quick shortcut." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -2628,12 +2628,56 @@ function wordCount(text){
 function countWords(text){
   return wordCount(text);
 }
+
+// NAV-PULSE-4E.2 HOTFIX: service-worker cache bust.
+// This build intentionally unregisters old Navigator service workers and clears
+// Navigator app-shell caches once, then reloads with a cache-busting query string.
+// It is designed to prevent reviewers from seeing a stale cached pre-4E build.
+(function(){
+  const NAV_PULSE_4E2_BUILD = 'navigator-v3.6e.10-nav-pulse-4e2-service-worker-cache-bust';
+  const NAV_PULSE_4E2_RELOAD_KEY = 'navigator_4e2_cache_bust_reload_' + NAV_PULSE_4E2_BUILD;
+  async function navPulse4E2ClearOldPwaShell(){
+    try{
+      let changed = false;
+      if('serviceWorker' in navigator){
+        const regs = await navigator.serviceWorker.getRegistrations();
+        if(regs && regs.length){
+          await Promise.all(regs.map(reg => reg.unregister()));
+          changed = true;
+        }
+      }
+      if('caches' in window){
+        const names = await caches.keys();
+        const targets = names.filter(name => /navigator|spc-navigator|workbox|app-shell/i.test(name));
+        if(targets.length){
+          await Promise.all(targets.map(name => caches.delete(name)));
+          changed = true;
+        }
+      }
+      if(changed && !sessionStorage.getItem(NAV_PULSE_4E2_RELOAD_KEY)){
+        sessionStorage.setItem(NAV_PULSE_4E2_RELOAD_KEY, '1');
+        const base = window.location.origin + window.location.pathname;
+        const hash = window.location.hash || '';
+        window.location.replace(base + '?v=4e2-cache-bust-' + Date.now() + hash);
+      }
+    } catch(err){
+      console.warn('NAV-PULSE-4E.2 cache-bust could not complete:', err);
+    }
+  }
+  window.navPulse4E2ClearOldPwaShell = navPulse4E2ClearOldPwaShell;
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', () => setTimeout(navPulse4E2ClearOldPwaShell, 25));
+  } else {
+    setTimeout(navPulse4E2ClearOldPwaShell, 25);
+  }
+})();
+
 (function(){
   'use strict';
 
-  const ENABLE_PWA = true; // v3.6C PWA build: cache shell only, never backend AI calls.
+  const ENABLE_PWA = false; // NAV-PULSE-4E.2: temporarily disable auto PWA registration while stale service-worker caches are cleared.
   const DEFAULT_BACKEND = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
-  const APP_VERSION = 'Navigator v3.6E.6 — Chapter Workbook Import v1.2 + Building Alongside';
+  const APP_VERSION = 'Navigator v3.6E.10 — NAV-PULSE-4E.2 Service Worker Cache-Bust Hotfix';
 
   const KEYS = {
     chat: 'navigator_twin_v2_chat',
@@ -9558,7 +9602,7 @@ Return only valid JSON with this shape:
   }
 
   async function registerNavigatorPwa(){
-    if(!ENABLE_PWA){ setPwaStatus('wait', 'PWA off'); return; }
+    if(!ENABLE_PWA){ setPwaStatus('wait', 'Cache-bust mode'); return; }
     if(!('serviceWorker' in navigator)){ setPwaStatus('bad', 'PWA unsupported'); return; }
     try{
       const reg = await navigator.serviceWorker.register('./sw.js');
@@ -9587,7 +9631,7 @@ Return only valid JSON with this shape:
       }
       if('caches' in window){
         const names = await caches.keys();
-        await Promise.all(names.filter(n => n.indexOf('navigator-') === 0).map(n => caches.delete(n)));
+        await Promise.all(names.filter(n => /navigator|spc-navigator|workbox|app-shell/i.test(n)).map(n => caches.delete(n)));
       }
       setPwaStatus('wait', 'PWA cache cleared');
       alert('PWA cache cleared. Reload the page to fetch the newest files.');
