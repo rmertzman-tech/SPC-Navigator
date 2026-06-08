@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.10-nav-pulse-4e2-service-worker-cache-bust" />
+  <meta name="navigator-build" content="navigator-v3.6e.11-nav-pulse-4e3-local-wordcount-stability" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The Navigator — NAV-PULSE-4E.2 Service Worker Cache-Bust Hotfix</title>
@@ -2634,7 +2634,7 @@ function countWords(text){
 // Navigator app-shell caches once, then reloads with a cache-busting query string.
 // It is designed to prevent reviewers from seeing a stale cached pre-4E build.
 (function(){
-  const NAV_PULSE_4E2_BUILD = 'navigator-v3.6e.10-nav-pulse-4e2-service-worker-cache-bust';
+  const NAV_PULSE_4E2_BUILD = 'navigator-v3.6e.11-nav-pulse-4e3-local-wordcount-stability';
   const NAV_PULSE_4E2_RELOAD_KEY = 'navigator_4e2_cache_bust_reload_' + NAV_PULSE_4E2_BUILD;
   async function navPulse4E2ClearOldPwaShell(){
     try{
@@ -3751,6 +3751,7 @@ async function handleImportPrf22File(event){
     return pulseDateKeyFromDate(entry.createdAt || Date.now()) === pulseDateKeyFromDate(new Date());
   }
 
+  // NAV-PULSE-4E.3 LOCAL WORDCOUNT STABILITY: this function must not depend on global countWords().
   function getStrongestPhenomenologyDimension(responses){
     const labels = { attend:'Attend', agency:'Agency', beauty:'Beauty/Awe', context:'Context', dynamic:'Dynamic' };
     function localWordCount(text){
@@ -9602,7 +9603,7 @@ Return only valid JSON with this shape:
   }
 
   async function registerNavigatorPwa(){
-    if(!ENABLE_PWA){ setPwaStatus('wait', 'Cache-bust mode'); return; }
+    if(!ENABLE_PWA){ setPwaStatus('wait', 'PWA off'); return; }
     if(!('serviceWorker' in navigator)){ setPwaStatus('bad', 'PWA unsupported'); return; }
     try{
       const reg = await navigator.serviceWorker.register('./sw.js');
