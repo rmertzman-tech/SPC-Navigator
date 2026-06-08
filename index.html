@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta name="navigator-build" content="navigator-v3.6e.7-nav-pulse-4d-student-language-receipts" />
+  <meta name="navigator-build" content="navigator-v3.6e.8-nav-pulse-4e-phase1-abcd-prompt-bank" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>The Navigator — NAV-PULSE-4D Phenomenology First Polish</title>
-  <meta name="description" content="Navigator v3.6E.7 polishes Phenomenology First as the primary daily practice, adds instructor-safe receipts, clarifies student privacy language, and preserves Coherence Check as the quick slider-only shortcut." />
+  <title>The Navigator — NAV-PULSE-4E Phase 1 ABCD Prompt Bank</title>
+  <meta name="description" content="Navigator v3.6E.8 makes Phenomenology First Phase 1 prompt-led by visibly integrating the Attend + ABCD prompt bank before writing, while preserving private receipts and Coherence Check as the quick shortcut." />
   <meta name="theme-color" content="#0D5E57" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1195,6 +1195,75 @@
     .development-arc-entry-meta { color:var(--dim); font-size:.82rem; margin-top:2px; }
     @media (max-width: 760px){ .import-preview-grid, .import-checks { grid-template-columns: 1fr; } .import-modal-head { flex-direction:column; } }
 
+
+    /* ── NAV-PULSE-4E: Phase 1 ABCD Prompt Bank visible scaffolding ── */
+    .phenom-phase1-prompt-card {
+      border: 1px solid rgba(201,168,76,.28);
+      background:
+        radial-gradient(420px 180px at 0% 0%, rgba(201,168,76,.10), transparent 70%),
+        rgba(255,255,255,.035);
+      border-radius: 15px;
+      padding: 12px;
+      margin: 9px 0 10px;
+    }
+    .phenom-phase1-prompt-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+    .phenom-phase1-label {
+      font: 900 .68rem/1 var(--mono);
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .phenom-phase1-help {
+      color: var(--dim);
+      font-size: .8rem;
+      line-height: 1.4;
+      margin-top: 3px;
+    }
+    .phenom-phase1-prompt {
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      line-height: 1.35;
+      margin-top: 7px;
+    }
+    .phenom-phase1-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .phenom-all-prompts {
+      display: none;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 9px;
+    }
+    .phenom-all-prompts.open { display: block; }
+    .phenom-all-prompts ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.45;
+    }
+    .phenom-all-prompts li { margin: 6px 0; }
+    .phenom-prompt-summary {
+      border: 1px solid rgba(13,94,87,.36);
+      background: rgba(13,94,87,.07);
+      border-radius: 16px;
+      padding: 12px;
+      margin: 12px 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .phenom-prompt-summary strong { color: var(--text); }
+
   </style>
 </head>
 <body>
@@ -1528,6 +1597,7 @@
             <div class="card-body">
               <div class="privacy-note"><strong>Private by default:</strong> this entry stays in this browser unless you export it, copy a receipt, or choose to send selected content to the Twin. Your instructor can invite use of this tool, but the private text is not submitted automatically. The first phase is written reflection; the second phase is your own translation of that reflection into seven coherence signals.</div>
               <div id="phenom-daily-prompts" class="confidence-note"></div>
+              <div id="phenom-prompt-status-4e" class="status-line"></div>
 
               <div class="language-panel">
                 <div class="language-panel-title">Phase 1 — Phenomenological Encounter</div>
@@ -4686,7 +4756,7 @@ function importStandaloneDailyPulseJSON(pulse){
       id,
       type:'phenomenological_pulse',
       subtype:'phenomenology_first_with_coherence_translation',
-      version:'4D-native-polish',
+      version:'NAV-PULSE-4E-phase1-abcd-prompts',
       createdAt: now.toISOString(),
       dateLabel: now.toLocaleDateString([], { month:'short', day:'numeric' }),
       phenomenology: { prompts: collectPhenomenologyPrompts(), responses },
@@ -4825,7 +4895,7 @@ function importStandaloneDailyPulseJSON(pulse){
     const scores = (entry.coherenceTranslation || {}).scores || {};
     return {
       type:'phenomenology_first_completion_receipt',
-      version:'NAV-PULSE-4D',
+      version:'NAV-PULSE-4E',
       generatedAt:new Date().toISOString(),
       entryId:entry.id,
       createdAt:entry.createdAt,
@@ -9526,6 +9596,213 @@ Return only valid JSON with this shape:
   }
 
   window.addEventListener('hashchange', applyHashWorkspace);
+
+
+  // ── NAV-PULSE-4E: Phase 1 ABCD Prompt Bank Integration ──
+  // Purpose: make Attend + ABCD prompts visibly present before writing,
+  // not merely stored as placeholders or hidden prompt metadata.
+  const PHENOM_FIELD_META_4E = [
+    {
+      key: 'attend',
+      label: 'Attend',
+      textareaId: 'phenom-attend',
+      help: 'Begin before explanation. Notice what is present.'
+    },
+    {
+      key: 'agency',
+      label: 'Agency',
+      textareaId: 'phenom-agency',
+      help: 'Notice where choice, voice, action, blockage, or authorship appears.'
+    },
+    {
+      key: 'beauty',
+      label: 'Beauty / Awe / Meaning',
+      textareaId: 'phenom-beauty',
+      help: 'Notice what moves you toward care, wonder, gratitude, value, or meaning.'
+    },
+    {
+      key: 'context',
+      label: 'Context',
+      textareaId: 'phenom-context',
+      help: 'Notice the field around the moment: people, pressures, histories, limits, supports.'
+    },
+    {
+      key: 'dynamic',
+      label: 'Dynamic',
+      textareaId: 'phenom-dynamic',
+      help: 'Notice motion: what is opening, closing, repeating, shifting, or becoming possible.'
+    }
+  ];
+
+  let phenomPromptOffsets4E = {
+    attend: 0,
+    agency: 0,
+    beauty: 0,
+    context: 0,
+    dynamic: 0
+  };
+
+  function escapeHtml4E(value){
+    if(typeof escapeHtml === 'function') return escapeHtml(value);
+    return String(value == null ? '' : value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  function phenomDateKey4E(){
+    if(typeof phenomDateKey === 'function') return phenomDateKey();
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function simpleHash4E(value){
+    if(typeof simpleHash === 'function') return simpleHash(value);
+    const text = String(value || '');
+    let h = 2166136261;
+    for(let i = 0; i < text.length; i++){
+      h ^= text.charCodeAt(i);
+      h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
+    }
+    return Math.abs(h >>> 0);
+  }
+
+  function phenomPromptPool4E(key){
+    if(typeof PHENOM_PROMPT_POOLS !== 'undefined' && PHENOM_PROMPT_POOLS[key]){
+      return PHENOM_PROMPT_POOLS[key];
+    }
+    return [];
+  }
+
+  function phenomPromptIndex4E(key){
+    const pool = phenomPromptPool4E(key);
+    if(!pool.length) return 0;
+    const base = simpleHash4E(phenomDateKey4E() + ':' + key) % pool.length;
+    const offset = phenomPromptOffsets4E[key] || 0;
+    return (base + offset + pool.length) % pool.length;
+  }
+
+  function phenomPrompt4E(key){
+    const pool = phenomPromptPool4E(key);
+    if(!pool.length) return '';
+    return pool[phenomPromptIndex4E(key)] || '';
+  }
+
+  phenomDailyPrompt = function(key){
+    return phenomPrompt4E(key);
+  };
+
+  collectPhenomenologyPrompts = function(){
+    return {
+      attend: phenomPrompt4E('attend'),
+      agency: phenomPrompt4E('agency'),
+      beauty: phenomPrompt4E('beauty'),
+      context: phenomPrompt4E('context'),
+      dynamic: phenomPrompt4E('dynamic')
+    };
+  };
+  window.collectPhenomenologyPrompts = collectPhenomenologyPrompts;
+
+  function buildAllPromptsList4E(key){
+    const pool = phenomPromptPool4E(key);
+    if(!pool.length) return '<div class="empty">No prompt bank found for this field.</div>';
+    return '<ol>' + pool.map(p => '<li>' + escapeHtml4E(p) + '</li>').join('') + '</ol>';
+  }
+
+  function rotatePhenomenologyPrompt4E(key){
+    const pool = phenomPromptPool4E(key);
+    if(!pool.length) return;
+    phenomPromptOffsets4E[key] = (phenomPromptOffsets4E[key] || 0) + 1;
+    installPhenomenologyPhaseOnePrompts4E();
+  }
+  window.rotatePhenomenologyPrompt4E = rotatePhenomenologyPrompt4E;
+
+  function togglePhenomenologyPromptList4E(key){
+    const el = document.getElementById('phenom-all-prompts-' + key);
+    if(el) el.classList.toggle('open');
+  }
+  window.togglePhenomenologyPromptList4E = togglePhenomenologyPromptList4E;
+
+  function installPhenomenologyPhaseOnePrompts4E(){
+    let installed = 0;
+
+    PHENOM_FIELD_META_4E.forEach(meta => {
+      const textarea = document.getElementById(meta.textareaId);
+      if(!textarea) return;
+
+      const prompt = phenomPrompt4E(meta.key);
+      if(prompt && !String(textarea.value || '').trim()){
+        textarea.setAttribute('placeholder', 'Try starting here: ' + prompt);
+      }
+
+      let card = document.getElementById('phenom-prompt-card-' + meta.key);
+      if(!card){
+        card = document.createElement('div');
+        card.id = 'phenom-prompt-card-' + meta.key;
+        card.className = 'phenom-phase1-prompt-card';
+        textarea.parentNode.insertBefore(card, textarea);
+      }
+
+      card.innerHTML =
+        '<div class="phenom-phase1-prompt-top">'
+          + '<div>'
+            + '<div class="phenom-phase1-label">' + escapeHtml4E(meta.label) + '</div>'
+            + '<div class="phenom-phase1-help">' + escapeHtml4E(meta.help) + '</div>'
+          + '</div>'
+          + '<span class="pill"><span class="dot ok"></span>Prompt visible</span>'
+        + '</div>'
+        + '<div class="phenom-phase1-prompt">' + escapeHtml4E(prompt || 'Write what you notice before explaining it.') + '</div>'
+        + '<div class="phenom-phase1-actions">'
+          + '<button class="btn small ghost" type="button" onclick="rotatePhenomenologyPrompt4E(\'' + meta.key + '\')">Use another prompt</button>'
+          + '<button class="btn small ghost" type="button" onclick="togglePhenomenologyPromptList4E(\'' + meta.key + '\')">Show all prompts</button>'
+        + '</div>'
+        + '<div id="phenom-all-prompts-' + meta.key + '" class="phenom-all-prompts">'
+          + buildAllPromptsList4E(meta.key)
+        + '</div>';
+
+      installed++;
+    });
+
+    const promptBox = document.getElementById('phenom-daily-prompts');
+    if(promptBox){
+      const prompts = collectPhenomenologyPrompts();
+      promptBox.innerHTML =
+        '<div class="phenom-prompt-summary">'
+          + '<strong>Phase 1 prompts are active.</strong> These prompts are date-seeded but flexible. Students may follow the prompt or write an honest response that better fits the moment.'
+          + '<div class="pulse-mini-scores" style="margin-top:10px;">'
+            + PHENOM_FIELD_META_4E.map(meta =>
+                '<span class="pulse-chip"><strong>' + escapeHtml4E(meta.label) + ':</strong> '
+                + escapeHtml4E(prompts[meta.key] || '') + '</span>'
+              ).join('')
+          + '</div>'
+        + '</div>';
+    }
+
+    const status = document.getElementById('phenom-prompt-status-4e');
+    if(status){
+      status.textContent = installed >= 5
+        ? 'NAV-PULSE-4E active: Attend + ABCD prompt cards are visible.'
+        : 'NAV-PULSE-4E warning: only ' + installed + ' prompt fields found.';
+    }
+  }
+  window.installPhenomenologyPhaseOnePrompts4E = installPhenomenologyPhaseOnePrompts4E;
+
+  applyPhenomenologyDailyPrompts = function(){
+    installPhenomenologyPhaseOnePrompts4E();
+  };
+  window.applyPhenomenologyDailyPrompts = applyPhenomenologyDailyPrompts;
+
+  const renderPhenomenologyInquiryBefore4E = renderPhenomenologyInquiry;
+  renderPhenomenologyInquiry = function(){
+    if(typeof renderPhenomenologyInquiryBefore4E === 'function'){
+      renderPhenomenologyInquiryBefore4E();
+    }
+    installPhenomenologyPhaseOnePrompts4E();
+  };
+  window.renderPhenomenologyInquiry = renderPhenomenologyInquiry;
+
 
   registerNavigatorPwa();
   renderAll();
