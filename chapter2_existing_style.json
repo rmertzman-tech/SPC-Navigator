@@ -1,0 +1,23 @@
+{
+  "ebb_export_type": "chapter_workbook",
+  "schema_version": "1.1",
+  "source_app": "C2-MORAL-LENS-LAB",
+  "chapter": "2",
+  "chapter_title": "Chapter 2 — Moral Lens Lab",
+  "chapter_entry_key": "chapter-2-moral-lens-lab",
+  "export_id": "C2-test-export",
+  "created_at": "2026-09-02T12:00:00.000Z",
+  "payload": {
+    "prf": {"care": "high", "fairness": "medium"},
+    "sage": {"see": "I noticed a value conflict."},
+    "reflection_prep": {"summary": "Chapter 2 test summary."},
+    "chapter_specific": {"moral_lens": "care/fairness"}
+  },
+  "engagement_metadata": {
+    "sections_started": 4,
+    "sections_with_text": 3,
+    "estimated_word_count": 140,
+    "private_content_included": true,
+    "student_generated_export": true
+  }
+}

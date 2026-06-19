@@ -1,0 +1,7 @@
+PASS: Chapter 2 existing-style export — accepted chapter 2, schema 1.1, key chapter-2-moral-lens-lab
+PASS: Chapter 6 canonical v1.2 export — accepted chapter 6, schema EBB-Fall-2026-v1.2, key chapter-6-test-lab
+PASS: Legacy guessed export — accepted chapter 6, schema EBB-Fall-2026-v1.2, key chapter-6-chapter-6-workbook
+PASS: Malformed / not workbook JSON — rejected: This does not appear to be an EBB chapter workbook export.
+PASS: Legacy unmapped payload preserved under chapter_specific.legacy_unmapped_fields
+
+NAV-JSON-1 patched Navigator test harness PASS

@@ -1,0 +1,30 @@
+{
+  "ebb_export_type": "chapter_workbook",
+  "ebbChapterWorkbook": true,
+  "schema_version": "EBB-Fall-2026-v1.2",
+  "source_app": "C6-FALL-2026-LAB",
+  "chapter": "6",
+  "chapter_title": "Chapter 6 — Test Lab",
+  "chapter_entry_key": "chapter-6-test-lab",
+  "export_id": "C6-test-export",
+  "created_at": "2026-09-20T12:00:00.000Z",
+  "updated_at": "2026-09-20T12:05:00.000Z",
+  "payload": {
+    "sage": {"see": "A pattern appeared.", "analyze": "The structure shaped choices."},
+    "reflection_prep": {
+      "synthesis_summary": "Test synthesis.",
+      "one_sentence_journal_prompt": "What did this chapter help you notice?"
+    },
+    "chapter_specific": {
+      "app_version": "C6-v1.0",
+      "local_autosave_enabled": true
+    }
+  },
+  "engagement_metadata": {
+    "sections_started": 3,
+    "sections_with_text": 2,
+    "estimated_word_count": 120,
+    "private_content_included": true,
+    "student_generated_export": true
+  }
+}
